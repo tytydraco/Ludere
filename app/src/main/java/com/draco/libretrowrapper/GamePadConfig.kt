@@ -15,12 +15,6 @@ class GamePadConfig {
             primaryDial = PrimaryDialConfig.Cross(0),
             secondaryDials = listOf(
                 SecondaryDialConfig.SingleButton(
-                    2, 1, ButtonConfig(
-                        id = KeyEvent.KEYCODE_BUTTON_SELECT,
-                        label = "-"
-                    )
-                ),
-                SecondaryDialConfig.SingleButton(
                     4, 1, ButtonConfig(
                         id = KeyEvent.KEYCODE_BUTTON_L1,
                         label = "L"
@@ -30,6 +24,12 @@ class GamePadConfig {
                     3, 1, ButtonConfig(
                         id = KEYCODE_SAVE_STATE,
                         iconId = R.drawable.ic_baseline_save_24
+                    )
+                ),
+                SecondaryDialConfig.SingleButton(
+                    8, 1, ButtonConfig(
+                        id = KeyEvent.KEYCODE_BUTTON_SELECT,
+                        label = "-"
                     )
                 )
             )
@@ -73,7 +73,7 @@ class GamePadConfig {
                     )
                 ),
                 SecondaryDialConfig.SingleButton(
-                    4, 1, ButtonConfig(
+                    10, 1, ButtonConfig(
                         id = KeyEvent.KEYCODE_BUTTON_START,
                         label = "+"
                     )
