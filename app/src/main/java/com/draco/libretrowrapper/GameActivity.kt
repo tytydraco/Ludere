@@ -87,10 +87,15 @@ class GameActivity : AppCompatActivity() {
         parent.addView(retroView)
 
         /* Initialize GamePads */
-        leftGamePad = GamePad(this, GamePadConfig.LeftGamePad, retroView)
-        rightGamePad = GamePad(this, GamePadConfig.RightGamePad, retroView)
-        leftGamePadContainer.addView(leftGamePad.pad)
-        rightGamePadContainer.addView(rightGamePad.pad)
+        leftGamePad = GamePad(this, GamePadConfig.LeftGamePad, leftGamePadContainer, retroView)
+        rightGamePad = GamePad(this, GamePadConfig.RightGamePad, rightGamePadContainer, retroView)
+
+        /* Add fragments to our activity */
+        supportFragmentManager
+            .beginTransaction()
+            .add(R.id.left_container, leftGamePad)
+            .add(R.id.right_container, rightGamePad)
+            .commit()
 
         leftGamePad.pad.offsetX = -1f
         leftGamePad.pad.primaryDialMaxSizeDp = 200f
@@ -175,8 +180,6 @@ class GameActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        leftGamePad.resume()
-        rightGamePad.resume()
 
         val visibility = if (isControllerConnected())
             View.GONE
@@ -185,11 +188,5 @@ class GameActivity : AppCompatActivity() {
         
         leftGamePadContainer.visibility = visibility
         rightGamePadContainer.visibility = visibility
-    }
-
-    override fun onPause() {
-        leftGamePad.pause()
-        rightGamePad.pause()
-        super.onPause()
     }
 }

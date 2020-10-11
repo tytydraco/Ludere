@@ -1,7 +1,10 @@
 package com.draco.libretrowrapper
 
 import android.content.Context
+import android.os.Bundle
 import android.view.KeyEvent
+import android.widget.FrameLayout
+import androidx.fragment.app.Fragment
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.radialgamepad.library.RadialGamePad
 import com.swordfish.radialgamepad.library.config.RadialGamePadConfig
@@ -12,20 +15,16 @@ import java.io.File
 class GamePad(
     context: Context,
     padConfig: RadialGamePadConfig,
+    private val parent: FrameLayout,
     private val retroView: GLRetroView
-) {
+): Fragment() {
     val pad: RadialGamePad = RadialGamePad(padConfig, 32f, context)
     private val state = File("${context.filesDir.absolutePath}/state")
     private val compositeDisposable = CompositeDisposable()
 
-    fun resume() {
-        compositeDisposable.add(pad.events().subscribe {
-            eventHandler(it, retroView)
-        })
-    }
-
-    fun pause() {
-        compositeDisposable.clear()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        parent.addView(pad)
     }
 
     private fun save() {
@@ -80,5 +79,17 @@ class GamePad(
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        compositeDisposable.add(pad.events().subscribe {
+            eventHandler(it, retroView)
+        })
+    }
+
+    override fun onPause() {
+        compositeDisposable.clear()
+        super.onPause()
     }
 }
