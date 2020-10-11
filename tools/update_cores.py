@@ -1,5 +1,6 @@
 import urllib.request
 import os
+import pathlib
 import shutil
 import sys
 from zipfile import ZipFile
@@ -22,7 +23,7 @@ for abi in ABIS:
     if (os.path.isdir(core_path)):
         shutil.rmtree(core_path)
 
-    os.mkdir(core_path)
+    pathlib.Path(core_path).mkdir(parents=True)
     urllib.request.urlretrieve(url, zip_path)
     
     with ZipFile(zip_path, "r") as zip:
