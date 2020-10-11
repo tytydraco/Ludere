@@ -28,22 +28,40 @@ class GamePad(
         compositeDisposable.clear()
     }
 
+    private fun save() {
+        Thread {
+            /* Wait for ROM to load */
+            while(retroView.getVariables().isEmpty())
+                Thread.sleep(50)
+            state.writeBytes(retroView.serializeState())
+        }.start()
+    }
+
+    private fun load() {
+        if (!state.exists())
+            return
+
+        Thread {
+            /* Wait for ROM to load */
+            while(retroView.getVariables().isEmpty())
+                Thread.sleep(50)
+            val bytes = state.readBytes()
+            if (bytes.isNotEmpty())
+                retroView.unserializeState(bytes)
+        }.start()
+    }
+
     private fun eventHandler(event: Event, retroView: GLRetroView) {
         when (event) {
             is Event.Button -> {
                 when (event.id) {
                     GamePadConfig.KEYCODE_SAVE_STATE -> {
                         if (event.action == KeyEvent.ACTION_DOWN)
-                            state.writeBytes(retroView.serializeState())
+                            save()
                     }
                     GamePadConfig.KEYCODE_LOAD_STATE -> {
-                        if (event.action == KeyEvent.ACTION_DOWN) {
-                            if (state.exists()) {
-                                val bytes = state.readBytes()
-                                if (bytes.isNotEmpty())
-                                    retroView.unserializeState(bytes)
-                            }
-                        }
+                        if (event.action == KeyEvent.ACTION_DOWN)
+                            load()
                     }
                     else -> retroView.sendKeyEvent(event.action, event.id)
                 }
