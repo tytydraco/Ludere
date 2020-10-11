@@ -86,13 +86,6 @@ class GameActivity : AppCompatActivity() {
         lifecycle.addObserver(retroView)
         parent.addView(retroView)
 
-        /* Decide to mute the audio */
-        Thread {
-            while(retroView.getVariables().isEmpty())
-                Thread.sleep(50)
-            retroView.audioEnabled = resources.getBoolean(R.bool.rom_audio)
-        }.start()
-
         /* Initialize GamePads */
         leftGamePad = GamePad(this, GamePadConfig.LeftGamePad, retroView)
         rightGamePad = GamePad(this, GamePadConfig.RightGamePad, retroView)
@@ -111,6 +104,13 @@ class GameActivity : AppCompatActivity() {
         )
         params.gravity = Gravity.CENTER
         retroView.layoutParams = params
+
+        /* Decide to mute the audio */
+        Thread {
+            while(retroView.getVariables().isEmpty())
+                Thread.sleep(50)
+            retroView.audioEnabled = resources.getBoolean(R.bool.rom_audio)
+        }.start()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
