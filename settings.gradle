@@ -1,2 +1,2 @@
 include ':app', ':libretrodroid:libretrodroid'
-rootProject.name = "LibretroWrapper"
+rootProject.name = romName
