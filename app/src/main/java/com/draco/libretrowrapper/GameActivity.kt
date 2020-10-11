@@ -107,6 +107,7 @@ class GameActivity : AppCompatActivity() {
 
         /* Decide to mute the audio */
         Thread {
+            /* Wait for ROM to load */
             while(retroView.getVariables().isEmpty())
                 Thread.sleep(50)
             retroView.audioEnabled = resources.getBoolean(R.bool.rom_audio)
