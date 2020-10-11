@@ -4,6 +4,7 @@ import android.app.UiModeManager
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -87,7 +88,11 @@ class GameActivity : AppCompatActivity() {
         parent.addView(retroView)
 
         /* Decide to mute the audio */
-        retroView.audioEnabled = resources.getBoolean(R.bool.rom_audio)
+        Thread {
+            while(retroView.getVariables().isEmpty())
+                Thread.sleep(50)
+            retroView.audioEnabled = resources.getBoolean(R.bool.rom_audio)
+        }.start()
 
         /* Initialize GamePads */
         leftGamePad = GamePad(this, GamePadConfig.LeftGamePad, retroView)
