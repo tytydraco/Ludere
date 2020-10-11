@@ -18,6 +18,7 @@ android {
         all {
             resValue("string", "rom_name", romName)
             resValue("string", "rom_core", romCore)
+            resValue("bool", "rom_audio", romAudio)
             resValue("color", "rom_foreground_color", romForegroundColor)
             resValue("color", "rom_background_color", romBackgroundColor)
         }

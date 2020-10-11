@@ -86,6 +86,9 @@ class GameActivity : AppCompatActivity() {
         lifecycle.addObserver(retroView)
         parent.addView(retroView)
 
+        /* Decide to mute the audio */
+        retroView.audioEnabled = resources.getBoolean(R.bool.rom_audio)
+
         /* Initialize GamePads */
         leftGamePad = GamePad(this, GamePadConfig.LeftGamePad, retroView)
         rightGamePad = GamePad(this, GamePadConfig.RightGamePad, retroView)
