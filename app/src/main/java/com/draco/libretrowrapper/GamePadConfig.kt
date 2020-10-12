@@ -8,7 +8,12 @@ class GamePadConfig {
     companion object {
         const val KEYCODE_LOAD_STATE = -1
         const val KEYCODE_SAVE_STATE = -2
-        private val radialGamePadTheme = RadialGamePadTheme(primaryDialBackground = Color.TRANSPARENT)
+        
+        private val radialGamePadTheme = RadialGamePadTheme(
+            primaryDialBackground = Color.TRANSPARENT,
+            textColor = Color.WHITE
+        )
+
         val LeftGamePad = RadialGamePadConfig(
             theme = radialGamePadTheme,
             sockets = 12,
