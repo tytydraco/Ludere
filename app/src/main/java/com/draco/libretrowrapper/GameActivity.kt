@@ -201,19 +201,23 @@ class GameActivity : AppCompatActivity() {
         return super.onGenericMotionEvent(event)
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        leftGamePad.resume()
-        rightGamePad.resume()
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
 
         val visibility = if (isControllerConnected())
             View.GONE
         else
             View.VISIBLE
-        
+
         leftGamePadContainer.visibility = visibility
         rightGamePadContainer.visibility = visibility
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        leftGamePad.resume()
+        rightGamePad.resume()
     }
 
     override fun onPause() {
