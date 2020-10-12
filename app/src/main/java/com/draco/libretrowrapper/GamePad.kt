@@ -1,10 +1,7 @@
 package com.draco.libretrowrapper
 
 import android.content.Context
-import android.os.Bundle
 import android.view.KeyEvent
-import android.widget.FrameLayout
-import androidx.fragment.app.Fragment
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.radialgamepad.library.RadialGamePad
 import com.swordfish.radialgamepad.library.config.RadialGamePadConfig
