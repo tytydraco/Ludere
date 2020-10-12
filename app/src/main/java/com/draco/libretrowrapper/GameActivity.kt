@@ -199,8 +199,8 @@ class GameActivity : AppCompatActivity() {
         rightGamePadContainer.visibility = visibility
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onDestroy() {
         save.writeBytes(retroView.serializeSRAM())
+        super.onDestroy()
     }
 }
