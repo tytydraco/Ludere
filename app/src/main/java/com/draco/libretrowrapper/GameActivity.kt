@@ -14,8 +14,7 @@ import java.io.File
 class GameActivity : AppCompatActivity() {
     private lateinit var parent: FrameLayout
     private lateinit var safeGLRV: SafeGLRV
-    private lateinit var rom: File
-    private lateinit var save: File
+    private lateinit var privateData: PrivateData
 
     private lateinit var leftGamePadContainer: FrameLayout
     private lateinit var rightGamePadContainer: FrameLayout
@@ -24,7 +23,7 @@ class GameActivity : AppCompatActivity() {
 
     private val compositeDisposable = CompositeDisposable()
 
-    private val validKeyCodes = arrayListOf(
+    private val validKeyCodes = listOf(
         KeyEvent.KEYCODE_BUTTON_A,
         KeyEvent.KEYCODE_BUTTON_B,
         KeyEvent.KEYCODE_BUTTON_X,
@@ -41,14 +40,23 @@ class GameActivity : AppCompatActivity() {
         KeyEvent.KEYCODE_BUTTON_SELECT
     )
 
-    private fun initRom() {
-        /* If missing, copy to data directory */
-        val rawInputStream = resources.openRawResource(R.raw.rom)
-        val newRomBytes = rawInputStream.readBytes()
+    private val validAssets = listOf(
+        "rom",      /* ROM file itself */
+        "save",     /* SRAM dump */
+        "state"     /* Save state dump */
+    )
 
-        /* Update the rom if it's either our first run, or if the contents have changed */
-        if (!rom.exists() || (rom.exists() && !rom.readBytes().contentEquals(newRomBytes)))
-            rom.writeBytes(newRomBytes)
+    private fun initAssets() {
+        for (asset in validAssets) {
+            try {
+                val assetInputStream = assets.open(asset)
+                val assetBytes = assetInputStream.readBytes()
+                val assetFile = File("${filesDir.absolutePath}/$asset")
+
+                if (!assetFile.exists())
+                    assetFile.writeBytes(assetBytes)
+            } catch (_: Exception) {}
+        }
     }
 
     private fun isControllerConnected(): Boolean {
@@ -77,22 +85,23 @@ class GameActivity : AppCompatActivity() {
         leftGamePadContainer = findViewById(R.id.left_container)
         rightGamePadContainer = findViewById(R.id.right_container)
 
-        /* Setup rom path */
-        rom = File("${filesDir.absolutePath}/rom")
-        save = File("${filesDir.absolutePath}/save")
+        /* Setup private data handler */
+        privateData = PrivateData(this)
 
-        val saveBytes = if (save.exists())
-            save.readBytes()
+        /* Copy assets */
+        initAssets()
+
+        /* Initialize save data */
+        val saveBytes = if (privateData.save.exists())
+            privateData.save.readBytes()
         else
             byteArrayOf()
-
-        initRom()
 
         /* Create GLRetroView */
         val retroView = GLRetroView(
             this,
             "${getString(R.string.rom_core)}_libretro_android.so",
-            rom.absolutePath,
+            privateData.rom.absolutePath,
             saveRAMState = saveBytes,
             shader = GLRetroView.SHADER_SHARP
         )
@@ -103,8 +112,8 @@ class GameActivity : AppCompatActivity() {
         safeGLRV = SafeGLRV(retroView, compositeDisposable)
 
         /* Initialize GamePads */
-        leftGamePad = GamePad(this, GamePadConfig.LeftGamePad, safeGLRV)
-        rightGamePad = GamePad(this, GamePadConfig.RightGamePad, safeGLRV)
+        leftGamePad = GamePad(this, GamePadConfig.LeftGamePad, safeGLRV, privateData)
+        rightGamePad = GamePad(this, GamePadConfig.RightGamePad, safeGLRV, privateData)
 
         /* Add GamePads to the activity */
         leftGamePadContainer.addView(leftGamePad.pad)
@@ -213,7 +222,7 @@ class GameActivity : AppCompatActivity() {
 
         /* Must be unsafe, else activity crashes */
         if (safeGLRV.isSafe)
-            save.writeBytes(safeGLRV.unsafeGLRetroView.serializeSRAM())
+            privateData.save.writeBytes(safeGLRV.unsafeGLRetroView.serializeSRAM())
         super.onPause()
     }
 

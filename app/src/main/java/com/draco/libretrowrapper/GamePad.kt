@@ -7,30 +7,28 @@ import com.swordfish.radialgamepad.library.RadialGamePad
 import com.swordfish.radialgamepad.library.config.RadialGamePadConfig
 import com.swordfish.radialgamepad.library.event.Event
 import io.reactivex.disposables.CompositeDisposable
-import java.io.File
 
 class GamePad(
     context: Context,
     padConfig: RadialGamePadConfig,
-    private val safeGLRV: SafeGLRV
+    private val safeGLRV: SafeGLRV,
+    private val privateData: PrivateData
 ) {
     val pad: RadialGamePad = RadialGamePad(padConfig, 16f, context)
-
-    private val state = File("${context.filesDir.absolutePath}/state")
     private val compositeDisposable = CompositeDisposable()
 
     private fun save() {
         safeGLRV.safe {
-            state.writeBytes(it.serializeState())
+            privateData.state.writeBytes(it.serializeState())
         }
     }
 
     private fun load() {
-        if (!state.exists())
+        if (!privateData.state.exists())
             return
 
         safeGLRV.safe {
-            val bytes = state.readBytes()
+            val bytes = privateData.state.readBytes()
             if (bytes.isNotEmpty())
                 it.unserializeState(bytes)
         }
