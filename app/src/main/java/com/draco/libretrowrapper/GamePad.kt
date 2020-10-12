@@ -14,7 +14,7 @@ class GamePad(
     padConfig: RadialGamePadConfig,
     private val safeGLRV: SafeGLRV
 ) {
-    val pad: RadialGamePad = RadialGamePad(padConfig, 32f, context)
+    val pad: RadialGamePad = RadialGamePad(padConfig, 16f, context)
 
     private val state = File("${context.filesDir.absolutePath}/state")
     private val compositeDisposable = CompositeDisposable()
