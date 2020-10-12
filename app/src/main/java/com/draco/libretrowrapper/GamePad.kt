@@ -15,18 +15,12 @@ import java.io.File
 class GamePad(
     context: Context,
     padConfig: RadialGamePadConfig,
-    private val parent: FrameLayout,
     private val safeGLRV: SafeGLRV
-): Fragment() {
+) {
     val pad: RadialGamePad = RadialGamePad(padConfig, 32f, context)
 
     private val state = File("${context.filesDir.absolutePath}/state")
     private val compositeDisposable = CompositeDisposable()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        parent.addView(pad)
-    }
 
     private fun save() {
         safeGLRV.safe {
@@ -76,8 +70,7 @@ class GamePad(
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    fun resume() {
         safeGLRV.safe {
             compositeDisposable.add(pad.events().subscribe {
                 eventHandler(it, safeGLRV.unsafeGLRetroView)
@@ -85,8 +78,7 @@ class GamePad(
         }
     }
 
-    override fun onPause() {
+    fun pause() {
         compositeDisposable.clear()
-        super.onPause()
     }
 }

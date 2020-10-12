@@ -102,16 +102,12 @@ class GameActivity : AppCompatActivity() {
         safeGLRV = SafeGLRV(retroView, compositeDisposable)
 
         /* Initialize GamePads */
-        leftGamePad = GamePad(this, GamePadConfig.LeftGamePad, leftGamePadContainer, safeGLRV)
-        rightGamePad = GamePad(this, GamePadConfig.RightGamePad, rightGamePadContainer, safeGLRV)
+        leftGamePad = GamePad(this, GamePadConfig.LeftGamePad, safeGLRV)
+        rightGamePad = GamePad(this, GamePadConfig.RightGamePad, safeGLRV)
 
-        /* Add fragments to our activity */
-        supportFragmentManager
-            .beginTransaction()
-            .add(R.id.left_container, leftGamePad)
-            .add(R.id.right_container, rightGamePad)
-            .commit()
-
+        /* Add GamePads to the activity */
+        leftGamePadContainer.addView(leftGamePad.pad)
+        rightGamePadContainer.addView(rightGamePad.pad)
         leftGamePad.pad.offsetX = -1f
         leftGamePad.pad.primaryDialMaxSizeDp = 200f
         rightGamePad.pad.offsetX = 1f
@@ -197,6 +193,9 @@ class GameActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        leftGamePad.resume()
+        rightGamePad.resume()
+
         val visibility = if (isControllerConnected())
             View.GONE
         else
@@ -207,6 +206,9 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
+        leftGamePad.pause()
+        rightGamePad.pause()
+
         /* Must be unsafe, else activity crashes */
         if (safeGLRV.isSafe)
             save.writeBytes(safeGLRV.unsafeGLRetroView.serializeSRAM())
