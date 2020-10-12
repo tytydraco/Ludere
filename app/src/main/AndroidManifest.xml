@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".GameActivity"
             android:screenOrientation="sensorLandscape"
-            android:configChanges="orientation|screenSize">
+            android:configChanges="orientation|screenSize|keyboard|keyboardHidden|navigation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
