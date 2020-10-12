@@ -12,4 +12,4 @@ A LibRetro-powered ROM packager for portable emulation
 
 # Building
 - Place your rom at `app/src/main/res/raw/rom`
-- Build
+- `./gradlew assembleRelease` (don't forget to zipalign and apksigner)
