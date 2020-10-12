@@ -93,7 +93,8 @@ class GameActivity : AppCompatActivity() {
             this,
             "${getString(R.string.rom_core)}_libretro_android.so",
             rom.absolutePath,
-            saveRAMState = saveBytes
+            saveRAMState = saveBytes,
+            shader = GLRetroView.SHADER_SHARP
         )
         lifecycle.addObserver(retroView)
         parent.addView(retroView)
