@@ -9,4 +9,5 @@
 .externalNativeBuild
 .cxx
 *_libretro_android.so
+rom.properties
 app/src/main/res/raw/rom

@@ -2,12 +2,15 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+ext.rom = new Properties()
+file("${rootProject.projectDir}/rom.properties").withInputStream { ext.rom.load(it) }
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "com.draco.libretrowrapper.$romId"
+        applicationId "com.draco.libretrowrapper.${rom.romId}"
         minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
@@ -16,11 +19,11 @@ android {
 
     buildTypes {
         all {
-            resValue("string", "rom_name", romName)
-            resValue("string", "rom_core", romCore)
-            resValue("bool", "rom_audio", romAudio)
-            resValue("color", "rom_foreground_color", romForegroundColor)
-            resValue("color", "rom_background_color", romBackgroundColor)
+            resValue("string", "rom_name", rom.romName)
+            resValue("string", "rom_core", rom.romCore)
+            resValue("bool", "rom_audio", rom.romAudio)
+            resValue("color", "rom_foreground_color", rom.romForegroundColor)
+            resValue("color", "rom_background_color", rom.romBackgroundColor)
         }
         release {
             minifyEnabled true
@@ -34,7 +37,7 @@ android {
 }
 
 task updateCores(type: Exec) {
-    commandLine "python", "tools/update_cores.py", romCore
+    commandLine "python", "tools/update_cores.py", rom.romCore
     workingDir = rootDir
 }
 

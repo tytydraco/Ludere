@@ -1,0 +1,14 @@
+# Sample ROM Properties
+# Rename to rom.properties
+
+# An identifier to append to the app identifier
+romId=examplerom
+# Name of the ROM and the app title
+romName=Example Rom
+# LibRetro core to fetch for this ROM (excluding _libretro_android.so)
+romCore=mgba
+# Support for audio
+romAudio=true
+# Icon colors
+romForegroundColor=#FFFFFF
+romBackgroundColor=#000000
