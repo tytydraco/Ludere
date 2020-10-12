@@ -1,6 +1,7 @@
 package com.draco.libretrowrapper
 
 import android.app.UiModeManager
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
@@ -60,9 +61,8 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun isControllerConnected(): Boolean {
-        /* Consider all TVs to be controllers */
-        val uiModeManager = getSystemService(UI_MODE_SERVICE) as UiModeManager
-        if (uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION)
+        /* Consider non-touch devices to be controller supported only */
+        if (!packageManager.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN))
             return true
 
         for (id in InputDevice.getDeviceIds()) {
@@ -122,6 +122,9 @@ class GameActivity : AppCompatActivity() {
         leftGamePad.pad.primaryDialMaxSizeDp = 200f
         rightGamePad.pad.offsetX = 1f
         rightGamePad.pad.primaryDialMaxSizeDp = 200f
+
+        /* Check if we should show or hide controls */
+        showOrHideGamePads()
 
         /* Center view */
         val params = FrameLayout.LayoutParams(
@@ -201,9 +204,7 @@ class GameActivity : AppCompatActivity() {
         return super.onGenericMotionEvent(event)
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-
+    private fun showOrHideGamePads() {
         val visibility = if (isControllerConnected())
             View.GONE
         else
@@ -211,6 +212,11 @@ class GameActivity : AppCompatActivity() {
 
         leftGamePadContainer.visibility = visibility
         rightGamePadContainer.visibility = visibility
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        showOrHideGamePads()
     }
 
     override fun onResume() {
