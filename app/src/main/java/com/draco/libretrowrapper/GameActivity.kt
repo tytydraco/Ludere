@@ -8,11 +8,12 @@ import android.view.*
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.swordfish.libretrodroid.GLRetroView
+import io.reactivex.disposables.CompositeDisposable
 import java.io.File
 
 class GameActivity : AppCompatActivity() {
     private lateinit var parent: FrameLayout
-    private lateinit var retroView: GLRetroView
+    private lateinit var safeGLRV: SafeGLRV
     private lateinit var rom: File
     private lateinit var save: File
 
@@ -20,6 +21,8 @@ class GameActivity : AppCompatActivity() {
     private lateinit var rightGamePadContainer: FrameLayout
     private lateinit var leftGamePad: GamePad
     private lateinit var rightGamePad: GamePad
+
+    private val compositeDisposable = CompositeDisposable()
 
     private val validKeyCodes = arrayListOf(
         KeyEvent.KEYCODE_BUTTON_A,
@@ -86,7 +89,7 @@ class GameActivity : AppCompatActivity() {
         initRom()
 
         /* Create GLRetroView */
-        retroView = GLRetroView(
+        val retroView = GLRetroView(
             this,
             "${getString(R.string.rom_core)}_libretro_android.so",
             rom.absolutePath,
@@ -95,9 +98,12 @@ class GameActivity : AppCompatActivity() {
         lifecycle.addObserver(retroView)
         parent.addView(retroView)
 
+        /* Initialize safe GLRetroView handler */
+        safeGLRV = SafeGLRV(retroView, compositeDisposable)
+
         /* Initialize GamePads */
-        leftGamePad = GamePad(this, GamePadConfig.LeftGamePad, leftGamePadContainer, retroView)
-        rightGamePad = GamePad(this, GamePadConfig.RightGamePad, rightGamePadContainer, retroView)
+        leftGamePad = GamePad(this, GamePadConfig.LeftGamePad, leftGamePadContainer, safeGLRV)
+        rightGamePad = GamePad(this, GamePadConfig.RightGamePad, rightGamePadContainer, safeGLRV)
 
         /* Add fragments to our activity */
         supportFragmentManager
@@ -120,12 +126,9 @@ class GameActivity : AppCompatActivity() {
         retroView.layoutParams = params
 
         /* Decide to mute the audio */
-        Thread {
-            /* Wait for ROM to load */
-            while(retroView.getVariables().isEmpty())
-                Thread.sleep(50)
-            retroView.audioEnabled = resources.getBoolean(R.bool.rom_audio)
-        }.start()
+        safeGLRV.safe {
+            it.audioEnabled = resources.getBoolean(R.bool.rom_audio)
+        }
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -154,7 +157,9 @@ class GameActivity : AppCompatActivity() {
         if (keyCode !in validKeyCodes)
             return false
 
-        retroView.sendKeyEvent(event.action, keyCode)
+        safeGLRV.safe {
+            it.sendKeyEvent(event.action, keyCode)
+        }
         return true
     }
 
@@ -167,22 +172,24 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onGenericMotionEvent(event: MotionEvent): Boolean {
-        with (retroView) {
-            sendMotionEvent(
-                GLRetroView.MOTION_SOURCE_DPAD,
-                event.getAxisValue(MotionEvent.AXIS_HAT_X),
-                event.getAxisValue(MotionEvent.AXIS_HAT_Y)
-            )
-            sendMotionEvent(
-                GLRetroView.MOTION_SOURCE_ANALOG_LEFT,
-                event.getAxisValue(MotionEvent.AXIS_X),
-                event.getAxisValue(MotionEvent.AXIS_Y)
-            )
-            sendMotionEvent(
-                GLRetroView.MOTION_SOURCE_ANALOG_RIGHT,
-                event.getAxisValue(MotionEvent.AXIS_Z),
-                event.getAxisValue(MotionEvent.AXIS_RZ)
-            )
+        safeGLRV.safe {
+            with (it) {
+                sendMotionEvent(
+                    GLRetroView.MOTION_SOURCE_DPAD,
+                    event.getAxisValue(MotionEvent.AXIS_HAT_X),
+                    event.getAxisValue(MotionEvent.AXIS_HAT_Y)
+                )
+                sendMotionEvent(
+                    GLRetroView.MOTION_SOURCE_ANALOG_LEFT,
+                    event.getAxisValue(MotionEvent.AXIS_X),
+                    event.getAxisValue(MotionEvent.AXIS_Y)
+                )
+                sendMotionEvent(
+                    GLRetroView.MOTION_SOURCE_ANALOG_RIGHT,
+                    event.getAxisValue(MotionEvent.AXIS_Z),
+                    event.getAxisValue(MotionEvent.AXIS_RZ)
+                )
+            }
         }
         return super.onGenericMotionEvent(event)
     }
@@ -199,8 +206,15 @@ class GameActivity : AppCompatActivity() {
         rightGamePadContainer.visibility = visibility
     }
 
+    override fun onPause() {
+        /* Must be unsafe, else activity crashes */
+        if (safeGLRV.isSafe)
+            save.writeBytes(safeGLRV.unsafeGLRetroView.serializeSRAM())
+        super.onPause()
+    }
+
     override fun onDestroy() {
-        save.writeBytes(retroView.serializeSRAM())
+        compositeDisposable.dispose()
         super.onDestroy()
     }
 }

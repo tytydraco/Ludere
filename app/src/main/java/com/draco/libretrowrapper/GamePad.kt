@@ -2,8 +2,6 @@ package com.draco.libretrowrapper
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.KeyEvent
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
@@ -18,55 +16,33 @@ class GamePad(
     context: Context,
     padConfig: RadialGamePadConfig,
     private val parent: FrameLayout,
-    private val retroView: GLRetroView
+    private val safeGLRV: SafeGLRV
 ): Fragment() {
     val pad: RadialGamePad = RadialGamePad(padConfig, 32f, context)
 
     private val state = File("${context.filesDir.absolutePath}/state")
     private val compositeDisposable = CompositeDisposable()
 
-    private var isReady = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         parent.addView(pad)
-        setupFrameRenderObserver()
-    }
-
-    private fun setupFrameRenderObserver() {
-        /* Wait 100ms after first frame has rendered to declare readiness */
-        val renderDisposable = retroView
-            .getGLRetroEvents()
-            .takeUntil { isReady }
-            .subscribe {
-                if (it == GLRetroView.GLRetroEvents.FrameRendered)
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        isReady = true
-                    }, 100)
-            }
-        compositeDisposable.add(renderDisposable)
     }
 
     private fun save() {
-        Thread {
-            while (!isReady)
-                Thread.sleep(50)
-            state.writeBytes(retroView.serializeState())
-        }.start()
+        safeGLRV.safe {
+            state.writeBytes(it.serializeState())
+        }
     }
 
     private fun load() {
         if (!state.exists())
             return
 
-        Thread {
-            while (!isReady)
-                Thread.sleep(50)
-
+        safeGLRV.safe {
             val bytes = state.readBytes()
             if (bytes.isNotEmpty())
-                retroView.unserializeState(bytes)
-        }.start()
+                it.unserializeState(bytes)
+        }
     }
 
     private fun eventHandler(event: Event, retroView: GLRetroView) {
@@ -102,9 +78,11 @@ class GamePad(
 
     override fun onResume() {
         super.onResume()
-        compositeDisposable.add(pad.events().subscribe {
-            eventHandler(it, retroView)
-        })
+        safeGLRV.safe {
+            compositeDisposable.add(pad.events().subscribe {
+                eventHandler(it, safeGLRV.unsafeGLRetroView)
+            })
+        }
     }
 
     override fun onPause() {
