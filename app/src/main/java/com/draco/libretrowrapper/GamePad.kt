@@ -2,6 +2,8 @@ package com.draco.libretrowrapper
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.KeyEvent
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
@@ -19,18 +21,35 @@ class GamePad(
     private val retroView: GLRetroView
 ): Fragment() {
     val pad: RadialGamePad = RadialGamePad(padConfig, 32f, context)
+
     private val state = File("${context.filesDir.absolutePath}/state")
     private val compositeDisposable = CompositeDisposable()
+
+    private var isReady = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         parent.addView(pad)
+        setupFrameRenderObserver()
+    }
+
+    private fun setupFrameRenderObserver() {
+        /* Wait 100ms after first frame has rendered to declare readiness */
+        val renderDisposable = retroView
+            .getGLRetroEvents()
+            .takeUntil { isReady }
+            .subscribe {
+                if (it == GLRetroView.GLRetroEvents.FrameRendered)
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        isReady = true
+                    }, 100)
+            }
+        compositeDisposable.add(renderDisposable)
     }
 
     private fun save() {
         Thread {
-            /* Wait for ROM to load */
-            while(retroView.getVariables().isEmpty())
+            while (!isReady)
                 Thread.sleep(50)
             state.writeBytes(retroView.serializeState())
         }.start()
@@ -41,9 +60,9 @@ class GamePad(
             return
 
         Thread {
-            /* Wait for ROM to load */
-            while(retroView.getVariables().isEmpty())
+            while (!isReady)
                 Thread.sleep(50)
+
             val bytes = state.readBytes()
             if (bytes.isNotEmpty())
                 retroView.unserializeState(bytes)
