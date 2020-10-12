@@ -46,7 +46,9 @@ Here's how LibRetroWrapper is configured:
 # Configuration
 - Copy `rom.properties.sample` to `rom.properties`
 - Edit `rom.properties` and change your configuration
+- Place your rom at `app/src/main/res/raw/rom`
+- (Optional) Place your SRAM save file at `app/src/main/res/raw/save`
+- (Optional) Place your save state file at `app/src/main/res/raw/state`
 
 # Building
-- Place your rom at `app/src/main/res/raw/rom`
 - `./gradlew assembleRelease` (don't forget to zipalign and apksigner)
