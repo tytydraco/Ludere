@@ -37,6 +37,7 @@ Here's how LibRetroWrapper is configured:
 - Save state support (single slot)
 - SRAM is dumped when the screen loses focus (sleep, go home, close)
 - All-in-one package, can be easily distributed once packaged
+- Android TV and external controller support
 
 # Libraries
 - [LibretroDroid](https://github.com/Swordfish90/LibretroDroid): Our LibRetro frontend that interacts with RetroArch cores
