@@ -14,6 +14,7 @@ class GameActivity : AppCompatActivity() {
     private lateinit var parent: FrameLayout
     private lateinit var retroView: GLRetroView
     private lateinit var rom: File
+    private lateinit var save: File
 
     private lateinit var leftGamePadContainer: FrameLayout
     private lateinit var rightGamePadContainer: FrameLayout
@@ -75,13 +76,21 @@ class GameActivity : AppCompatActivity() {
 
         /* Setup rom path */
         rom = File("${filesDir.absolutePath}/rom")
+        save = File("${filesDir.absolutePath}/save")
+
+        val saveBytes = if (save.exists())
+            save.readBytes()
+        else
+            byteArrayOf()
+
         initRom()
 
         /* Create GLRetroView */
         retroView = GLRetroView(
             this,
             "${getString(R.string.rom_core)}_libretro_android.so",
-            rom.absolutePath
+            rom.absolutePath,
+            saveRAMState = saveBytes
         )
         lifecycle.addObserver(retroView)
         parent.addView(retroView)
@@ -188,5 +197,10 @@ class GameActivity : AppCompatActivity() {
         
         leftGamePadContainer.visibility = visibility
         rightGamePadContainer.visibility = visibility
+    }
+
+    override fun onPause() {
+        super.onPause()
+        save.writeBytes(retroView.serializeSRAM())
     }
 }
