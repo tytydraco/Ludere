@@ -40,7 +40,7 @@ jobs:
       - name: Fetch ROM
         run: |
           mkdir -p app/src/main/res/raw
-          curl -L# ${{ github.event.inputs.romUrl }} > app/src/main/res/raw/rom
+          curl -L# "${{ github.event.inputs.romUrl }}" > app/src/main/res/raw/rom
       
       - name: Build Release APK
         run: |
@@ -51,7 +51,14 @@ jobs:
                     -PromAudio="${{ github.event.inputs.romAudio }}" \
                     -PromForegroundColor="${{ github.event.inputs.romForegroundColor }}" \
                     -PromBackgroundColor="${{ github.event.inputs.romBackgroundColor }}" \
-                     assembleDebug
+                     assembleRelease
+       
+      - name: Sign APK
+        run: |
+          yes | keytool -genkey -noprompt -keystore keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias key0 -keypass password -storepass password
+          ${ANDROID_SDK_ROOT}/build-tools/*/zipalign -v -p 4 ./app/build/outputs/apk/release/app-release-unsigned.apk ./app/build/outputs/apk/release/app-release-unsigned-aligned.apk
+          ${ANDROID_SDK_ROOT}/build-tools/*/apksigner sign --ks keystore.jks --out ./app/build/outputs/apk/release/app-release-signed.apk ./app/build/outputs/apk/release/app-release-unsigned-aligned.apk
+
           
       - name: Create Release
         id: create_release
@@ -69,6 +76,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./app/build/outputs/apk/debug/app-debug.apk
+          asset_path: ./app/build/outputs/apk/release/app-release-signed.apk
           asset_name: ${{ github.event.inputs.romId }}.apk
           asset_content_type: application/apk
