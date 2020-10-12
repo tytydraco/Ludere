@@ -60,7 +60,6 @@ jobs:
           $ANDROID_SDK_ROOT/build-tools/$latest/zipalign -v -p 4 ./app/build/outputs/apk/release/app-release-unsigned.apk ./app/build/outputs/apk/release/app-release-unsigned-aligned.apk
           $ANDROID_SDK_ROOT/build-tools/$latest/apksigner sign --ks keystore.jks --ks-pass pass:password --out ./app/build/outputs/apk/release/app-release-signed.apk ./app/build/outputs/apk/release/app-release-unsigned-aligned.apk
 
-          
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
