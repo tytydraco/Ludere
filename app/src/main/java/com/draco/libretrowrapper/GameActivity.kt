@@ -119,8 +119,10 @@ class GameActivity : AppCompatActivity() {
         leftGamePadContainer.addView(leftGamePad.pad)
         rightGamePadContainer.addView(rightGamePad.pad)
         leftGamePad.pad.offsetX = -1f
+        leftGamePad.pad.offsetY = 1f
         leftGamePad.pad.primaryDialMaxSizeDp = 200f
         rightGamePad.pad.offsetX = 1f
+        rightGamePad.pad.offsetY = 1f
         rightGamePad.pad.primaryDialMaxSizeDp = 200f
 
         /* Check if we should show or hide controls */
