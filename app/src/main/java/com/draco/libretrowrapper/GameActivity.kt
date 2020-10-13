@@ -1,6 +1,5 @@
 package com.draco.libretrowrapper
 
-import android.app.UiModeManager
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
@@ -118,12 +117,12 @@ class GameActivity : AppCompatActivity() {
         /* Add GamePads to the activity */
         leftGamePadContainer.addView(leftGamePad.pad)
         rightGamePadContainer.addView(rightGamePad.pad)
+
+        /* Configure GamePad sizes */
         leftGamePad.pad.offsetX = -1f
         leftGamePad.pad.offsetY = 1f
-        leftGamePad.pad.primaryDialMaxSizeDp = 200f
         rightGamePad.pad.offsetX = 1f
         rightGamePad.pad.offsetY = 1f
-        rightGamePad.pad.primaryDialMaxSizeDp = 200f
 
         /* Check if we should show or hide controls */
         showOrHideGamePads()
