@@ -32,7 +32,13 @@ android {
         }
     }
 
+    preBuild.dependsOn 'copyROM'
     preBuild.dependsOn 'updateCores'
+}
+
+task copyROM(type: Copy) {
+    from "${rootProject.projectDir}/${rom.romPath}"
+    into "src/main/assets/"
 }
 
 task updateCores(type: Exec) {

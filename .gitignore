@@ -8,6 +8,20 @@
 /captures
 .externalNativeBuild
 .cxx
+
+# Cores
 *_libretro_android.so
+
+# Base configuration
 rom.properties
 app/src/main/res/raw/rom
+
+# Rom files
+*.gba
+*.gbc
+*.gb
+*.nes
+*.snes
+*.iso
+*.nds
+rom
