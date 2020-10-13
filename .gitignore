@@ -14,7 +14,7 @@
 
 # Base configuration
 rom.properties
-app/src/main/res/raw/rom
+app/src/main/assets/rom
 
 # Rom files
 *.gba
