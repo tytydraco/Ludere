@@ -14,7 +14,7 @@ class GamePad(
     private val safeGLRV: SafeGLRV,
     private val privateData: PrivateData
 ) {
-    val pad: RadialGamePad = RadialGamePad(padConfig, 16f, context)
+    val pad: RadialGamePad = RadialGamePad(padConfig, 0f, context)
     private val compositeDisposable = CompositeDisposable()
 
     private fun save() {
