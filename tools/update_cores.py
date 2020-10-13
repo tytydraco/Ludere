@@ -15,7 +15,7 @@ if (len(sys.argv) < 2):
 CORE = sys.argv[1]
 
 for abi in ABIS:
-    print(f"FETCHING {CORE} FOR {abi}")
+    print(f"-> {CORE} | {abi}")
     url = f"{LATEST_CORES}/{abi}/{CORE}_libretro_android.so.zip"
     core_path = f"app/src/main/jniLibs/{abi}"
     zip_path = f"{core_path}/{CORE}"
