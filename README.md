@@ -47,7 +47,7 @@ Here's how LibRetroWrapper is configured:
 # Configuration
 - Copy `rom.properties.sample` to `rom.properties`
 - Edit `rom.properties` and change your configuration
-- Place your rom at `app/src/main/assets/rom`
+- Place your rom at the project root directory called `rom` (configurable)
 - (Optional) Place your SRAM save file at `app/src/main/assets/save`
 - (Optional) Place your save state file at `app/src/main/assets/state`
 
