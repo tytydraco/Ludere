@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="gamepad_size">200dp</dimen>
-    <dimen name="gamepad_horizontal_padding">20dp</dimen>
     <dimen name="gamepad_vertical_padding">20dp</dimen>
 </resources>
