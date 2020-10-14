@@ -34,7 +34,7 @@ class GamePadConfig {
                 SecondaryDialConfig.SingleButton(
                     8, 1, ButtonConfig(
                         id = KeyEvent.KEYCODE_BUTTON_SELECT,
-                        label = "-"
+                        iconId = R.drawable.ic_baseline_stop_24
                     )
                 )
             )
@@ -80,7 +80,7 @@ class GamePadConfig {
                 SecondaryDialConfig.SingleButton(
                     10, 1, ButtonConfig(
                         id = KeyEvent.KEYCODE_BUTTON_START,
-                        label = "+"
+                        iconId = R.drawable.ic_baseline_play_arrow_24
                     )
                 ),
             )
