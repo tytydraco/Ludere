@@ -15,4 +15,4 @@ audio=true
 foregroundColor=#FFFFFF
 backgroundColor=#000000
 # Gamepad size
-gamePadSize=200dp
+gamePadSize=220dp
