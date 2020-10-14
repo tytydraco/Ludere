@@ -13,13 +13,14 @@ import java.io.File
 
 class GameActivity : AppCompatActivity() {
     private lateinit var parent: FrameLayout
-    private var retroView: GLRetroView? = null
     private lateinit var privateData: PrivateData
 
     private lateinit var leftGamePadContainer: FrameLayout
     private lateinit var rightGamePadContainer: FrameLayout
-    private lateinit var leftGamePad: GamePad
-    private lateinit var rightGamePad: GamePad
+
+    private var retroView: GLRetroView? = null
+    private var leftGamePad: GamePad? = null
+    private var rightGamePad: GamePad? = null
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -48,35 +49,6 @@ class GameActivity : AppCompatActivity() {
         "state"     /* Save state dump */
     )
 
-    private fun initAssets() {
-        for (asset in validAssets) {
-            try {
-                val assetInputStream = assets.open(asset)
-                val assetBytes = assetInputStream.readBytes()
-                val assetFile = File("${filesDir.absolutePath}/$asset")
-
-                if (!assetFile.exists())
-                    assetFile.writeBytes(assetBytes)
-            } catch (_: Exception) {}
-        }
-    }
-
-    private fun isControllerConnected(): Boolean {
-        /* Consider non-touch devices to be controller supported only */
-        if (!packageManager.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN))
-            return true
-
-        for (id in InputDevice.getDeviceIds()) {
-            InputDevice.getDevice(id).apply {
-                if (sources and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD ||
-                    sources and InputDevice.SOURCE_JOYSTICK == InputDevice.SOURCE_JOYSTICK)
-                    return true
-            }
-        }
-
-        return false
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
@@ -92,6 +64,27 @@ class GameActivity : AppCompatActivity() {
         /* Copy assets */
         initAssets()
 
+        /* Create GLRetroView */
+        initRetroView()
+
+        /* Create GamePads */
+        initGamePads()
+    }
+
+    private fun initAssets() {
+        for (asset in validAssets) {
+            try {
+                val assetInputStream = assets.open(asset)
+                val assetBytes = assetInputStream.readBytes()
+                val assetFile = File("${filesDir.absolutePath}/$asset")
+
+                if (!assetFile.exists())
+                    assetFile.writeBytes(assetBytes)
+            } catch (_: Exception) {}
+        }
+    }
+
+    private fun initRetroView() {
         /* Initialize save data */
         val saveBytes = if (privateData.save.exists())
             privateData.save.readBytes()
@@ -109,28 +102,6 @@ class GameActivity : AppCompatActivity() {
         lifecycle.addObserver(retroView!!)
         parent.addView(retroView)
 
-        /* Initialize GamePads */
-        val gamePadConfig = GamePadConfig(resources)
-        leftGamePad = GamePad(this, gamePadConfig.left, retroView!!, privateData)
-        rightGamePad = GamePad(this, gamePadConfig.right, retroView!!, privateData)
-
-        /* Add GamePads to the activity */
-        leftGamePadContainer.addView(leftGamePad.pad)
-        rightGamePadContainer.addView(rightGamePad.pad)
-
-        /* Configure GamePad sizes */
-        leftGamePad.pad.offsetX = -1f
-        rightGamePad.pad.offsetX = 1f
-
-        val density = resources.displayMetrics.density
-        val gamePadSize = resources.getDimension(R.dimen.rom_gamepad_size) / density
-
-        leftGamePad.pad.primaryDialMaxSizeDp = gamePadSize
-        rightGamePad.pad.primaryDialMaxSizeDp = gamePadSize
-
-        /* Check if we should show or hide controls */
-        showOrHideGamePads()
-
         /* Center view */
         val params = FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.WRAP_CONTENT,
@@ -138,6 +109,54 @@ class GameActivity : AppCompatActivity() {
         )
         params.gravity = Gravity.CENTER
         retroView!!.layoutParams = params
+    }
+
+    private fun initGamePads() {
+        /* Must be called after GLRetroView is initialized */
+        if (retroView == null)
+            return
+
+        /* Initialize GamePads */
+        val gamePadConfig = GamePadConfig(resources)
+        leftGamePad = GamePad(this, gamePadConfig.left, retroView!!, privateData)
+        rightGamePad = GamePad(this, gamePadConfig.right, retroView!!, privateData)
+
+        /* Initialize input handlers */
+        leftGamePad!!.subscribe()
+        rightGamePad!!.subscribe()
+
+        /* Add GamePads to the activity */
+        leftGamePadContainer.addView(leftGamePad!!.pad)
+        rightGamePadContainer.addView(rightGamePad!!.pad)
+
+        /* Configure GamePad sizes */
+        leftGamePad!!.pad.offsetX = -1f
+        rightGamePad!!.pad.offsetX = 1f
+
+        val density = resources.displayMetrics.density
+        val gamePadSize = resources.getDimension(R.dimen.rom_gamepad_size) / density
+
+        leftGamePad!!.pad.primaryDialMaxSizeDp = gamePadSize
+        rightGamePad!!.pad.primaryDialMaxSizeDp = gamePadSize
+
+        /* Check if we should show or hide controls */
+        showOrHideGamePads()
+    }
+
+    private fun isControllerConnected(): Boolean {
+        /* Consider non-touch devices to be controller supported only */
+        if (!packageManager.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN))
+            return true
+
+        for (id in InputDevice.getDeviceIds()) {
+            InputDevice.getDevice(id).apply {
+                if (sources and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD ||
+                    sources and InputDevice.SOURCE_JOYSTICK == InputDevice.SOURCE_JOYSTICK)
+                    return true
+            }
+        }
+
+        return false
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -215,17 +234,7 @@ class GameActivity : AppCompatActivity() {
         showOrHideGamePads()
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        leftGamePad.resume()
-        rightGamePad.resume()
-    }
-
     override fun onPause() {
-        leftGamePad.pause()
-        rightGamePad.pause()
-
         if (retroView != null)
             privateData.save.writeBytes(retroView!!.serializeSRAM())
 
@@ -233,6 +242,8 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        leftGamePad?.unsubscribe()
+        rightGamePad?.unsubscribe()
         compositeDisposable.dispose()
         super.onDestroy()
     }

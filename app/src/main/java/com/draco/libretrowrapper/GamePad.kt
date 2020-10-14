@@ -61,13 +61,13 @@ class GamePad(
         }
     }
 
-    fun resume() {
+    fun subscribe() {
         compositeDisposable.add(pad.events().subscribe {
             eventHandler(it, retroView)
         })
     }
 
-    fun pause() {
+    fun unsubscribe() {
         compositeDisposable.clear()
     }
 }
