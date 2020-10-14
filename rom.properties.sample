@@ -2,15 +2,15 @@
 # Rename to rom.properties
 
 # Path to your ROM file (relative to root project directory)
-romPath=rom
+path=rom
 # An identifier to append to the app identifier
-romId=examplerom
+id=examplerom
 # Name of the ROM and the app title
-romName=Example Rom
+name=Example Rom
 # LibRetro core to fetch for this ROM (excluding _libretro_android.so)
-romCore=mgba
+core=mgba
 # Support for audio
-romAudio=true
+audio=true
 # Icon colors
-romForegroundColor=#FFFFFF
-romBackgroundColor=#000000
+foregroundColor=#FFFFFF
+backgroundColor=#000000

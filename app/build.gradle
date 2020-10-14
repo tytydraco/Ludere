@@ -10,7 +10,7 @@ android {
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "com.draco.libretrowrapper.${rom.romId}"
+        applicationId "com.draco.libretrowrapper.${rom.id}"
         minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
@@ -19,11 +19,11 @@ android {
 
     buildTypes {
         all {
-            resValue("string", "rom_name", rom.romName)
-            resValue("string", "rom_core", rom.romCore)
-            resValue("bool", "rom_audio", rom.romAudio)
-            resValue("color", "rom_foreground_color", rom.romForegroundColor)
-            resValue("color", "rom_background_color", rom.romBackgroundColor)
+            resValue("string", "rom_name", rom.name)
+            resValue("string", "rom_core", rom.core)
+            resValue("bool", "rom_audio", rom.audio)
+            resValue("color", "rom_foreground_color", rom.foregroundColor)
+            resValue("color", "rom_background_color", rom.backgroundColor)
         }
         release {
             minifyEnabled true
@@ -37,12 +37,12 @@ android {
 }
 
 task copyROM(type: Copy) {
-    from "${rootProject.projectDir}/${rom.romPath}"
+    from "${rootProject.projectDir}/${rom.path}"
     into "src/main/assets/"
 }
 
 task updateCores(type: Exec) {
-    commandLine "python", "tools/update_cores.py", rom.romCore
+    commandLine "python", "tools/update_cores.py", rom.core
     workingDir = rootDir
 }
 
