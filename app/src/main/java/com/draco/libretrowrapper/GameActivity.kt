@@ -120,9 +120,7 @@ class GameActivity : AppCompatActivity() {
 
         /* Configure GamePad sizes */
         leftGamePad.pad.offsetX = -1f
-        leftGamePad.pad.offsetY = 1f
         rightGamePad.pad.offsetX = 1f
-        rightGamePad.pad.offsetY = 1f
 
         /* Check if we should show or hide controls */
         showOrHideGamePads()
