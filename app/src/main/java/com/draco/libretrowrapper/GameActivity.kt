@@ -182,18 +182,18 @@ class GameActivity : AppCompatActivity() {
 
     override fun onGenericMotionEvent(event: MotionEvent): Boolean {
         safeGLRV.safe {
-            with (it) {
-                sendMotionEvent(
+            when (it.id) {
+                GLRetroView.MOTION_SOURCE_DPAD -> it.sendMotionEvent(
                     GLRetroView.MOTION_SOURCE_DPAD,
                     event.getAxisValue(MotionEvent.AXIS_HAT_X),
                     event.getAxisValue(MotionEvent.AXIS_HAT_Y)
                 )
-                sendMotionEvent(
+                GLRetroView.MOTION_SOURCE_ANALOG_LEFT -> it.sendMotionEvent(
                     GLRetroView.MOTION_SOURCE_ANALOG_LEFT,
                     event.getAxisValue(MotionEvent.AXIS_X),
                     event.getAxisValue(MotionEvent.AXIS_Y)
                 )
-                sendMotionEvent(
+                GLRetroView.MOTION_SOURCE_ANALOG_RIGHT -> it.sendMotionEvent(
                     GLRetroView.MOTION_SOURCE_ANALOG_RIGHT,
                     event.getAxisValue(MotionEvent.AXIS_Z),
                     event.getAxisValue(MotionEvent.AXIS_RZ)
