@@ -11,27 +11,23 @@ import io.reactivex.disposables.CompositeDisposable
 class GamePad(
     context: Context,
     padConfig: RadialGamePadConfig,
-    private val safeGLRV: SafeGLRV,
+    private val retroView: GLRetroView,
     private val privateData: PrivateData
 ) {
     val pad: RadialGamePad = RadialGamePad(padConfig, 0f, context)
     private val compositeDisposable = CompositeDisposable()
 
     private fun save() {
-        safeGLRV.safe {
-            privateData.state.writeBytes(it.serializeState())
-        }
+        privateData.state.writeBytes(retroView.serializeState())
     }
 
     private fun load() {
         if (!privateData.state.exists())
             return
 
-        safeGLRV.safe {
-            val bytes = privateData.state.readBytes()
-            if (bytes.isNotEmpty())
-                it.unserializeState(bytes)
-        }
+        val bytes = privateData.state.readBytes()
+        if (bytes.isNotEmpty())
+            retroView.unserializeState(bytes)
     }
 
     private fun eventHandler(event: Event, retroView: GLRetroView) {
@@ -66,11 +62,9 @@ class GamePad(
     }
 
     fun resume() {
-        safeGLRV.safe {
-            compositeDisposable.add(pad.events().subscribe {
-                eventHandler(it, safeGLRV.unsafeGLRetroView)
-            })
-        }
+        compositeDisposable.add(pad.events().subscribe {
+            eventHandler(it, retroView)
+        })
     }
 
     fun pause() {

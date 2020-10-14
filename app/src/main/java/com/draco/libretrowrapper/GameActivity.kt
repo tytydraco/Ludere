@@ -13,7 +13,7 @@ import java.io.File
 
 class GameActivity : AppCompatActivity() {
     private lateinit var parent: FrameLayout
-    private lateinit var safeGLRV: SafeGLRV
+    private lateinit var retroView: GLRetroView
     private lateinit var privateData: PrivateData
 
     private lateinit var leftGamePadContainer: FrameLayout
@@ -109,13 +109,10 @@ class GameActivity : AppCompatActivity() {
         lifecycle.addObserver(retroView)
         parent.addView(retroView)
 
-        /* Initialize safe GLRetroView handler */
-        safeGLRV = SafeGLRV(retroView, compositeDisposable)
-
         /* Initialize GamePads */
         val gamePadConfig = GamePadConfig(resources)
-        leftGamePad = GamePad(this, gamePadConfig.left, safeGLRV, privateData)
-        rightGamePad = GamePad(this, gamePadConfig.right, safeGLRV, privateData)
+        leftGamePad = GamePad(this, gamePadConfig.left, retroView, privateData)
+        rightGamePad = GamePad(this, gamePadConfig.right, retroView, privateData)
 
         /* Add GamePads to the activity */
         leftGamePadContainer.addView(leftGamePad.pad)
@@ -143,9 +140,7 @@ class GameActivity : AppCompatActivity() {
         retroView.layoutParams = params
 
         /* Decide to mute the audio */
-        safeGLRV.safe {
-            it.audioEnabled = resources.getBoolean(R.bool.rom_audio)
-        }
+        retroView.audioEnabled = resources.getBoolean(R.bool.rom_audio)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -175,9 +170,7 @@ class GameActivity : AppCompatActivity() {
         if (keyCode !in validKeyCodes)
             return false
 
-        safeGLRV.safe {
-            it.sendKeyEvent(event.action, keyCode)
-        }
+        retroView.sendKeyEvent(event.action, keyCode)
         return true
     }
 
@@ -190,24 +183,22 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onGenericMotionEvent(event: MotionEvent): Boolean {
-        safeGLRV.safe {
-            when (it.id) {
-                GLRetroView.MOTION_SOURCE_DPAD -> it.sendMotionEvent(
-                    GLRetroView.MOTION_SOURCE_DPAD,
-                    event.getAxisValue(MotionEvent.AXIS_HAT_X),
-                    event.getAxisValue(MotionEvent.AXIS_HAT_Y)
-                )
-                GLRetroView.MOTION_SOURCE_ANALOG_LEFT -> it.sendMotionEvent(
-                    GLRetroView.MOTION_SOURCE_ANALOG_LEFT,
-                    event.getAxisValue(MotionEvent.AXIS_X),
-                    event.getAxisValue(MotionEvent.AXIS_Y)
-                )
-                GLRetroView.MOTION_SOURCE_ANALOG_RIGHT -> it.sendMotionEvent(
-                    GLRetroView.MOTION_SOURCE_ANALOG_RIGHT,
-                    event.getAxisValue(MotionEvent.AXIS_Z),
-                    event.getAxisValue(MotionEvent.AXIS_RZ)
-                )
-            }
+        when (retroView.id) {
+            GLRetroView.MOTION_SOURCE_DPAD -> retroView.sendMotionEvent(
+                GLRetroView.MOTION_SOURCE_DPAD,
+                event.getAxisValue(MotionEvent.AXIS_HAT_X),
+                event.getAxisValue(MotionEvent.AXIS_HAT_Y)
+            )
+            GLRetroView.MOTION_SOURCE_ANALOG_LEFT -> retroView.sendMotionEvent(
+                GLRetroView.MOTION_SOURCE_ANALOG_LEFT,
+                event.getAxisValue(MotionEvent.AXIS_X),
+                event.getAxisValue(MotionEvent.AXIS_Y)
+            )
+            GLRetroView.MOTION_SOURCE_ANALOG_RIGHT -> retroView.sendMotionEvent(
+                GLRetroView.MOTION_SOURCE_ANALOG_RIGHT,
+                event.getAxisValue(MotionEvent.AXIS_Z),
+                event.getAxisValue(MotionEvent.AXIS_RZ)
+            )
         }
         return super.onGenericMotionEvent(event)
     }
@@ -237,10 +228,7 @@ class GameActivity : AppCompatActivity() {
     override fun onPause() {
         leftGamePad.pause()
         rightGamePad.pause()
-
-        /* Must be unsafe, else activity crashes */
-        if (safeGLRV.isSafe)
-            privateData.save.writeBytes(safeGLRV.unsafeGLRetroView.serializeSRAM())
+        privateData.save.writeBytes(retroView.serializeSRAM())
         super.onPause()
     }
 
