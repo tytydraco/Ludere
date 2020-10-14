@@ -1,7 +1,9 @@
 package com.draco.libretrowrapper
 
+import android.app.Service
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.hardware.display.DisplayManager
 import android.os.Build
 import android.os.Bundle
 import android.view.*
@@ -204,14 +206,32 @@ class GameActivity : AppCompatActivity() {
         return super.onGenericMotionEvent(event)
     }
 
+    private fun getCurrentDisplayId(): Int {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            display!!.displayId
+        else {
+            val wm = getSystemService(WINDOW_SERVICE) as WindowManager
+            wm.defaultDisplay.displayId
+        }
+    }
+
     private fun shouldShowGamePads(): Boolean {
+        /* Do not show if we hardcoded the boolean */
         if (!resources.getBoolean(R.bool.rom_gamepad_visible))
             return false
 
-        /* Consider non-touch devices to be controller supported only */
+        /* Do not show if the device lacks a touch screen */
         if (!packageManager.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN))
             return false
 
+        /* Do not show if the current display is external (i.e. wireless cast) */
+        val dm = getSystemService(Service.DISPLAY_SERVICE) as DisplayManager
+        if (dm.getDisplay(getCurrentDisplayId())
+                .flags.and(Display.FLAG_PRESENTATION) == Display.FLAG_PRESENTATION) {
+            return false
+        }
+
+        /* Do not show if the device has a controller connected */
         for (id in InputDevice.getDeviceIds()) {
             InputDevice.getDevice(id).apply {
                 if (sources and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD ||
@@ -220,6 +240,7 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
+        /* Otherwise, show */
         return true
     }
 
