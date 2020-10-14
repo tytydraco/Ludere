@@ -65,7 +65,7 @@ class GamePadConfig {
             label = "Y"
         )
 
-        val LeftGamePad = RadialGamePadConfig(
+        val Left = RadialGamePadConfig(
             theme = radialGamePadTheme,
             sockets = 12,
             primaryDial = PrimaryDialConfig.Cross(GLRetroView.MOTION_SOURCE_DPAD),
@@ -76,7 +76,7 @@ class GamePadConfig {
             )
         )
 
-        val RightGamePad = RadialGamePadConfig(
+        val Right = RadialGamePadConfig(
             theme = radialGamePadTheme,
             sockets = 12,
             primaryDial = PrimaryDialConfig.PrimaryButtons(

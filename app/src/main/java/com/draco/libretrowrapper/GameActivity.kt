@@ -113,8 +113,8 @@ class GameActivity : AppCompatActivity() {
         safeGLRV = SafeGLRV(retroView, compositeDisposable)
 
         /* Initialize GamePads */
-        leftGamePad = GamePad(this, GamePadConfig.LeftGamePad, safeGLRV, privateData)
-        rightGamePad = GamePad(this, GamePadConfig.RightGamePad, safeGLRV, privateData)
+        leftGamePad = GamePad(this, GamePadConfig.Left, safeGLRV, privateData)
+        rightGamePad = GamePad(this, GamePadConfig.Right, safeGLRV, privateData)
 
         /* Add GamePads to the activity */
         leftGamePadContainer.addView(leftGamePad.pad)
