@@ -36,6 +36,8 @@ class GameActivity : AppCompatActivity() {
         KeyEvent.KEYCODE_BUTTON_L2,
         KeyEvent.KEYCODE_BUTTON_R1,
         KeyEvent.KEYCODE_BUTTON_R2,
+        KeyEvent.KEYCODE_BUTTON_THUMBL,
+        KeyEvent.KEYCODE_BUTTON_THUMBR,
         KeyEvent.KEYCODE_BUTTON_START,
         KeyEvent.KEYCODE_BUTTON_SELECT
     )
