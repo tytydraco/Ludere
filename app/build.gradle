@@ -57,6 +57,7 @@ android {
 task copyROM(type: Copy) {
     from "${rootProject.projectDir}/${rom.path}"
     into "src/main/assets/"
+    rename("${rom.path}", "rom")
 }
 
 task updateCores(type: Exec) {
