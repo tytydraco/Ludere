@@ -80,6 +80,7 @@ class GamePadConfig {
             sockets = 12,
             primaryDial = PrimaryDialConfig.Cross(GLRetroView.MOTION_SOURCE_DPAD),
             secondaryDials = listOf(
+                SecondaryDialConfig.SingleButton(3, 1, BUTTON_SAVE_STATE),
                 SecondaryDialConfig.SingleButton(4, 1, BUTTON_SELECT)
             )
         )
@@ -94,7 +95,8 @@ class GamePadConfig {
                 )
             ),
             secondaryDials = listOf(
-                SecondaryDialConfig.SingleButton(2, 1, BUTTON_START)
+                SecondaryDialConfig.SingleButton(2, 1, BUTTON_START),
+                SecondaryDialConfig.SingleButton(3, 1, BUTTON_LOAD_STATE)
             )
         )
 
@@ -103,7 +105,8 @@ class GamePadConfig {
             sockets = 12,
             primaryDial = PrimaryDialConfig.Cross(GLRetroView.MOTION_SOURCE_DPAD),
             secondaryDials = listOf(
-                SecondaryDialConfig.SingleButton(3, 1, BUTTON_L1),
+                SecondaryDialConfig.SingleButton(2, 1, BUTTON_L1),
+                SecondaryDialConfig.SingleButton(3, 1, BUTTON_SAVE_STATE),
                 SecondaryDialConfig.SingleButton(4, 1, BUTTON_SELECT)
             )
         )
@@ -121,7 +124,8 @@ class GamePadConfig {
             ),
             secondaryDials = listOf(
                 SecondaryDialConfig.SingleButton(2, 1, BUTTON_START),
-                SecondaryDialConfig.SingleButton(3, 1, BUTTON_R1)
+                SecondaryDialConfig.SingleButton(3, 1, BUTTON_LOAD_STATE),
+                SecondaryDialConfig.SingleButton(4, 1, BUTTON_R1)
             )
         )
 
@@ -133,6 +137,7 @@ class GamePadConfig {
                 SecondaryDialConfig.SingleButton(2, 1, BUTTON_L2),
                 SecondaryDialConfig.SingleButton(3, 1, BUTTON_L1),
                 SecondaryDialConfig.SingleButton(4, 1, BUTTON_SELECT),
+                SecondaryDialConfig.SingleButton(8, 1, BUTTON_SAVE_STATE),
                 SecondaryDialConfig.Stick(9, 2f, GLRetroView.MOTION_SOURCE_ANALOG_LEFT, KeyEvent.KEYCODE_BUTTON_THUMBL)
             )
         )
@@ -152,6 +157,7 @@ class GamePadConfig {
                 SecondaryDialConfig.SingleButton(2, 1, BUTTON_START),
                 SecondaryDialConfig.SingleButton(3, 1, BUTTON_R1),
                 SecondaryDialConfig.SingleButton(4, 1, BUTTON_R2),
+                SecondaryDialConfig.SingleButton(10, 1, BUTTON_LOAD_STATE),
                 SecondaryDialConfig.Stick(8, 2f, GLRetroView.MOTION_SOURCE_ANALOG_RIGHT, KeyEvent.KEYCODE_BUTTON_THUMBR)
             )
         )
