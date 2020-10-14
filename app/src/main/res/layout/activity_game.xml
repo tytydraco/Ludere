@@ -9,12 +9,12 @@
         android:layout_centerInParent="true"
         android:id="@+id/parent" />
     <FrameLayout
-        android:layout_width="@dimen/rom_gamepad_size"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:id="@+id/left_container" />
     <FrameLayout
-        android:layout_width="@dimen/rom_gamepad_size"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:id="@+id/right_container" />

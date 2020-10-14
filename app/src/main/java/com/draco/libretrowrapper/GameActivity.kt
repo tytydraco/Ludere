@@ -122,6 +122,12 @@ class GameActivity : AppCompatActivity() {
         leftGamePad.pad.offsetX = -1f
         rightGamePad.pad.offsetX = 1f
 
+        val density = resources.displayMetrics.density
+        val gamePadSize = resources.getDimension(R.dimen.rom_gamepad_size) / density
+
+        leftGamePad.pad.primaryDialMaxSizeDp = gamePadSize
+        rightGamePad.pad.primaryDialMaxSizeDp = gamePadSize
+
         /* Check if we should show or hide controls */
         showOrHideGamePads()
 
