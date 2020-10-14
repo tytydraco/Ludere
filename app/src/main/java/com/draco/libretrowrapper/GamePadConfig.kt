@@ -85,8 +85,7 @@ class GamePadConfig {
                     BUTTON_X,
                     BUTTON_Y,
                     BUTTON_B
-                ),
-                rotationInDegrees = 0f
+                )
             ),
             secondaryDials = listOf(
                 SecondaryDialConfig.SingleButton(2, 1, BUTTON_R1),
