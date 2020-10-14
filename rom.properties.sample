@@ -16,8 +16,18 @@ foregroundColor=#FFFFFF
 backgroundColor=#000000
 # Gamepad size
 gamePadSize=180dp
-# GamePad type
-# Type 1: DPAD + AB
-# Type 2: DPAD + ABXY + LR
-# Type 3: DPAD + ABXY + LR + L2R2 + Analogs
-gamePadType=1
+# GamePad buttons
+gamePadA=true
+gamePadB=true
+gamePadX=true
+gamePadY=true
+gamePadStart=true
+gamePadSelect=true
+gamePadL1=true
+gamePadL2=true
+gamePadR1=true
+gamePadR2=true
+gamePadAnalogLeft=true
+gamePadAnalogRight=true
+gamePadSaveState=true
+gamePadLoadState=true

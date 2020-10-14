@@ -21,11 +21,27 @@ android {
         all {
             resValue("string", "rom_name", rom.name)
             resValue("string", "rom_core", rom.core)
-            resValue("bool", "rom_audio", rom.audio)
+
             resValue("color", "rom_foreground_color", rom.foregroundColor)
             resValue("color", "rom_background_color", rom.backgroundColor)
+
             resValue("dimen", "rom_gamepad_size", rom.gamePadSize)
-            resValue("integer", "rom_gamepad_type", rom.gamePadType)
+
+            resValue("bool", "rom_audio", rom.audio)
+            resValue("bool", "rom_gamepad_a", rom.gamePadA)
+            resValue("bool", "rom_gamepad_b", rom.gamePadB)
+            resValue("bool", "rom_gamepad_x", rom.gamePadX)
+            resValue("bool", "rom_gamepad_y", rom.gamePadY)
+            resValue("bool", "rom_gamepad_start", rom.gamePadStart)
+            resValue("bool", "rom_gamepad_select", rom.gamePadSelect)
+            resValue("bool", "rom_gamepad_l1", rom.gamePadL1)
+            resValue("bool", "rom_gamepad_l2", rom.gamePadL2)
+            resValue("bool", "rom_gamepad_r1", rom.gamePadR1)
+            resValue("bool", "rom_gamepad_r2", rom.gamePadR2)
+            resValue("bool", "rom_gamepad_analog_left", rom.gamePadAnalogLeft)
+            resValue("bool", "rom_gamepad_analog_right", rom.gamePadAnalogRight)
+            resValue("bool", "rom_gamepad_save_state", rom.gamePadSaveState)
+            resValue("bool", "rom_gamepad_load_state", rom.gamePadLoadState)
         }
         release {
             minifyEnabled true

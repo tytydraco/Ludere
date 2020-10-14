@@ -6,7 +6,7 @@ import android.view.KeyEvent
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.radialgamepad.library.config.*
 
-class GamePadConfig {
+class GamePadConfig(private val resources: Resources) {
     companion object {
         const val KEYCODE_LOAD_STATE = -1
         const val KEYCODE_SAVE_STATE = -2
@@ -77,90 +77,36 @@ class GamePadConfig {
         textColor = Color.WHITE
     )
 
-    val Type1Left = RadialGamePadConfig(
+    val left = RadialGamePadConfig(
         theme = radialGamePadTheme,
         sockets = 12,
         primaryDial = PrimaryDialConfig.Cross(GLRetroView.MOTION_SOURCE_DPAD),
-        secondaryDials = listOf(
-            SecondaryDialConfig.SingleButton(3, 1, BUTTON_SAVE_STATE),
-            SecondaryDialConfig.SingleButton(4, 1, BUTTON_SELECT)
+        secondaryDials = listOfNotNull(
+            SecondaryDialConfig.SingleButton(2, 1, BUTTON_L2).takeIf { resources.getBoolean(R.bool.rom_gamepad_l2) },
+            SecondaryDialConfig.SingleButton(3, 1, BUTTON_L1).takeIf { resources.getBoolean(R.bool.rom_gamepad_l1) },
+            SecondaryDialConfig.SingleButton(4, 1, BUTTON_SELECT).takeIf { resources.getBoolean(R.bool.rom_gamepad_select) },
+            SecondaryDialConfig.SingleButton(8, 1, BUTTON_SAVE_STATE).takeIf { resources.getBoolean(R.bool.rom_gamepad_save_state) },
+            SecondaryDialConfig.Stick(9, 2f, GLRetroView.MOTION_SOURCE_ANALOG_LEFT, KeyEvent.KEYCODE_BUTTON_THUMBL).takeIf { resources.getBoolean(R.bool.rom_gamepad_analog_left) }
         )
     )
 
-    val Type1Right = RadialGamePadConfig(
+    val right = RadialGamePadConfig(
         theme = radialGamePadTheme,
         sockets = 12,
         primaryDial = PrimaryDialConfig.PrimaryButtons(
-            dials = listOf(
-                BUTTON_A,
-                BUTTON_B
+            dials = listOfNotNull(
+                BUTTON_A.takeIf { resources.getBoolean(R.bool.rom_gamepad_a) },
+                BUTTON_X.takeIf { resources.getBoolean(R.bool.rom_gamepad_x) },
+                BUTTON_Y.takeIf { resources.getBoolean(R.bool.rom_gamepad_y) },
+                BUTTON_B.takeIf { resources.getBoolean(R.bool.rom_gamepad_b) }
             )
         ),
-        secondaryDials = listOf(
-            SecondaryDialConfig.SingleButton(2, 1, BUTTON_START),
-            SecondaryDialConfig.SingleButton(3, 1, BUTTON_LOAD_STATE)
-        )
-    )
-
-    val Type2Left = RadialGamePadConfig(
-        theme = radialGamePadTheme,
-        sockets = 12,
-        primaryDial = PrimaryDialConfig.Cross(GLRetroView.MOTION_SOURCE_DPAD),
-        secondaryDials = listOf(
-            SecondaryDialConfig.SingleButton(2, 1, BUTTON_L1),
-            SecondaryDialConfig.SingleButton(3, 1, BUTTON_SAVE_STATE),
-            SecondaryDialConfig.SingleButton(4, 1, BUTTON_SELECT)
-        )
-    )
-
-    val Type2Right = RadialGamePadConfig(
-        theme = radialGamePadTheme,
-        sockets = 12,
-        primaryDial = PrimaryDialConfig.PrimaryButtons(
-            dials = listOf(
-                BUTTON_A,
-                BUTTON_X,
-                BUTTON_Y,
-                BUTTON_B
-            )
-        ),
-        secondaryDials = listOf(
-            SecondaryDialConfig.SingleButton(2, 1, BUTTON_START),
-            SecondaryDialConfig.SingleButton(3, 1, BUTTON_LOAD_STATE),
-            SecondaryDialConfig.SingleButton(4, 1, BUTTON_R1)
-        )
-    )
-
-    val Type3Left = RadialGamePadConfig(
-        theme = radialGamePadTheme,
-        sockets = 12,
-        primaryDial = PrimaryDialConfig.Cross(GLRetroView.MOTION_SOURCE_DPAD),
-        secondaryDials = listOf(
-            SecondaryDialConfig.SingleButton(2, 1, BUTTON_L2),
-            SecondaryDialConfig.SingleButton(3, 1, BUTTON_L1),
-            SecondaryDialConfig.SingleButton(4, 1, BUTTON_SELECT),
-            SecondaryDialConfig.SingleButton(8, 1, BUTTON_SAVE_STATE),
-            SecondaryDialConfig.Stick(9, 2f, GLRetroView.MOTION_SOURCE_ANALOG_LEFT, KeyEvent.KEYCODE_BUTTON_THUMBL)
-        )
-    )
-
-    val Type3Right = RadialGamePadConfig(
-        theme = radialGamePadTheme,
-        sockets = 12,
-        primaryDial = PrimaryDialConfig.PrimaryButtons(
-            dials = listOf(
-                BUTTON_A,
-                BUTTON_X,
-                BUTTON_Y,
-                BUTTON_B
-            )
-        ),
-        secondaryDials = listOf(
-            SecondaryDialConfig.SingleButton(2, 1, BUTTON_START),
-            SecondaryDialConfig.SingleButton(3, 1, BUTTON_R1),
-            SecondaryDialConfig.SingleButton(4, 1, BUTTON_R2),
-            SecondaryDialConfig.SingleButton(10, 1, BUTTON_LOAD_STATE),
-            SecondaryDialConfig.Stick(8, 2f, GLRetroView.MOTION_SOURCE_ANALOG_RIGHT, KeyEvent.KEYCODE_BUTTON_THUMBR)
+        secondaryDials = listOfNotNull(
+            SecondaryDialConfig.SingleButton(2, 1, BUTTON_START).takeIf { resources.getBoolean(R.bool.rom_gamepad_start) },
+            SecondaryDialConfig.SingleButton(3, 1, BUTTON_R1).takeIf { resources.getBoolean(R.bool.rom_gamepad_r1) },
+            SecondaryDialConfig.SingleButton(4, 1, BUTTON_R2).takeIf { resources.getBoolean(R.bool.rom_gamepad_r2) },
+            SecondaryDialConfig.SingleButton(10, 1, BUTTON_LOAD_STATE).takeIf { resources.getBoolean(R.bool.rom_gamepad_load_state) },
+            SecondaryDialConfig.Stick(8, 2f, GLRetroView.MOTION_SOURCE_ANALOG_RIGHT, KeyEvent.KEYCODE_BUTTON_THUMBR).takeIf { resources.getBoolean(R.bool.rom_gamepad_analog_right) }
         )
     )
 }
