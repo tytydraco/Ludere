@@ -20,9 +20,9 @@ class GamePadConfig {
             primaryDial = PrimaryDialConfig.Cross(0),
             secondaryDials = listOf(
                 SecondaryDialConfig.SingleButton(
-                    4, 1, ButtonConfig(
-                        id = KeyEvent.KEYCODE_BUTTON_L1,
-                        label = "L"
+                    2, 1, ButtonConfig(
+                        id = KeyEvent.KEYCODE_BUTTON_SELECT,
+                        iconId = R.drawable.ic_baseline_stop_24
                     )
                 ),
                 SecondaryDialConfig.SingleButton(
@@ -32,9 +32,9 @@ class GamePadConfig {
                     )
                 ),
                 SecondaryDialConfig.SingleButton(
-                    8, 1, ButtonConfig(
-                        id = KeyEvent.KEYCODE_BUTTON_SELECT,
-                        iconId = R.drawable.ic_baseline_stop_24
+                    4, 1, ButtonConfig(
+                        id = KeyEvent.KEYCODE_BUTTON_L1,
+                        label = "L"
                     )
                 )
             )
@@ -78,7 +78,7 @@ class GamePadConfig {
                     )
                 ),
                 SecondaryDialConfig.SingleButton(
-                    10, 1, ButtonConfig(
+                    4, 1, ButtonConfig(
                         id = KeyEvent.KEYCODE_BUTTON_START,
                         iconId = R.drawable.ic_baseline_play_arrow_24
                     )
