@@ -24,6 +24,7 @@ android {
             resValue("bool", "rom_audio", rom.audio)
             resValue("color", "rom_foreground_color", rom.foregroundColor)
             resValue("color", "rom_background_color", rom.backgroundColor)
+            resValue("dimen", "rom_gamepad_size", rom.gamePadSize)
         }
         release {
             minifyEnabled true

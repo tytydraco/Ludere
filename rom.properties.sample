@@ -14,3 +14,5 @@ audio=true
 # Icon colors
 foregroundColor=#FFFFFF
 backgroundColor=#000000
+# Gamepad size
+gamePadSize=200dp
