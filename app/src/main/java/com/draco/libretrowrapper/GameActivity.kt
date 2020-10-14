@@ -68,7 +68,8 @@ class GameActivity : AppCompatActivity() {
         initRetroView()
 
         /* Create GamePads */
-        initGamePads()
+        if (resources.getBoolean(R.bool.rom_gamepad_visible))
+            initGamePads()
     }
 
     private fun initAssets() {
@@ -140,23 +141,7 @@ class GameActivity : AppCompatActivity() {
         rightGamePad!!.pad.primaryDialMaxSizeDp = gamePadSize
 
         /* Check if we should show or hide controls */
-        showOrHideGamePads()
-    }
-
-    private fun isControllerConnected(): Boolean {
-        /* Consider non-touch devices to be controller supported only */
-        if (!packageManager.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN))
-            return true
-
-        for (id in InputDevice.getDeviceIds()) {
-            InputDevice.getDevice(id).apply {
-                if (sources and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD ||
-                    sources and InputDevice.SOURCE_JOYSTICK == InputDevice.SOURCE_JOYSTICK)
-                    return true
-            }
-        }
-
-        return false
+        updateGamePadVisibility()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -219,11 +204,30 @@ class GameActivity : AppCompatActivity() {
         return super.onGenericMotionEvent(event)
     }
 
-    private fun showOrHideGamePads() {
-        val visibility = if (isControllerConnected())
-            View.GONE
-        else
+    private fun shouldShowGamePads(): Boolean {
+        if (!resources.getBoolean(R.bool.rom_gamepad_visible))
+            return false
+
+        /* Consider non-touch devices to be controller supported only */
+        if (!packageManager.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN))
+            return false
+
+        for (id in InputDevice.getDeviceIds()) {
+            InputDevice.getDevice(id).apply {
+                if (sources and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD ||
+                    sources and InputDevice.SOURCE_JOYSTICK == InputDevice.SOURCE_JOYSTICK)
+                    return false
+            }
+        }
+
+        return true
+    }
+
+    private fun updateGamePadVisibility() {
+        val visibility = if (shouldShowGamePads())
             View.VISIBLE
+        else
+            View.GONE
 
         leftGamePadContainer.visibility = visibility
         rightGamePadContainer.visibility = visibility
@@ -231,7 +235,7 @@ class GameActivity : AppCompatActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        showOrHideGamePads()
+        updateGamePadVisibility()
     }
 
     override fun onPause() {

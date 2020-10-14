@@ -15,6 +15,7 @@ backgroundColor=#000000
 # Gamepad size
 gamePadSize=180dp
 # GamePad buttons
+gamePadVisible=true
 gamePadA=true
 gamePadB=true
 gamePadX=true
