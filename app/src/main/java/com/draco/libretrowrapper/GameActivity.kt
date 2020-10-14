@@ -13,7 +13,7 @@ import java.io.File
 
 class GameActivity : AppCompatActivity() {
     private lateinit var parent: FrameLayout
-    private lateinit var retroView: GLRetroView
+    private var retroView: GLRetroView? = null
     private lateinit var privateData: PrivateData
 
     private lateinit var leftGamePadContainer: FrameLayout
@@ -99,20 +99,20 @@ class GameActivity : AppCompatActivity() {
             byteArrayOf()
 
         /* Create GLRetroView */
-        val retroView = GLRetroView(
+        retroView = GLRetroView(
             this,
             "${getString(R.string.rom_core)}_libretro_android.so",
             privateData.rom.absolutePath,
             saveRAMState = saveBytes,
             shader = GLRetroView.SHADER_SHARP
         )
-        lifecycle.addObserver(retroView)
+        lifecycle.addObserver(retroView!!)
         parent.addView(retroView)
 
         /* Initialize GamePads */
         val gamePadConfig = GamePadConfig(resources)
-        leftGamePad = GamePad(this, gamePadConfig.left, retroView, privateData)
-        rightGamePad = GamePad(this, gamePadConfig.right, retroView, privateData)
+        leftGamePad = GamePad(this, gamePadConfig.left, retroView!!, privateData)
+        rightGamePad = GamePad(this, gamePadConfig.right, retroView!!, privateData)
 
         /* Add GamePads to the activity */
         leftGamePadContainer.addView(leftGamePad.pad)
@@ -137,10 +137,10 @@ class GameActivity : AppCompatActivity() {
             FrameLayout.LayoutParams.WRAP_CONTENT,
         )
         params.gravity = Gravity.CENTER
-        retroView.layoutParams = params
+        retroView!!.layoutParams = params
 
         /* Decide to mute the audio */
-        retroView.audioEnabled = resources.getBoolean(R.bool.rom_audio)
+        retroView!!.audioEnabled = resources.getBoolean(R.bool.rom_audio)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -170,7 +170,7 @@ class GameActivity : AppCompatActivity() {
         if (keyCode !in validKeyCodes)
             return false
 
-        retroView.sendKeyEvent(event.action, keyCode)
+        retroView?.sendKeyEvent(event.action, keyCode)
         return true
     }
 
@@ -183,18 +183,18 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onGenericMotionEvent(event: MotionEvent): Boolean {
-        when (retroView.id) {
-            GLRetroView.MOTION_SOURCE_DPAD -> retroView.sendMotionEvent(
+        when (retroView?.id) {
+            GLRetroView.MOTION_SOURCE_DPAD -> retroView?.sendMotionEvent(
                 GLRetroView.MOTION_SOURCE_DPAD,
                 event.getAxisValue(MotionEvent.AXIS_HAT_X),
                 event.getAxisValue(MotionEvent.AXIS_HAT_Y)
             )
-            GLRetroView.MOTION_SOURCE_ANALOG_LEFT -> retroView.sendMotionEvent(
+            GLRetroView.MOTION_SOURCE_ANALOG_LEFT -> retroView?.sendMotionEvent(
                 GLRetroView.MOTION_SOURCE_ANALOG_LEFT,
                 event.getAxisValue(MotionEvent.AXIS_X),
                 event.getAxisValue(MotionEvent.AXIS_Y)
             )
-            GLRetroView.MOTION_SOURCE_ANALOG_RIGHT -> retroView.sendMotionEvent(
+            GLRetroView.MOTION_SOURCE_ANALOG_RIGHT -> retroView?.sendMotionEvent(
                 GLRetroView.MOTION_SOURCE_ANALOG_RIGHT,
                 event.getAxisValue(MotionEvent.AXIS_Z),
                 event.getAxisValue(MotionEvent.AXIS_RZ)
@@ -228,7 +228,10 @@ class GameActivity : AppCompatActivity() {
     override fun onPause() {
         leftGamePad.pause()
         rightGamePad.pause()
-        privateData.save.writeBytes(retroView.serializeSRAM())
+
+        if (retroView != null)
+            privateData.save.writeBytes(retroView!!.serializeSRAM())
+
         super.onPause()
     }
 
