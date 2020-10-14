@@ -10,8 +10,6 @@ name=Example Rom
 # LibRetro core to fetch for this ROM (excluding _libretro_android.so)
 core=mgba
 # Support for audio
-audio=true
-# Icon colors
 foregroundColor=#FFFFFF
 backgroundColor=#000000
 # Gamepad size

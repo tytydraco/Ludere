@@ -138,9 +138,6 @@ class GameActivity : AppCompatActivity() {
         )
         params.gravity = Gravity.CENTER
         retroView!!.layoutParams = params
-
-        /* Decide to mute the audio */
-        retroView!!.audioEnabled = resources.getBoolean(R.bool.rom_audio)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {

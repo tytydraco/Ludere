@@ -27,7 +27,6 @@ android {
 
             resValue("dimen", "rom_gamepad_size", rom.gamePadSize)
 
-            resValue("bool", "rom_audio", rom.audio)
             resValue("bool", "rom_gamepad_a", rom.gamePadA)
             resValue("bool", "rom_gamepad_b", rom.gamePadB)
             resValue("bool", "rom_gamepad_x", rom.gamePadX)
