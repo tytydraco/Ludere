@@ -113,8 +113,13 @@ class GameActivity : AppCompatActivity() {
         safeGLRV = SafeGLRV(retroView, compositeDisposable)
 
         /* Initialize GamePads */
-        leftGamePad = GamePad(this, GamePadConfig.Left, safeGLRV, privateData)
-        rightGamePad = GamePad(this, GamePadConfig.Right, safeGLRV, privateData)
+        val gamePadConfigs = when (resources.getInteger(R.integer.rom_gamepad_type)) {
+            2 -> listOf(GamePadConfig.Type2Left, GamePadConfig.Type2Right)
+            3 -> listOf(GamePadConfig.Type3Left, GamePadConfig.Type3Right)
+            else -> listOf(GamePadConfig.Type1Left, GamePadConfig.Type1Right)
+        }
+        leftGamePad = GamePad(this, gamePadConfigs[0], safeGLRV, privateData)
+        rightGamePad = GamePad(this, gamePadConfigs[1], safeGLRV, privateData)
 
         /* Add GamePads to the activity */
         leftGamePadContainer.addView(leftGamePad.pad)
