@@ -85,3 +85,5 @@ gamePadAnalogLeft=false
 gamePadAnalogRight=false
 gamePadSaveState=true
 gamePadLoadState=true
+gamePadFastForward=false
+gamePadMute=false

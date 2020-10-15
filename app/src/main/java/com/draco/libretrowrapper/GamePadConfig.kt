@@ -10,6 +10,8 @@ class GamePadConfig(private val resources: Resources) {
     companion object {
         const val KEYCODE_LOAD_STATE = -1
         const val KEYCODE_SAVE_STATE = -2
+        const val KEYCODE_FAST_FORWARD = -3
+        const val KEYCODE_MUTE = -4
 
         val BUTTON_START = ButtonConfig(
             id = KeyEvent.KEYCODE_BUTTON_START,
@@ -29,6 +31,16 @@ class GamePadConfig(private val resources: Resources) {
         val BUTTON_LOAD_STATE = ButtonConfig(
             id = KEYCODE_LOAD_STATE,
             iconId = R.drawable.ic_baseline_get_app_24
+        )
+
+        val BUTTON_FAST_FORWARD = ButtonConfig(
+            id = KEYCODE_FAST_FORWARD,
+            iconId = R.drawable.ic_baseline_fast_forward_24
+        )
+
+        val BUTTON_MUTE = ButtonConfig(
+            id = KEYCODE_MUTE,
+            iconId = R.drawable.ic_baseline_volume_up_24
         )
 
         val BUTTON_L1 = ButtonConfig(
@@ -82,6 +94,7 @@ class GamePadConfig(private val resources: Resources) {
         sockets = 12,
         primaryDial = PrimaryDialConfig.Cross(GLRetroView.MOTION_SOURCE_DPAD),
         secondaryDials = listOfNotNull(
+            SecondaryDialConfig.SingleButton(1, 1, BUTTON_MUTE).takeIf { resources.getBoolean(R.bool.rom_gamepad_mute) },
             SecondaryDialConfig.SingleButton(2, 1, BUTTON_L2).takeIf { resources.getBoolean(R.bool.rom_gamepad_l2) },
             SecondaryDialConfig.SingleButton(3, 1, BUTTON_L1).takeIf { resources.getBoolean(R.bool.rom_gamepad_l1) },
             SecondaryDialConfig.SingleButton(4, 1, BUTTON_SELECT).takeIf { resources.getBoolean(R.bool.rom_gamepad_select) },
@@ -105,6 +118,7 @@ class GamePadConfig(private val resources: Resources) {
             SecondaryDialConfig.SingleButton(2, 1, BUTTON_START).takeIf { resources.getBoolean(R.bool.rom_gamepad_start) },
             SecondaryDialConfig.SingleButton(3, 1, BUTTON_R1).takeIf { resources.getBoolean(R.bool.rom_gamepad_r1) },
             SecondaryDialConfig.SingleButton(4, 1, BUTTON_R2).takeIf { resources.getBoolean(R.bool.rom_gamepad_r2) },
+            SecondaryDialConfig.SingleButton(5, 1, BUTTON_FAST_FORWARD).takeIf { resources.getBoolean(R.bool.rom_gamepad_fast_forward) },
             SecondaryDialConfig.SingleButton(10, 1, BUTTON_LOAD_STATE).takeIf { resources.getBoolean(R.bool.rom_gamepad_load_state) },
             SecondaryDialConfig.Stick(8, 2f, GLRetroView.MOTION_SOURCE_ANALOG_RIGHT, KeyEvent.KEYCODE_BUTTON_THUMBR).takeIf { resources.getBoolean(R.bool.rom_gamepad_analog_right) }
         )

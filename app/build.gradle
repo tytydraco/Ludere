@@ -61,6 +61,8 @@ android {
             resValue("bool", "rom_gamepad_analog_right", rom.gamePadAnalogRight)
             resValue("bool", "rom_gamepad_save_state", rom.gamePadSaveState)
             resValue("bool", "rom_gamepad_load_state", rom.gamePadLoadState)
+            resValue("bool", "rom_gamepad_fast_forward", rom.gamePadFastForward)
+            resValue("bool", "rom_gamepad_mute", rom.gamePadMute)
         }
         release {
             minifyEnabled true
