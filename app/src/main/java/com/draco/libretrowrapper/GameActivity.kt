@@ -179,7 +179,13 @@ class GameActivity : AppCompatActivity() {
         rightGamePad!!.pad.primaryDialMaxSizeDp = gamePadSize
 
         /* Check if we should show or hide controls */
-        updateGamePadVisibility()
+        val visibility = if (shouldShowGamePads())
+            View.VISIBLE
+        else
+            View.GONE
+
+        leftGamePadContainer.visibility = visibility
+        rightGamePadContainer.visibility = visibility
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -278,21 +284,6 @@ class GameActivity : AppCompatActivity() {
 
         /* Otherwise, show */
         return true
-    }
-
-    private fun updateGamePadVisibility() {
-        val visibility = if (shouldShowGamePads())
-            View.VISIBLE
-        else
-            View.GONE
-
-        leftGamePadContainer.visibility = visibility
-        rightGamePadContainer.visibility = visibility
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        updateGamePadVisibility()
     }
 
     override fun onStop() {
