@@ -17,7 +17,7 @@
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/rom_gamepad_horizontal_spacing"
+        android:layout_marginEnd="@dimen/rom_gamepad_horizontal_spacing"
         android:layout_alignParentEnd="true"
         android:id="@+id/right_container" />
 </RelativeLayout>
