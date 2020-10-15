@@ -33,8 +33,6 @@ android {
             resValue("bool", "rom_gamepad_visible", rom.gamePadVisible)
 
             resValue("dimen", "rom_gamepad_height_portrait", rom.gamePadHeightPortrait)
-            resValue("dimen", "rom_gamepad_width_portrait", rom.gamePadWidthPortrait)
-            resValue("dimen", "rom_gamepad_height_landscape", rom.gamePadHeightLandscape)
             resValue("dimen", "rom_gamepad_width_landscape", rom.gamePadWidthLandscape)
 
             resValue("dimen", "rom_gamepad_spacing_vertical_portrait", rom.gamePadSpacingVerticalPortrait)

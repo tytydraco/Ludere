@@ -49,12 +49,8 @@ orientation=unspecified
 gamePadVisible=true
 
 # GamePad size in dp units
-# It is usually safest to keep the height at around double the width
-# in the portrait orientation, but if you do not like overlapping, reduce it.
-gamePadWidthPortrait=180dp
 gamePadHeightPortrait=360dp
-gamePadWidthLandscape=270dp
-gamePadHeightLandscape=270dp
+gamePadWidthLandscape=180dp
 
 # How much to pad the controls from the edge of the screen in dp units
 # For narrow devices, adding spacing can make the game more comfortable
