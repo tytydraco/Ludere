@@ -20,7 +20,7 @@ name=Example Rom
 core=mgba
 
 # The color of the foreground icon drawable
-foregroundColor=#FFFFFF
+foregroundColor=#ffffff
 # The color of the icon background
 backgroundColor=#000000
 
@@ -50,7 +50,7 @@ gamePadVisible=true
 
 # GamePad colors
 # The color of the icon or label within the button
-gamePadIconColor=#FFFFFF
+gamePadIconColor=#ccffffff
 # The color of the button
 gamePadButtonColor=#212121
 # The color of the button when pressed down
