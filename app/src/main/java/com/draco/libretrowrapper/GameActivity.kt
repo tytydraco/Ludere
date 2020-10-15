@@ -15,6 +15,7 @@ import com.swordfish.libretrodroid.GLRetroView
 import io.reactivex.disposables.CompositeDisposable
 import java.io.File
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 class GameActivity : AppCompatActivity() {
     private lateinit var parent: FrameLayout
@@ -96,11 +97,9 @@ class GameActivity : AppCompatActivity() {
 
         /* Consider loading state if we died from a configuration change */
         val stateBytes = privateData.savedInstanceState.readBytes()
-        retroView?.visibility = View.INVISIBLE
         Thread {
             retroViewReadyLatch.await()
             retroView?.unserializeState(stateBytes)
-            runOnUiThread { retroView?.visibility = View.VISIBLE }
         }.start()
     }
 
@@ -146,10 +145,9 @@ class GameActivity : AppCompatActivity() {
         /* Start tracking the frame state of the GLRetroView */
         val renderDisposable = retroView!!
             .getGLRetroEvents()
-            .takeUntil { retroViewReadyLatch.count == 0L }
             .subscribe {
                 if (it == GLRetroView.GLRetroEvents.FrameRendered)
-                    Handler(Looper.getMainLooper()).postDelayed({ retroViewReadyLatch.countDown() }, 100)
+                    retroViewReadyLatch.countDown()
             }
         compositeDisposable.add(renderDisposable)
     }
