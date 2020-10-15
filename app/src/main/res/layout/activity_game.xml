@@ -8,6 +8,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/rom_gameview_spacing_vertical_portrait"
         android:id="@+id/parent" />
 
     <LinearLayout
