@@ -13,23 +13,21 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/rom_gamepad_size"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/rom_gamepad_spacing_horizontal_portrait"
+        android:layout_marginBottom="@dimen/rom_gamepad_spacing_vertical_portrait"
         android:baselineAligned="false">
         <FrameLayout
             android:layout_width="0dp"
-            android:layout_height="@dimen/rom_gamepad_height_portrait"
+            android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:layout_marginStart="@dimen/rom_gamepad_spacing_horizontal_portrait"
-            android:layout_marginBottom="@dimen/rom_gamepad_spacing_vertical_portrait"
             android:id="@+id/left_container" />
         <FrameLayout
             android:layout_width="0dp"
-            android:layout_height="@dimen/rom_gamepad_height_portrait"
+            android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:layout_marginEnd="@dimen/rom_gamepad_spacing_horizontal_portrait"
-            android:layout_marginBottom="@dimen/rom_gamepad_spacing_vertical_portrait"
             android:id="@+id/right_container" />
     </LinearLayout>
 
