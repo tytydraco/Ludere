@@ -1,12 +1,17 @@
 package com.draco.libretrowrapper
 
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.view.KeyEvent
+import androidx.core.content.ContextCompat
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.radialgamepad.library.config.*
 
-class GamePadConfig(private val resources: Resources) {
+class GamePadConfig(
+    context: Context,
+    private val resources: Resources
+) {
     companion object {
         const val KEYCODE_LOAD_STATE = -1
         const val KEYCODE_SAVE_STATE = -2
@@ -86,7 +91,9 @@ class GamePadConfig(private val resources: Resources) {
 
     private val radialGamePadTheme = RadialGamePadTheme(
         primaryDialBackground = Color.TRANSPARENT,
-        textColor = Color.WHITE
+        textColor = ContextCompat.getColor(context, R.color.rom_gamepad_icon_color),
+        normalColor = ContextCompat.getColor(context, R.color.rom_gamepad_button_color),
+        pressedColor = ContextCompat.getColor(context, R.color.rom_gamepad_pressed_color)
     )
 
     val left = RadialGamePadConfig(

@@ -170,7 +170,7 @@ class GameActivity : AppCompatActivity() {
             return
 
         /* Initialize GamePads */
-        val gamePadConfig = GamePadConfig(resources)
+        val gamePadConfig = GamePadConfig(this, resources)
         leftGamePad = GamePad(this, gamePadConfig.left, retroView!!, privateData)
         rightGamePad = GamePad(this, gamePadConfig.right, retroView!!, privateData)
 

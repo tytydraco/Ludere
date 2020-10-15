@@ -48,6 +48,14 @@ orientation=unspecified
 # 3) When a gamepad or joystick is connected
 gamePadVisible=true
 
+# GamePad colors
+# The color of the icon or label within the button
+gamePadIconColor=#FFFFFF
+# The color of the button
+gamePadButtonColor=#212121
+# The color of the button when pressed down
+gamePadPressedColor=#424242
+
 # GamePad size in dp units
 gamePadHeightPortrait=360dp
 gamePadWidthLandscape=180dp
