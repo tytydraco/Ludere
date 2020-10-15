@@ -57,7 +57,8 @@ gamePadButtonColor=#aa212121
 gamePadPressedColor=#aa424242
 
 # GamePad size in dp units
-gamePadSize=300dp
+gamePadHeightPortrait=300dp
+gamePadWidhtLandscape=200dp
 
 # How much to pad the game view from the top of the screen in portrait mode
 # This is useful for devices with curved screens that cut off part of the game

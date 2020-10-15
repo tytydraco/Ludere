@@ -36,7 +36,8 @@ android {
             resValue("color", "rom_gamepad_button_color", rom.gamePadButtonColor)
             resValue("color", "rom_gamepad_pressed_color", rom.gamePadPressedColor)
 
-            resValue("dimen", "rom_gamepad_size", rom.gamePadSize)
+            resValue("dimen", "rom_gamepad_height_portrait", rom.gamePadHeightPortrait)
+            resValue("dimen", "rom_gamepad_width_landscape", rom.gamePadWidhtLandscape)
 
             resValue("dimen", "rom_gameview_spacing_vertical_portrait", rom.gameViewSpacingVerticalPortrait)
 
