@@ -10,6 +10,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="@dimen/rom_gameview_spacing_vertical_portrait"
         android:layout_above="@id/containers"
+        android:layout_alignTop="@id/containers"
         android:id="@+id/parent" />
 
     <LinearLayout
