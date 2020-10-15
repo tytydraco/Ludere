@@ -13,10 +13,9 @@
 *_libretro_android.so
 
 # Base configuration
-rom.properties
-app/src/main/assets/rom
-app/src/main/assets/save
-app/src/main/assets/state
+config/*
+!config/*.properties.sample
+app/src/main/assets/*
 
 # Rom files
 *.gba
@@ -26,4 +25,3 @@ app/src/main/assets/state
 *.snes
 *.iso
 *.nds
-rom

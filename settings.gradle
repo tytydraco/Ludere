@@ -1,6 +1,6 @@
 include ':app', ':libretrodroid'
 
 ext.rom = new Properties()
-file("${rootProject.projectDir}/${romPropertiesFile}").withInputStream { ext.rom.load(it) }
+file("${rootProject.projectDir}/config/rom.properties").withInputStream { ext.rom.load(it) }
 
 rootProject.name = rom.name
