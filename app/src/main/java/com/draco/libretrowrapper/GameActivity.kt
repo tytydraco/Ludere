@@ -293,11 +293,10 @@ class GameActivity : AppCompatActivity() {
         updateGamePadVisibility()
     }
 
-    override fun onPause() {
-        if (retroView != null)
+    override fun onStop() {
+        if (retroView != null && retroViewReadyLatch.count == 0L)
             privateData.save.writeBytes(retroView!!.serializeSRAM())
-
-        super.onPause()
+        super.onStop()
     }
 
     override fun onDestroy() {
