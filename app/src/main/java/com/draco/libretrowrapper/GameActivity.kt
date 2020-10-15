@@ -2,20 +2,17 @@ package com.draco.libretrowrapper
 
 import android.app.Service
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.hardware.display.DisplayManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.*
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.swordfish.libretrodroid.GLRetroView
+import com.swordfish.libretrodroid.Variable
 import io.reactivex.disposables.CompositeDisposable
 import java.io.File
 import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
 
 class GameActivity : AppCompatActivity() {
     private lateinit var parent: FrameLayout
@@ -55,6 +52,10 @@ class GameActivity : AppCompatActivity() {
         "rom",      /* ROM file itself */
         "save",     /* SRAM dump */
         "state"     /* Save state dump */
+    )
+
+    private val retroViewVariables = arrayOf(
+        Variable("desmume_pointer_type", "touch")
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -129,7 +130,8 @@ class GameActivity : AppCompatActivity() {
             "${getString(R.string.rom_core)}_libretro_android.so",
             privateData.rom.absolutePath,
             saveRAMState = saveBytes,
-            shader = GLRetroView.SHADER_SHARP
+            shader = GLRetroView.SHADER_SHARP,
+            variables = retroViewVariables
         )
         lifecycle.addObserver(retroView!!)
         parent.addView(retroView)
