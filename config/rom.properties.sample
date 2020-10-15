@@ -52,9 +52,9 @@ gamePadVisible=true
 # The color of the icon or label within the button
 gamePadIconColor=#ffffff
 # The color of the button
-gamePadButtonColor=#aa212121
+gamePadButtonColor=#aa424242
 # The color of the button when pressed down
-gamePadPressedColor=#aa424242
+gamePadPressedColor=#aa212121
 
 # GamePad size in dp units
 gamePadHeightPortrait=300dp
