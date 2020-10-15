@@ -71,13 +71,6 @@ gamePadSpacingHorizontalPortrait=0dp
 gamePadSpacingVerticalLandscape=0dp
 gamePadSpacingHorizontalLandscape=0dp
 
-# The position of the GamePad buttons
-# AlignBottom and AlignCenter are mutually exclusive
-gamePadAlignBottomPortrait=true
-gamePadAlignCenterPortrait=false
-gamePadAlignBottomLandscape=false
-gamePadAlignCenterLandscape=true
-
 # GamePad buttons to show
 gamePadA=true
 gamePadB=true
