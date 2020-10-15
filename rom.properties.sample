@@ -12,8 +12,10 @@ core=mgba
 # Support for audio
 foregroundColor=#FFFFFF
 backgroundColor=#000000
-# Gamepad size
+# GamePad size (dimen)
 gamePadSize=180dp
+# How much to pad the controls horizontally (dimen)
+gamePadHorizontalPadding=10dp
 # GamePad buttons
 gamePadVisible=true
 gamePadA=true
