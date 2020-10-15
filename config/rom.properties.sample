@@ -67,9 +67,9 @@ gameViewSpacingVerticalPortrait=0dp
 # How much to pad the controls from the edge of the screen in dp units
 # For narrow devices, adding spacing can make the game more comfortable
 gamePadSpacingVerticalPortrait=10dp
-gamePadSpacingHorizontalPortrait=0dp
+gamePadSpacingHorizontalPortrait=10dp
 gamePadSpacingVerticalLandscape=10dp
-gamePadSpacingHorizontalLandscape=0dp
+gamePadSpacingHorizontalLandscape=10dp
 
 # GamePad buttons to show
 gamePadA=true
