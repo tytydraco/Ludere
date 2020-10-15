@@ -91,11 +91,16 @@ class GameActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
 
+        if (!privateData.savedInstanceState.exists())
+            return
+
         /* Consider loading state if we died from a configuration change */
         val stateBytes = privateData.savedInstanceState.readBytes()
+        retroView?.visibility = View.INVISIBLE
         Thread {
             retroViewReadyLatch.await()
             retroView?.unserializeState(stateBytes)
+            runOnUiThread { retroView?.visibility = View.VISIBLE }
         }.start()
     }
 
