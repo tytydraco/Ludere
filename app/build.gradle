@@ -27,7 +27,7 @@ android {
             resValue("color", "rom_background_color", rom.backgroundColor)
 
             resValue("dimen", "rom_gamepad_size", rom.gamePadSize)
-            resValue("dimen", "rom_gamepad_horizontal_padding", rom.gamePadHorizontalPadding)
+            resValue("dimen", "rom_gamepad_horizontal_spacing", rom.gamePadHorizontalSpacing)
 
             resValue("bool", "rom_gamepad_visible", rom.gamePadVisible)
             resValue("bool", "rom_gamepad_a", rom.gamePadA)

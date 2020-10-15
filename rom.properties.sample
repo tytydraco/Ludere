@@ -17,7 +17,7 @@ variables=
 # GamePad size (dimen)
 gamePadSize=180dp
 # How much to pad the controls horizontally (dimen)
-gamePadHorizontalPadding=10dp
+gamePadHorizontalSpacing=10dp
 # GamePad buttons
 gamePadVisible=true
 gamePadA=true

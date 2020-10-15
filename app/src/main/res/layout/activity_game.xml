@@ -11,13 +11,13 @@
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:paddingHorizontal="@dimen/rom_gamepad_horizontal_padding"
+        android:layout_marginStart="@dimen/rom_gamepad_horizontal_spacing"
         android:layout_alignParentStart="true"
         android:id="@+id/left_container" />
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:paddingHorizontal="@dimen/rom_gamepad_horizontal_padding"
+        android:layout_marginStart="@dimen/rom_gamepad_horizontal_spacing"
         android:layout_alignParentEnd="true"
         android:id="@+id/right_container" />
 </RelativeLayout>
