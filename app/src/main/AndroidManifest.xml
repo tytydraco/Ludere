@@ -12,6 +12,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".GameActivity"
             android:screenOrientation="sensorLandscape"
+            android:configChanges="orientation|screenSize"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

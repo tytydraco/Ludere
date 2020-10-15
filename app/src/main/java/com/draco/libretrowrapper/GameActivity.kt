@@ -80,8 +80,10 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putByteArray("state", retroView?.serializeState())
         super.onSaveInstanceState(outState)
+
+        /* Save state since Android killed us */
+        outState.putByteArray("state", retroView?.serializeState())
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
