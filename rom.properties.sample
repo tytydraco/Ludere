@@ -20,9 +20,9 @@ name=Example Rom
 core=mgba
 
 # The color of the foreground icon drawable
-foregroundColor=#0000AA
+foregroundColor=#FFFFFF
 # The color of the icon background
-backgroundColor=#FFFFFF
+backgroundColor=#000000
 
 # Core variables (key=value separated by commas) (optional)
 # You can find variables for your core in the LibRetro docs:
