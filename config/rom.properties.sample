@@ -60,10 +60,6 @@ gamePadPressedColor=#aa424242
 gamePadHeightPortrait=300dp
 gamePadWidhtLandscape=200dp
 
-# How much to pad the game view from the top of the screen in portrait mode
-# This is useful for devices with curved screens that cut off part of the game
-gameViewSpacingVerticalPortrait=0dp
-
 # How much to pad the controls from the edge of the screen in dp units
 # For narrow devices, adding spacing can make the game more comfortable
 gamePadSpacingVerticalPortrait=10dp
