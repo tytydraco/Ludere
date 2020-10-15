@@ -134,8 +134,6 @@ class GameActivity : AppCompatActivity() {
         else
             byteArrayOf()
 
-
-
         /* Create GLRetroView */
         retroView = GLRetroView(
             this,
@@ -187,12 +185,6 @@ class GameActivity : AppCompatActivity() {
         /* Configure GamePad sizes */
         leftGamePad!!.pad.offsetX = -1f
         rightGamePad!!.pad.offsetX = 1f
-
-        val density = resources.displayMetrics.density
-        val gamePadSize = resources.getDimension(R.dimen.rom_gamepad_size) / density
-
-        leftGamePad!!.pad.primaryDialMaxSizeDp = gamePadSize
-        rightGamePad!!.pad.primaryDialMaxSizeDp = gamePadSize
 
         /* Check if we should show or hide controls */
         val visibility = if (shouldShowGamePads())
