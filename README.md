@@ -1,6 +1,9 @@
 # LibRetroWrapper
 A LibRetro-powered ROM packager for portable emulation
 
+# Philosophy
+The current state of emulation on Android is excellent relative to other methods of emulation. However, the experience is not **seamless** and it is not **universal**. Allow me to elaborate. By seamless, I mean to say that there are very few steps involved between opening the application and actually playing the game. With most emulators from a fresh install, one must open the application, download a core (i.e. RetroArch), locate their rom, and then begin playing, totally at least two steps of interference. Contrarily, LibRetroWrapper reduces the process down to one simple step: open the application. The core, rom, controls, core settings, and everything else is already configured. In terms of universality, one cannot easily duplicate their configuration across devices without repeating the steps for each device. Instead, LibRetroWrapper is a simple APK with all configuration already prepared, so installing an exact duplicate of the game is as easy as installing any other APK.
+
 # Purpose
 The goal of LibRetroWrapper is to increase the level of abstraction for emulation on Android.
 
