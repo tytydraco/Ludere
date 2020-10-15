@@ -77,23 +77,25 @@ class GameActivity : AppCompatActivity() {
         /* Create GamePads */
         if (resources.getBoolean(R.bool.rom_gamepad_visible))
             initGamePads()
-
-        /* Consider loading state if we died from a configuration change */
-        if (savedInstanceState != null) {
-            val stateBytes = savedInstanceState.getByteArray("state")
-            if (stateBytes != null) {
-                /* Wait for the first frame to be rendered and some extra delay passes */
-                Thread {
-                    retroViewReadyLatch.await()
-                    retroView?.unserializeState(stateBytes)
-                }.start()
-            }
-        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putByteArray("state", retroView?.serializeState())
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+
+        /* Consider loading state if we died from a configuration change */
+        val stateBytes = savedInstanceState.getByteArray("state")
+        if (stateBytes != null) {
+            /* Wait for the first frame to be rendered and some extra delay passes */
+            Thread {
+                retroViewReadyLatch.await()
+                retroView?.unserializeState(stateBytes)
+            }.start()
+        }
     }
 
     private fun initAssets() {
