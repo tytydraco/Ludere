@@ -6,6 +6,8 @@ import android.content.res.Configuration
 import android.hardware.display.DisplayManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.*
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -69,9 +71,24 @@ class GameActivity : AppCompatActivity() {
         /* Create GLRetroView */
         initRetroView()
 
+        /* Consider loading state */
+        if (savedInstanceState != null) {
+            val stateBytes = savedInstanceState.getByteArray("state")
+            if (stateBytes != null) {
+                Handler(Looper.getMainLooper()).postDelayed({
+                    retroView?.unserializeState(stateBytes)
+                }, 50)
+            }
+        }
+
         /* Create GamePads */
         if (resources.getBoolean(R.bool.rom_gamepad_visible))
             initGamePads()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putByteArray("state", retroView?.serializeState())
+        super.onSaveInstanceState(outState)
     }
 
     private fun initAssets() {
