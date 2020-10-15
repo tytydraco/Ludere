@@ -32,7 +32,7 @@ backgroundColor=#000000
 # 3) Click on your system of choice
 # 4) Click on your core of choice
 # 5) Scroll down to the "Core options" section
-variables=desmume_pointer_type=touch
+variables=
 
 # Screen orientation to use
 # The most common settings are:
