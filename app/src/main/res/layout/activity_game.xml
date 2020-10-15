@@ -5,31 +5,33 @@
     android:descendantFocusability="blocksDescendants">
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_height="match_parent"
         android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
         android:layout_above="@id/containers"
         android:layout_alignTop="@id/containers"
         android:id="@+id/parent" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/rom_gamepad_height_portrait"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="@dimen/rom_gamepad_spacing_horizontal_portrait"
-        android:layout_marginVertical="@dimen/rom_gamepad_spacing_vertical_portrait"
         android:baselineAligned="false"
         android:id="@+id/containers">
         <FrameLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/rom_gamepad_height_portrait"
             android:layout_weight="0.5"
+            android:layout_marginStart="@dimen/rom_gamepad_spacing_horizontal_portrait"
+            android:layout_marginVertical="@dimen/rom_gamepad_spacing_vertical_portrait"
             android:id="@+id/left_container" />
         <FrameLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/rom_gamepad_height_portrait"
             android:layout_weight="0.5"
+            android:layout_marginStart="@dimen/rom_gamepad_spacing_horizontal_portrait"
+            android:layout_marginVertical="@dimen/rom_gamepad_spacing_vertical_portrait"
             android:id="@+id/right_container" />
     </LinearLayout>
 

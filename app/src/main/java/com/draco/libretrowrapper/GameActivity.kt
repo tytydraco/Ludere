@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.libretrodroid.Variable
@@ -73,8 +74,7 @@ class GameActivity : AppCompatActivity() {
         initRetroView()
 
         /* Create GamePads */
-        if (resources.getBoolean(R.bool.rom_gamepad_visible))
-            initGamePads()
+        initGamePads()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -169,6 +169,15 @@ class GameActivity : AppCompatActivity() {
         if (retroView == null)
             return
 
+        /* Check if we should show or hide controls */
+        val visibility = if (shouldShowGamePads())
+            View.VISIBLE
+        else
+            View.GONE
+
+        leftGamePadContainer.visibility = visibility
+        rightGamePadContainer.visibility = visibility
+
         /* Initialize GamePads */
         val gamePadConfig = GamePadConfig(this, resources)
         leftGamePad = GamePad(this, gamePadConfig.left, retroView!!, privateData)
@@ -187,15 +196,6 @@ class GameActivity : AppCompatActivity() {
         rightGamePad!!.pad.offsetX = 1f
         leftGamePad!!.pad.offsetY = 1f
         rightGamePad!!.pad.offsetY = 1f
-
-        /* Check if we should show or hide controls */
-        val visibility = if (shouldShowGamePads())
-            View.VISIBLE
-        else
-            View.GONE
-
-        leftGamePadContainer.visibility = visibility
-        rightGamePadContainer.visibility = visibility
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
