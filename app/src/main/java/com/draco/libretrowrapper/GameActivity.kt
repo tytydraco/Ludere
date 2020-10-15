@@ -227,23 +227,24 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onGenericMotionEvent(event: MotionEvent): Boolean {
-        when (retroView?.id) {
-            GLRetroView.MOTION_SOURCE_DPAD -> retroView?.sendMotionEvent(
+        if (retroView != null) with (retroView!!) {
+            sendMotionEvent(
                 GLRetroView.MOTION_SOURCE_DPAD,
                 event.getAxisValue(MotionEvent.AXIS_HAT_X),
                 event.getAxisValue(MotionEvent.AXIS_HAT_Y)
             )
-            GLRetroView.MOTION_SOURCE_ANALOG_LEFT -> retroView?.sendMotionEvent(
+            sendMotionEvent(
                 GLRetroView.MOTION_SOURCE_ANALOG_LEFT,
                 event.getAxisValue(MotionEvent.AXIS_X),
                 event.getAxisValue(MotionEvent.AXIS_Y)
             )
-            GLRetroView.MOTION_SOURCE_ANALOG_RIGHT -> retroView?.sendMotionEvent(
+            sendMotionEvent(
                 GLRetroView.MOTION_SOURCE_ANALOG_RIGHT,
                 event.getAxisValue(MotionEvent.AXIS_Z),
                 event.getAxisValue(MotionEvent.AXIS_RZ)
             )
         }
+
         return super.onGenericMotionEvent(event)
     }
 
