@@ -54,10 +54,6 @@ class GameActivity : AppCompatActivity() {
         "state"     /* Save state dump */
     )
 
-    private val retroViewVariables = arrayOf(
-        Variable("desmume_pointer_type", "touch")
-    )
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
@@ -117,12 +113,28 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
+    private fun getCoreVariables(): Array<Variable> {
+        val variables = arrayListOf<Variable>()
+        val rawVariablesString = getString(R.string.rom_variables)
+        val rawVariables = rawVariablesString.split(",")
+        for (rawVariable in rawVariables) {
+            val rawVariableSplit = rawVariable.split("=")
+            if (rawVariableSplit.size != 2)
+                continue
+            variables.add(Variable(rawVariableSplit[0], rawVariableSplit[1]))
+        }
+
+        return variables.toTypedArray()
+    }
+
     private fun initRetroView() {
         /* Initialize save data */
         val saveBytes = if (privateData.save.exists())
             privateData.save.readBytes()
         else
             byteArrayOf()
+
+
 
         /* Create GLRetroView */
         retroView = GLRetroView(
@@ -131,7 +143,7 @@ class GameActivity : AppCompatActivity() {
             privateData.rom.absolutePath,
             saveRAMState = saveBytes,
             shader = GLRetroView.SHADER_SHARP,
-            variables = retroViewVariables
+            variables = getCoreVariables()
         )
         lifecycle.addObserver(retroView!!)
         parent.addView(retroView)

@@ -21,6 +21,7 @@ android {
         all {
             resValue("string", "rom_name", rom.name)
             resValue("string", "rom_core", rom.core)
+            resValue("string", "rom_variables", rom.variables)
 
             resValue("color", "rom_foreground_color", rom.foregroundColor)
             resValue("color", "rom_background_color", rom.backgroundColor)

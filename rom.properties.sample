@@ -12,6 +12,8 @@ core=mgba
 # Support for audio
 foregroundColor=#FFFFFF
 backgroundColor=#000000
+# Core variables (key=value separated by commas) (optional)
+variables=
 # GamePad size (dimen)
 gamePadSize=180dp
 # How much to pad the controls horizontally (dimen)
