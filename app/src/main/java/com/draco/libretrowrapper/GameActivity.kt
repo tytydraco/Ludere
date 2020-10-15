@@ -71,13 +71,13 @@ class GameActivity : AppCompatActivity() {
         /* Create GLRetroView */
         initRetroView()
 
-        /* Consider loading state */
+        /* Consider loading state if we died from a configuration change */
         if (savedInstanceState != null) {
             val stateBytes = savedInstanceState.getByteArray("state")
             if (stateBytes != null) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     retroView?.unserializeState(stateBytes)
-                }, 50)
+                }, 100)
             }
         }
 
