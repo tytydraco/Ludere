@@ -20,9 +20,9 @@ name=Example Rom
 core=mgba
 
 # The color of the foreground icon drawable
-foregroundColor=#FFFFFF
+foregroundColor=#0000AA
 # The color of the icon background
-backgroundColor=#000000
+backgroundColor=#FFFFFF
 
 # Core variables (key=value separated by commas) (optional)
 # You can find variables for your core in the LibRetro docs:
@@ -32,32 +32,56 @@ backgroundColor=#000000
 # 3) Click on your system of choice
 # 4) Click on your core of choice
 # 5) Scroll down to the "Core options" section
-variables=
+variables=desmume_pointer_type=touch
+
+# Screen orientation to use
+# The most common settings are:
+# 1) unspecified		The default value, usually allowing portrait and landscape
+# 2) portrait			Only allow the device in the upright position
+# 3) userLandscape		Allow either landscape or reverse landscape
+# 4) locked				Use whatever orientation the device was in earlier
+orientation=unspecified
+
+# By default, the GamePad will not show for these cases:
+# 1) Devices without a touchscreen
+# 2) When the current display is external (i.e. casting)
+# 3) When a gamepad or joystick is connected
+gamePadVisible=true
 
 # GamePad size in dp units
-# It is usually safest to keep the vertical size at around
-# double the hoizontal size, but if you do not like overlapping,
-# it can be reduced.
-gamePadSizeHorizontal=180dp
-gamePadSizeVertical=360dp
+# It is usually safest to keep the height at around double the width,
+# but if you do not like overlapping, it can be reduced.
+gamePadWidthPortrait=180dp
+gamePadHeightPortrait=360dp
+gamePadWidthLandscape=180dp
+gamePadHeightLandscape=360dp
 
-# How much to pad the controls from the edge of the screen
-gamePadSpacingVertical=10dp
-gamePadSpacingHorizontal=10dp
+# How much to pad the controls from the edge of the screen in dp units
+# For narrow devices, adding spacing can make the game more comfortable
+gamePadSpacingVerticalPortrait=0dp
+gamePadSpacingHorizontalPortrait=10dp
+gamePadSpacingVerticalLandscape=0dp
+gamePadSpacingHorizontalLandscape=20dp
+
+# The position of the GamePad buttons
+# AlignBottom and AlignCenter are mutually exclusive
+gamePadAlignBottomPortrait=true
+gamePadAlignCenterPortrait=false
+gamePadAlignBottomLandscape=false
+gamePadAlignCenterLandscape=true
 
 # GamePad buttons to show
-gamePadVisible=true
 gamePadA=true
 gamePadB=true
-gamePadX=true
-gamePadY=true
+gamePadX=false
+gamePadY=false
 gamePadStart=true
 gamePadSelect=true
 gamePadL1=true
-gamePadL2=true
+gamePadL2=false
 gamePadR1=true
-gamePadR2=true
-gamePadAnalogLeft=true
-gamePadAnalogRight=true
+gamePadR2=false
+gamePadAnalogLeft=false
+gamePadAnalogRight=false
 gamePadSaveState=true
 gamePadLoadState=true
