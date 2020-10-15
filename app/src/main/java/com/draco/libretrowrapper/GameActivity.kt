@@ -198,9 +198,11 @@ class GameActivity : AppCompatActivity() {
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (!hasFocus)
-            return
+        if (hasFocus)
+            immersive()
+    }
 
+    private fun immersive() {
         /* Apply immersive mode */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             with (window.insetsController!!) {
@@ -211,11 +213,14 @@ class GameActivity : AppCompatActivity() {
                 systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             }
         } else {
-            window.decorView.systemUiVisibility =
-                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+            window.decorView.systemUiVisibility = (
                 View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
                 View.SYSTEM_UI_FLAG_FULLSCREEN
+            )
         }
     }
 
