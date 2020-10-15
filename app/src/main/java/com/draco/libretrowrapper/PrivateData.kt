@@ -4,8 +4,8 @@ import android.content.Context
 import java.io.File
 
 class PrivateData(context: Context) {
-    val rom = File("${context.filesDir.absolutePath}/${context.getString(R.string.file_rom)}")
-    val save = File("${context.filesDir.absolutePath}/${context.getString(R.string.file_save)}")
-    val state = File("${context.filesDir.absolutePath}/${context.getString(R.string.file_state)}")
-    val savedInstanceState = File("${context.cacheDir}/${context.getString(R.string.file_saved_instance_state)}")
+    val rom = File("${context.filesDir.absolutePath}/rom")
+    val save = File("${context.filesDir.absolutePath}/save")
+    val state = File("${context.filesDir.absolutePath}/state")
+    val savedInstanceState = File("${context.cacheDir}/saved_instance_state")
 }
