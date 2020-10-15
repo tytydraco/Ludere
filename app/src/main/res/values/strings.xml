@@ -3,4 +3,5 @@
     <string name="file_rom">rom</string>
     <string name="file_save">save</string>
     <string name="file_state">state</string>
+    <string name="file_saved_instance_state">saved_instace_state</string>
 </resources>

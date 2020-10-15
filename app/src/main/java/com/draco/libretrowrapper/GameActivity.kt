@@ -83,21 +83,20 @@ class GameActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
 
         /* Save state since Android killed us */
-        outState.putByteArray("state", retroView?.serializeState())
+        val savedInstanceStateBytes = retroView?.serializeState()
+        if (savedInstanceStateBytes != null)
+            privateData.savedInstanceState.writeBytes(savedInstanceStateBytes)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
 
         /* Consider loading state if we died from a configuration change */
-        val stateBytes = savedInstanceState.getByteArray("state")
-        if (stateBytes != null) {
-            /* Wait for the first frame to be rendered and some extra delay passes */
-            Thread {
-                retroViewReadyLatch.await()
-                retroView?.unserializeState(stateBytes)
-            }.start()
-        }
+        val stateBytes = privateData.savedInstanceState.readBytes()
+        Thread {
+            retroViewReadyLatch.await()
+            retroView?.unserializeState(stateBytes)
+        }.start()
     }
 
     private fun initAssets() {
