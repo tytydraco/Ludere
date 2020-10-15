@@ -7,17 +7,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:layout_alignParentTop="true"
         android:id="@+id/parent" />
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/rom_gamepad_horizontal_spacing"
-        android:layout_alignParentStart="true"
-        android:id="@+id/left_container" />
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginEnd="@dimen/rom_gamepad_horizontal_spacing"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/right_container" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:layout_marginStart="@dimen/rom_gamepad_horizontal_spacing"
+            android:id="@+id/left_container" />
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:layout_marginEnd="@dimen/rom_gamepad_horizontal_spacing"
+            android:id="@+id/right_container" />
+    </LinearLayout>
 </RelativeLayout>

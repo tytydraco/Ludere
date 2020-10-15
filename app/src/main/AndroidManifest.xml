@@ -11,8 +11,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".GameActivity"
-            android:screenOrientation="sensorLandscape"
-            android:configChanges="orientation|screenSize"
             android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
