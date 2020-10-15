@@ -182,7 +182,7 @@ class GameActivity : AppCompatActivity() {
         leftGamePadContainer.addView(leftGamePad!!.pad)
         rightGamePadContainer.addView(rightGamePad!!.pad)
 
-        /* Configure GamePad sizes */
+        /* Configure GamePad positions */
         leftGamePad!!.pad.offsetX = -1f
         rightGamePad!!.pad.offsetX = 1f
 
@@ -277,10 +277,8 @@ class GameActivity : AppCompatActivity() {
 
         /* Do not show if the current display is external (i.e. wireless cast) */
         val dm = getSystemService(Service.DISPLAY_SERVICE) as DisplayManager
-        if (dm.getDisplay(getCurrentDisplayId())
-                .flags.and(Display.FLAG_PRESENTATION) == Display.FLAG_PRESENTATION) {
+        if (dm.getDisplay(getCurrentDisplayId()).flags and Display.FLAG_PRESENTATION == Display.FLAG_PRESENTATION)
             return false
-        }
 
         /* Do not show if the device has a controller connected */
         for (id in InputDevice.getDeviceIds()) {

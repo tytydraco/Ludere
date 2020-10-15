@@ -1,24 +1,51 @@
 # Sample ROM Properties
 # Rename to rom.properties
 
-# Path to your ROM file (relative to root project directory)
-path=rom
-# An identifier to append to the app identifier
+# Path to your ROM files (relative to root project directory)
+# savePath and statePath are used if you wish to include existing
+# save files or save states in the game. They are optional.
+romPath=rom
+savePath=
+statePath=
+
+# A ROM identifier to append to the app id
 id=examplerom
-# Name of the ROM and the app title
+
+# The app name that will be visible
 name=Example Rom
+
 # LibRetro core to fetch for this ROM (excluding _libretro_android.so)
+# Look here for the cores:
+# http://buildbot.libretro.com/nightly/android/latest/
 core=mgba
-# Support for audio
+
+# The color of the foreground icon drawable
 foregroundColor=#FFFFFF
+# The color of the icon background
 backgroundColor=#000000
+
 # Core variables (key=value separated by commas) (optional)
+# You can find variables for your core in the LibRetro docs:
+# https://docs.libretro.com/
+# 1) Click on the sidebar
+# 2) Click on "Core Library: Emulation"
+# 3) Click on your system of choice
+# 4) Click on your core of choice
+# 5) Scroll down to the "Core options" section
 variables=
-# GamePad size (dimen)
-gamePadSize=180dp
-# How much to pad the controls horizontally (dimen)
-gamePadHorizontalSpacing=10dp
-# GamePad buttons
+
+# GamePad size in dp units
+# It is usually safest to keep the vertical size at around
+# double the hoizontal size, but if you do not like overlapping,
+# it can be reduced.
+gamePadSizeHorizontal=180dp
+gamePadSizeVertical=360dp
+
+# How much to pad the controls from the edge of the screen
+gamePadSpacingVertical=10dp
+gamePadSpacingHorizontal=10dp
+
+# GamePad buttons to show
 gamePadVisible=true
 gamePadA=true
 gamePadB=true

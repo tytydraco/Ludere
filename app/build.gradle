@@ -20,16 +20,31 @@ android {
     buildTypes {
         all {
             resValue("string", "rom_name", rom.name)
+
             resValue("string", "rom_core", rom.core)
-            resValue("string", "rom_variables", rom.variables)
 
             resValue("color", "rom_foreground_color", rom.foregroundColor)
             resValue("color", "rom_background_color", rom.backgroundColor)
 
-            resValue("dimen", "rom_gamepad_size", rom.gamePadSize)
-            resValue("dimen", "rom_gamepad_horizontal_spacing", rom.gamePadHorizontalSpacing)
+            resValue("string", "rom_variables", rom.variables)
 
             resValue("bool", "rom_gamepad_visible", rom.gamePadVisible)
+
+            resValue("dimen", "rom_gamepad_height_portrait", rom.gamePadHeightPortrait)
+            resValue("dimen", "rom_gamepad_width_portrait", rom.gamePadWidthPortrait)
+            resValue("dimen", "rom_gamepad_height_landscape", rom.gamePadHeightLandscape)
+            resValue("dimen", "rom_gamepad_width_landscape", rom.gamePadWidthLandscape)
+
+            resValue("dimen", "rom_gamepad_spacing_vertical_portrait", rom.gamePadSpacingVerticalPortrait)
+            resValue("dimen", "rom_gamepad_spacing_horizontal_portrait", rom.gamePadSpacingHorizontalPortrait)
+            resValue("dimen", "rom_gamepad_spacing_vertical_landscape", rom.gamePadSpacingVerticalLandscape)
+            resValue("dimen", "rom_gamepad_spacing_horizontal_landscape", rom.gamePadSpacingHorizontalLandscape)
+
+            resValue("bool", "rom_gamepad_align_bottom_portrait", rom.gamePadAlignBottomPortrait)
+            resValue("bool", "rom_gamepad_align_center_portrait", rom.gamePadAlignCenterPortrait)
+            resValue("bool", "rom_gamepad_align_bottom_landscape", rom.gamePadAlignBottomLandscape)
+            resValue("bool", "rom_gamepad_align_center_landscape", rom.gamePadAlignCenterLandscape)
+
             resValue("bool", "rom_gamepad_a", rom.gamePadA)
             resValue("bool", "rom_gamepad_b", rom.gamePadB)
             resValue("bool", "rom_gamepad_x", rom.gamePadX)
