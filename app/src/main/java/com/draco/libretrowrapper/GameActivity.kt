@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.swordfish.libretrodroid.GLRetroView
 import io.reactivex.disposables.CompositeDisposable
 import java.io.File
+import java.util.concurrent.CountDownLatch
 
 class GameActivity : AppCompatActivity() {
     private lateinit var parent: FrameLayout
@@ -25,6 +26,8 @@ class GameActivity : AppCompatActivity() {
     private var retroView: GLRetroView? = null
     private var leftGamePad: GamePad? = null
     private var rightGamePad: GamePad? = null
+
+    private val retroViewReadyLatch = CountDownLatch(1)
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -71,19 +74,21 @@ class GameActivity : AppCompatActivity() {
         /* Create GLRetroView */
         initRetroView()
 
+        /* Create GamePads */
+        if (resources.getBoolean(R.bool.rom_gamepad_visible))
+            initGamePads()
+
         /* Consider loading state if we died from a configuration change */
         if (savedInstanceState != null) {
             val stateBytes = savedInstanceState.getByteArray("state")
             if (stateBytes != null) {
-                Handler(Looper.getMainLooper()).postDelayed({
+                /* Wait for the first frame to be rendered and some extra delay passes */
+                Thread {
+                    retroViewReadyLatch.await()
                     retroView?.unserializeState(stateBytes)
-                }, 100)
+                }.start()
             }
         }
-
-        /* Create GamePads */
-        if (resources.getBoolean(R.bool.rom_gamepad_visible))
-            initGamePads()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -129,6 +134,16 @@ class GameActivity : AppCompatActivity() {
         )
         params.gravity = Gravity.CENTER
         retroView!!.layoutParams = params
+
+        /* Start tracking the frame state of the GLRetroView */
+        val renderDisposable = retroView!!
+            .getGLRetroEvents()
+            .takeUntil { retroViewReadyLatch.count == 0L }
+            .subscribe {
+                if (it == GLRetroView.GLRetroEvents.FrameRendered)
+                    Handler(Looper.getMainLooper()).postDelayed({ retroViewReadyLatch.countDown() }, 100)
+            }
+        compositeDisposable.add(renderDisposable)
     }
 
     private fun initGamePads() {
