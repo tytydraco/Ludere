@@ -5,13 +5,6 @@ apply plugin: 'kotlin-android-extensions'
 ext.rom = new Properties()
 file("${rootProject.projectDir}/config/rom.properties").withInputStream { ext.rom.load(it) }
 
-def validAssets = [
-    ["rom", rom.romPath],
-    ["core", rom.corePath],
-    ["save", rom.savePath],
-    ["state", rom.statePad]
-]
-
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
@@ -81,17 +74,28 @@ android {
 }
 
 task cleanAssets(type: Delete) {
-    for (asset in validAssets)
-        delete "src/main/assets/${asset[0]}"
+    delete 'src/main/assets/rom'
+    delete 'src/main/assets/save'
+    delete 'src/main/assets/state'
 }
 
 task copyAssets(type: Copy) {
-    for (asset in validAssets) {
-        if (asset[1] != null) {
-            from "${rootProject.projectDir}/config/${asset[1]}"
-            into "src/main/assets/"
-            rename(asset[1], asset[0])
-        }
+    if (!rom.romPath.isEmpty()) {
+        from "${rootProject.projectDir}/config/${rom.romPath}"
+        into "src/main/assets/"
+        rename("${rom.romPath}", "rom")
+    }
+
+    if (!rom.savePath.isEmpty()) {
+        from "${rootProject.projectDir}/config/${rom.savePath}"
+        into "src/main/assets/"
+        rename("${rom.savePath}", "save")
+    }
+
+    if (!rom.statePath.isEmpty()) {
+        from "${rootProject.projectDir}/config/${rom.statePath}"
+        into "src/main/assets/"
+        rename("${rom.statePath}", "state")
     }
 }
 

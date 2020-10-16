@@ -3,10 +3,8 @@
 
 # Path to your ROM files (relative to root project directory)
 # savePath and statePath are used if you wish to include existing
-# save files or save states in the game. If corePath is left empty,
-# the core will be fetched from LibRetro during runtime.
+# save files or save states in the game. They are optional.
 romPath=rom
-corePath=
 savePath=
 statePath=
 
