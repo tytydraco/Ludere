@@ -21,6 +21,10 @@ name=Example Rom
 # http://buildbot.libretro.com/nightly/android/latest/
 core=mgba
 
+# Should the latest version of the core be fetched at runtime, even if
+# it already exists
+coreAlwaysUpdate=true
+
 # The color of the foreground icon drawable
 foregroundColor=#ffffff
 # The color of the icon background

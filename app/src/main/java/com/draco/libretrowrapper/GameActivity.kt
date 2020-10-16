@@ -52,6 +52,7 @@ class GameActivity : AppCompatActivity() {
 
     private val validAssets = listOf(
         "rom",      /* ROM file itself */
+        "core",     /* LibRetro core */
         "save",     /* SRAM dump */
         "state"     /* Save state dump */
     )
@@ -155,7 +156,7 @@ class GameActivity : AppCompatActivity() {
             } catch (_: Exception) {}
         }
 
-        if (!privateData.core.exists())
+        if (resources.getBoolean(R.bool.rom_core_always_update) || !privateData.core.exists())
             CoreUpdater(this, privateData).update()
     }
 
