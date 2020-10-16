@@ -11,17 +11,23 @@ import io.reactivex.disposables.CompositeDisposable
 class GamePad(
     context: Context,
     padConfig: RadialGamePadConfig,
-    private val retroView: GLRetroView,
+    private val retroView: GLRetroView?,
     private val privateData: PrivateData
 ) {
     val pad: RadialGamePad = RadialGamePad(padConfig, 0f, context)
     private val compositeDisposable = CompositeDisposable()
 
     private fun save() {
+        if (retroView == null)
+            return
+
         privateData.state.writeBytes(retroView.serializeState())
     }
 
     private fun load() {
+        if (retroView == null)
+            return
+
         if (!privateData.state.exists())
             return
 
@@ -31,14 +37,23 @@ class GamePad(
     }
 
     private fun fastForwardToggle() {
+        if (retroView == null)
+            return
+
         retroView.fastForwardEnabled = !retroView.fastForwardEnabled
     }
 
     private fun muteToggle() {
+        if (retroView == null)
+            return
+
         retroView.audioEnabled = !retroView.audioEnabled
     }
 
-    private fun eventHandler(event: Event, retroView: GLRetroView) {
+    private fun eventHandler(event: Event, retroView: GLRetroView?) {
+        if (retroView == null)
+            return
+
         when (event) {
             is Event.Button -> {
                 when (event.id) {

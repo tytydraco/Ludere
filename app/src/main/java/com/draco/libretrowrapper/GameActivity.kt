@@ -66,14 +66,21 @@ class GameActivity : AppCompatActivity() {
         /* Setup private data handler */
         privateData = PrivateData(this)
 
-        /* Copy assets */
-        initAssets()
+        Thread {
+            /* Copy assets */
+            initAssets()
 
-        /* Create GLRetroView */
-        initRetroView()
+            /* Create GLRetroView */
+            initRetroView()
 
-        /* Create GamePads */
-        initGamePads()
+            /* Add GLRetroView to main layout */
+            runOnUiThread { parent.addView(retroView) }
+
+            retroViewReadyLatch.await()
+
+            /* Create GamePads */
+            runOnUiThread { initGamePads() }
+        }.start()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -154,7 +161,6 @@ class GameActivity : AppCompatActivity() {
             variables = getCoreVariables()
         )
         lifecycle.addObserver(retroView!!)
-        parent.addView(retroView)
 
         /* Center view */
         val params = FrameLayout.LayoutParams(
@@ -175,10 +181,6 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun initGamePads() {
-        /* Must be called after GLRetroView is initialized */
-        if (retroView == null)
-            return
-
         /* Check if we should show or hide controls */
         val visibility = if (shouldShowGamePads())
             View.VISIBLE
@@ -190,22 +192,22 @@ class GameActivity : AppCompatActivity() {
 
         /* Initialize GamePads */
         val gamePadConfig = GamePadConfig(this, resources)
-        leftGamePad = GamePad(this, gamePadConfig.left, retroView!!, privateData)
-        rightGamePad = GamePad(this, gamePadConfig.right, retroView!!, privateData)
+        leftGamePad = GamePad(this, gamePadConfig.left, retroView, privateData)
+        rightGamePad = GamePad(this, gamePadConfig.right, retroView, privateData)
 
         /* Initialize input handlers */
         leftGamePad!!.subscribe()
         rightGamePad!!.subscribe()
-
-        /* Add GamePads to the activity */
-        leftGamePadContainer.addView(leftGamePad!!.pad)
-        rightGamePadContainer.addView(rightGamePad!!.pad)
 
         /* Configure GamePad positions */
         leftGamePad!!.pad.offsetX = -1f
         rightGamePad!!.pad.offsetX = 1f
         leftGamePad!!.pad.offsetY = 1f
         rightGamePad!!.pad.offsetY = 1f
+
+        /* Add to layout */
+        leftGamePadContainer.addView(leftGamePad!!.pad)
+        rightGamePadContainer.addView(rightGamePad!!.pad)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
