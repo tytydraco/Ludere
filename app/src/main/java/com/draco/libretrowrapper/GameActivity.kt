@@ -19,6 +19,7 @@ import java.util.concurrent.CountDownLatch
 class GameActivity : AppCompatActivity() {
     private lateinit var parent: FrameLayout
     private lateinit var privateData: PrivateData
+    private lateinit var coreUpdater: CoreUpdater
 
     private lateinit var leftGamePadContainer: FrameLayout
     private lateinit var rightGamePadContainer: FrameLayout
@@ -68,6 +69,9 @@ class GameActivity : AppCompatActivity() {
 
         /* Setup private data handler */
         privateData = PrivateData(this)
+
+        /* Setup core updater */
+        coreUpdater = CoreUpdater(this, privateData)
 
         Thread {
             /* Copy assets */
@@ -157,7 +161,7 @@ class GameActivity : AppCompatActivity() {
         }
 
         if (resources.getBoolean(R.bool.rom_core_always_update) || !privateData.core.exists())
-            CoreUpdater(this, privateData).update()
+            coreUpdater.update()
     }
 
     private fun getCoreVariables(): Array<Variable> {
