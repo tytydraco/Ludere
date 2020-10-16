@@ -82,7 +82,10 @@ class GameActivity : AppCompatActivity() {
         /* Save state since Android killed us */
         val savedInstanceStateBytes = retroView?.serializeState()
         if (savedInstanceStateBytes != null)
-            privateData.savedInstanceState.writeBytes(savedInstanceStateBytes)
+            with(privateData.savedInstanceState.outputStream()) {
+                write(savedInstanceStateBytes)
+                close()
+            }
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -92,7 +95,10 @@ class GameActivity : AppCompatActivity() {
             return
 
         /* Consider loading state if we died from a configuration change */
-        val stateBytes = privateData.savedInstanceState.readBytes()
+        val stateInputStream = privateData.savedInstanceState.inputStream()
+        val stateBytes = stateInputStream.readBytes()
+        stateInputStream.close()
+
         Thread {
             retroViewReadyLatch.await()
             retroView?.unserializeState(stateBytes)
@@ -103,11 +109,12 @@ class GameActivity : AppCompatActivity() {
         for (asset in validAssets) {
             try {
                 val assetInputStream = assets.open(asset)
-                val assetBytes = assetInputStream.readBytes()
-                val assetFile = File("${filesDir.absolutePath}/$asset")
+                val assetOutputStream = File("${filesDir.absolutePath}/$asset").outputStream()
 
-                if (!assetFile.exists())
-                    assetFile.writeBytes(assetBytes)
+                assetInputStream.copyTo(assetOutputStream)
+
+                assetOutputStream.close()
+                assetInputStream.close()
             } catch (_: Exception) {}
         }
     }
@@ -120,6 +127,7 @@ class GameActivity : AppCompatActivity() {
             val rawVariableSplit = rawVariable.split("=")
             if (rawVariableSplit.size != 2)
                 continue
+
             variables.add(Variable(rawVariableSplit[0], rawVariableSplit[1]))
         }
 
@@ -128,10 +136,13 @@ class GameActivity : AppCompatActivity() {
 
     private fun initRetroView() {
         /* Initialize save data */
-        val saveBytes = if (privateData.save.exists())
-            privateData.save.readBytes()
-        else
-            byteArrayOf()
+        var saveBytes = byteArrayOf()
+
+        if (privateData.save.exists()) {
+            val saveInputStream = privateData.save.inputStream()
+            saveBytes = saveInputStream.readBytes()
+            saveInputStream.close()
+        }
 
         /* Create GLRetroView */
         retroView = GLRetroView(
@@ -300,8 +311,11 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
-        if (retroView != null && retroViewReadyLatch.count == 0L)
-            privateData.save.writeBytes(retroView!!.serializeSRAM())
+        if (retroViewReadyLatch.count == 0L)
+            with (privateData.save.outputStream()) {
+                write(retroView?.serializeSRAM())
+                close()
+            }
         super.onStop()
     }
 
