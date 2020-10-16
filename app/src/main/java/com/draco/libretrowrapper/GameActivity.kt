@@ -13,6 +13,7 @@ import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.libretrodroid.Variable
 import io.reactivex.disposables.CompositeDisposable
 import java.io.File
+import java.net.UnknownHostException
 import java.util.concurrent.CountDownLatch
 
 class GameActivity : AppCompatActivity() {
@@ -69,7 +70,12 @@ class GameActivity : AppCompatActivity() {
 
         Thread {
             /* Copy assets */
-            initAssets()
+            try {
+                initAssets()
+            } catch (e: UnknownHostException) {
+                runOnUiThread { showFetchError(e) }
+                return@Thread
+            }
 
             /* Create GLRetroView */
             try {
@@ -89,14 +95,22 @@ class GameActivity : AppCompatActivity() {
         }.start()
     }
 
-    private fun showLoadError(e: Exception) {
+    private fun showFetchError(e: Exception) {
         AlertDialog.Builder(this)
-            .setTitle(getString(R.string.error_dialog_title))
-            .setMessage("${getString(R.string.error_dialog_message)}\n\n${e.cause}")
-            .setPositiveButton(getString(R.string.error_dialog_exit)) { _, _ -> finishAffinity() }
+            .setTitle(getString(R.string.fetch_error_dialog_title))
+            .setMessage("${getString(R.string.fetch_error_dialog_message)}\n\n${e.message}")
+            .setPositiveButton(getString(R.string.fetch_error_dialog_exit)) { _, _ -> finishAffinity() }
             .setCancelable(false)
             .show()
+    }
 
+    private fun showLoadError(e: Exception) {
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.load_error_dialog_title))
+            .setMessage("${getString(R.string.load_error_dialog_message)}\n\n${e.cause}")
+            .setPositiveButton(getString(R.string.load_error_dialog_exit)) { _, _ -> finishAffinity() }
+            .setCancelable(false)
+            .show()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -140,6 +154,9 @@ class GameActivity : AppCompatActivity() {
                 assetInputStream.close()
             } catch (_: Exception) {}
         }
+
+        if (!privateData.core.exists())
+            CoreUpdater(this, privateData).update()
     }
 
     private fun getCoreVariables(): Array<Variable> {
@@ -170,7 +187,7 @@ class GameActivity : AppCompatActivity() {
         /* Create GLRetroView */
         retroView = GLRetroView(
             this,
-            "${getString(R.string.rom_core)}_libretro_android.so",
+            privateData.core.absolutePath,
             privateData.rom.absolutePath,
             saveRAMState = saveBytes,
             shader = GLRetroView.SHADER_SHARP,
