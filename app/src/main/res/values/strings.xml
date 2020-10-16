@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_dialog_title">Initialization Failure</string>
+    <string name="error_dialog_message">Failed to load the emulator. Ensure the app is correctly configured.</string>
+    <string name="error_dialog_exit">Exit</string>
+</resources>

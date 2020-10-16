@@ -1,5 +1,6 @@
 package com.draco.libretrowrapper
 
+import android.app.AlertDialog
 import android.app.Service
 import android.content.pm.PackageManager
 import android.hardware.display.DisplayManager
@@ -71,7 +72,12 @@ class GameActivity : AppCompatActivity() {
             initAssets()
 
             /* Create GLRetroView */
-            initRetroView()
+            try {
+                initRetroView()
+            } catch (e: Exception) {
+                runOnUiThread { showLoadError(e) }
+                return@Thread
+            }
 
             /* Add GLRetroView to main layout */
             runOnUiThread { parent.addView(retroView) }
@@ -81,6 +87,16 @@ class GameActivity : AppCompatActivity() {
             /* Create GamePads */
             runOnUiThread { initGamePads() }
         }.start()
+    }
+
+    private fun showLoadError(e: Exception) {
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.error_dialog_title))
+            .setMessage("${getString(R.string.error_dialog_message)}\n\n${e.cause}")
+            .setPositiveButton(getString(R.string.error_dialog_exit)) { _, _ -> finishAffinity() }
+            .setCancelable(false)
+            .show()
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
