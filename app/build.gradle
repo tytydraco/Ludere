@@ -74,9 +74,7 @@ android {
 }
 
 task cleanAssets(type: Delete) {
-    delete 'src/main/assets/rom'
-    delete 'src/main/assets/save'
-    delete 'src/main/assets/state'
+    delete file('src/main/assets/').listFiles()
 }
 
 task copyAssets(type: Copy) {
@@ -84,6 +82,12 @@ task copyAssets(type: Copy) {
         from "${rootProject.projectDir}/config/${rom.romPath}"
         into "src/main/assets/"
         rename("${rom.romPath}", "rom")
+    }
+
+    if (!rom.corePath.isEmpty()) {
+        from "${rootProject.projectDir}/config/${rom.corePath}"
+        into "src/main/assets/"
+        rename("${rom.corePath}", "core")
     }
 
     if (!rom.savePath.isEmpty()) {
