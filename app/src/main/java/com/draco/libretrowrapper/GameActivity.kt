@@ -32,6 +32,8 @@ class GameActivity : AppCompatActivity() {
 
     private val compositeDisposable = CompositeDisposable()
 
+    var saveBytes = byteArrayOf()
+
     private val validKeyCodes = listOf(
         KeyEvent.KEYCODE_BUTTON_A,
         KeyEvent.KEYCODE_BUTTON_B,
@@ -75,12 +77,13 @@ class GameActivity : AppCompatActivity() {
 
         Thread {
             /* Copy assets */
-            try {
-                initAssets()
-            } catch (e: UnknownHostException) {
-                runOnUiThread { showFetchError(e) }
-                return@Thread
-            }
+            if (savedInstanceState == null)
+                try {
+                    initAssets()
+                } catch (e: UnknownHostException) {
+                    runOnUiThread { showFetchError(e) }
+                    return@Thread
+                }
 
             /* Create GLRetroView */
             try {
@@ -180,10 +183,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun initRetroView() {
-        /* Initialize save data */
-        var saveBytes = byteArrayOf()
-
-        if (privateData.save.exists()) {
+        if (saveBytes.isEmpty() && privateData.save.exists()) {
             val saveInputStream = privateData.save.inputStream()
             saveBytes = saveInputStream.readBytes()
             saveInputStream.close()
