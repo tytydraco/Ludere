@@ -152,9 +152,10 @@ class GameActivity : AppCompatActivity() {
 
     private fun initAssets() {
         for (asset in validAssets) {
-            try {
+            val assetFile = File("${filesDir.absolutePath}/$asset")
+            if (!assetFile.exists()) try {
                 val assetInputStream = assets.open(asset)
-                val assetOutputStream = File("${filesDir.absolutePath}/$asset").outputStream()
+                val assetOutputStream = assetFile.outputStream()
 
                 assetInputStream.copyTo(assetOutputStream)
 
