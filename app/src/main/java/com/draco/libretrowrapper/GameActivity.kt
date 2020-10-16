@@ -164,7 +164,7 @@ class GameActivity : AppCompatActivity() {
             } catch (_: Exception) {}
         }
 
-        if (resources.getBoolean(R.bool.rom_core_always_update) || !privateData.core.exists())
+        if (!privateData.core.exists())
             coreUpdater.update()
     }
 
