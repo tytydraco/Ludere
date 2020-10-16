@@ -68,7 +68,6 @@ android {
         }
     }
 
-    preBuild.dependsOn 'updateCores'
     preBuild.dependsOn 'cleanAssets'
     preBuild.dependsOn 'copyAssets'
 }
@@ -97,11 +96,6 @@ task copyAssets(type: Copy) {
         into "src/main/assets/"
         rename("${rom.statePath}", "state")
     }
-}
-
-task updateCores(type: Exec) {
-    commandLine "python", "tools/update_cores.py", rom.core
-    workingDir = rootDir
 }
 
 dependencies {
