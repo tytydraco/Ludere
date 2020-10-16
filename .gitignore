@@ -9,9 +9,6 @@
 .externalNativeBuild
 .cxx
 
-# Cores
-*_libretro_android.so
-
 # Base configuration
 config/*
 !config/*.properties.sample
