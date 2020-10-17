@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.FrameLayout
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.libretrodroid.Variable
@@ -17,10 +18,11 @@ import java.net.UnknownHostException
 import java.util.concurrent.CountDownLatch
 
 class GameActivity : AppCompatActivity() {
-    private lateinit var parent: FrameLayout
     private lateinit var privateData: PrivateData
     private lateinit var coreUpdater: CoreUpdater
 
+    private lateinit var parent: FrameLayout
+    private lateinit var progress: ProgressBar
     private lateinit var leftGamePadContainer: FrameLayout
     private lateinit var rightGamePadContainer: FrameLayout
 
@@ -60,6 +62,7 @@ class GameActivity : AppCompatActivity() {
 
         /* Initialize layout variables */
         parent = findViewById(R.id.parent)
+        progress = findViewById(R.id.progress)
         leftGamePadContainer = findViewById(R.id.left_container)
         rightGamePadContainer = findViewById(R.id.right_container)
 
@@ -86,9 +89,12 @@ class GameActivity : AppCompatActivity() {
                 runOnUiThread { showLoadError(e) }
                 return@Thread
             }
-
+            
             /* Add GLRetroView to main layout */
-            runOnUiThread { parent.addView(retroView) }
+            runOnUiThread {
+                parent.addView(retroView)
+                progress.visibility = View.GONE
+            }
 
             retroViewReadyLatch.await()
 
