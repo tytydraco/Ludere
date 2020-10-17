@@ -32,8 +32,6 @@ class GameActivity : AppCompatActivity() {
 
     private val compositeDisposable = CompositeDisposable()
 
-    var saveBytes = byteArrayOf()
-
     private val validKeyCodes = listOf(
         KeyEvent.KEYCODE_BUTTON_A,
         KeyEvent.KEYCODE_BUTTON_B,
@@ -184,7 +182,8 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun initRetroView() {
-        if (saveBytes.isEmpty() && privateData.save.exists()) {
+        var saveBytes = byteArrayOf()
+        if (privateData.save.exists()) {
             val saveInputStream = privateData.save.inputStream()
             saveBytes = saveInputStream.readBytes()
             saveInputStream.close()
