@@ -32,6 +32,9 @@ class GameActivity : AppCompatActivity() {
 
     private val compositeDisposable = CompositeDisposable()
 
+    private val fastForwardEnabledString = "fast_forward_enabled"
+    private val audioEnabledString = "audio_enabled"
+
     private val validKeyCodes = listOf(
         KeyEvent.KEYCODE_BUTTON_A,
         KeyEvent.KEYCODE_BUTTON_B,
@@ -122,6 +125,9 @@ class GameActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
+        outState.putBoolean(fastForwardEnabledString, retroView!!.fastForwardEnabled)
+        outState.putBoolean(audioEnabledString, retroView!!.audioEnabled)
+
         /* Save state since Android killed us */
         val savedInstanceStateBytes = retroView?.serializeState()
         if (savedInstanceStateBytes != null)
@@ -134,17 +140,22 @@ class GameActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
 
-        if (!privateData.savedInstanceState.exists())
-            return
-
-        /* Consider loading state if we died from a configuration change */
-        val stateInputStream = privateData.savedInstanceState.inputStream()
-        val stateBytes = stateInputStream.readBytes()
-        stateInputStream.close()
-
         Thread {
             retroViewReadyLatch.await()
-            retroView?.unserializeState(stateBytes)
+
+            /* Restore settings */
+            retroView!!.fastForwardEnabled = savedInstanceState.getBoolean(fastForwardEnabledString)
+            retroView!!.audioEnabled = savedInstanceState.getBoolean(audioEnabledString)
+
+            /* Restore state */
+            if (privateData.savedInstanceState.exists()) {
+                /* Consider loading state if we died from a configuration change */
+                val stateInputStream = privateData.savedInstanceState.inputStream()
+                val stateBytes = stateInputStream.readBytes()
+                stateInputStream.close()
+                
+                retroView!!.unserializeState(stateBytes)
+            }
         }.start()
     }
 
