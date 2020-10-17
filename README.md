@@ -35,10 +35,10 @@ Here's how LibRetroWrapper is configured:
 ```
 
 # Features
-- LibRetro core comes bundled at compile time, no external importing required
+- LibRetro core is fetched once on first launch
 - ROM is packaged inside the APK, no external importing required
 - Save state support (single slot)
-- SRAM is dumped when the screen loses focus (sleep, go home, close)
+- SRAM is saved when the application loses focus
 - All-in-one package, can be easily distributed once packaged
 - Android TV and external controller support
 
