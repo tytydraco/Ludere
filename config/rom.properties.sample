@@ -52,10 +52,6 @@ gamePadButtonColor=#aa424242
 # The color of the button when pressed down
 gamePadPressedColor=#aa212121
 
-# GamePad size in dp units
-gamePadHeightPortrait=300dp
-gamePadWidhtLandscape=200dp
-
 # How much to pad the controls from the edge of the screen in dp units
 # For narrow devices, adding spacing can make the game more comfortable
 gamePadSpacingVerticalPortrait=10dp
