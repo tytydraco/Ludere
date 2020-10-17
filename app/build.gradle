@@ -21,41 +21,41 @@ android {
 
     buildTypes {
         all {
-            resValue("string", "rom_name", rom.name)
+            resValue("string", "config_name", rom.name)
 
-            resValue("string", "rom_core", rom.core)
+            resValue("string", "config_core", rom.core)
 
-            resValue("color", "rom_foreground_color", rom.foregroundColor)
-            resValue("color", "rom_background_color", rom.backgroundColor)
+            resValue("color", "config_foreground_color", rom.foregroundColor)
+            resValue("color", "config_background_color", rom.backgroundColor)
 
-            resValue("string", "rom_variables", rom.variables)
+            resValue("string", "config_variables", rom.variables)
 
-            resValue("bool", "rom_gamepad_visible", rom.gamePadVisible)
+            resValue("bool", "config_gamepad_visible", rom.gamePadVisible)
 
-            resValue("color", "rom_gamepad_icon_color", rom.gamePadIconColor)
-            resValue("color", "rom_gamepad_button_color", rom.gamePadButtonColor)
-            resValue("color", "rom_gamepad_pressed_color", rom.gamePadPressedColor)
+            resValue("color", "config_gamepad_icon_color", rom.gamePadIconColor)
+            resValue("color", "config_gamepad_button_color", rom.gamePadButtonColor)
+            resValue("color", "config_gamepad_pressed_color", rom.gamePadPressedColor)
 
-            resValue("dimen", "rom_gamepad_height_portrait", rom.gamePadHeightPortrait)
-            resValue("dimen", "rom_gamepad_width_landscape", rom.gamePadWidhtLandscape)
+            resValue("dimen", "config_gamepad_height_portrait", rom.gamePadHeightPortrait)
+            resValue("dimen", "config_gamepad_width_landscape", rom.gamePadWidhtLandscape)
 
-            resValue("dimen", "rom_gamepad_spacing_vertical_portrait", rom.gamePadSpacingVerticalPortrait)
-            resValue("dimen", "rom_gamepad_spacing_horizontal_portrait", rom.gamePadSpacingHorizontalPortrait)
-            resValue("dimen", "rom_gamepad_spacing_vertical_landscape", rom.gamePadSpacingVerticalLandscape)
-            resValue("dimen", "rom_gamepad_spacing_horizontal_landscape", rom.gamePadSpacingHorizontalLandscape)
+            resValue("dimen", "config_gamepad_spacing_vertical_portrait", rom.gamePadSpacingVerticalPortrait)
+            resValue("dimen", "config_gamepad_spacing_horizontal_portrait", rom.gamePadSpacingHorizontalPortrait)
+            resValue("dimen", "config_gamepad_spacing_vertical_landscape", rom.gamePadSpacingVerticalLandscape)
+            resValue("dimen", "config_gamepad_spacing_horizontal_landscape", rom.gamePadSpacingHorizontalLandscape)
 
-            resValue("bool", "rom_gamepad_a", rom.gamePadA)
-            resValue("bool", "rom_gamepad_b", rom.gamePadB)
-            resValue("bool", "rom_gamepad_x", rom.gamePadX)
-            resValue("bool", "rom_gamepad_y", rom.gamePadY)
-            resValue("bool", "rom_gamepad_start", rom.gamePadStart)
-            resValue("bool", "rom_gamepad_select", rom.gamePadSelect)
-            resValue("bool", "rom_gamepad_l", rom.gamePadL)
-            resValue("bool", "rom_gamepad_r", rom.gamePadR)
-            resValue("bool", "rom_gamepad_save_state", rom.gamePadSaveState)
-            resValue("bool", "rom_gamepad_load_state", rom.gamePadLoadState)
-            resValue("bool", "rom_gamepad_fast_forward", rom.gamePadFastForward)
-            resValue("bool", "rom_gamepad_mute", rom.gamePadMute)
+            resValue("bool", "config_gamepad_a", rom.gamePadA)
+            resValue("bool", "config_gamepad_b", rom.gamePadB)
+            resValue("bool", "config_gamepad_x", rom.gamePadX)
+            resValue("bool", "config_gamepad_y", rom.gamePadY)
+            resValue("bool", "config_gamepad_start", rom.gamePadStart)
+            resValue("bool", "config_gamepad_select", rom.gamePadSelect)
+            resValue("bool", "config_gamepad_l", rom.gamePadL)
+            resValue("bool", "config_gamepad_r", rom.gamePadR)
+            resValue("bool", "config_gamepad_save_state", rom.gamePadSaveState)
+            resValue("bool", "config_gamepad_load_state", rom.gamePadLoadState)
+            resValue("bool", "config_gamepad_fast_forward", rom.gamePadFastForward)
+            resValue("bool", "config_gamepad_mute", rom.gamePadMute)
         }
         release {
             minifyEnabled true

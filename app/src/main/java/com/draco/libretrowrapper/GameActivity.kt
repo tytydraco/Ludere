@@ -170,7 +170,7 @@ class GameActivity : AppCompatActivity() {
 
     private fun getCoreVariables(): Array<Variable> {
         val variables = arrayListOf<Variable>()
-        val rawVariablesString = getString(R.string.rom_variables)
+        val rawVariablesString = getString(R.string.config_variables)
         val rawVariables = rawVariablesString.split(",")
         for (rawVariable in rawVariables) {
             val rawVariableSplit = rawVariable.split("=")
@@ -326,7 +326,7 @@ class GameActivity : AppCompatActivity() {
 
     private fun shouldShowGamePads(): Boolean {
         /* Do not show if we hardcoded the boolean */
-        if (!resources.getBoolean(R.bool.rom_gamepad_visible))
+        if (!resources.getBoolean(R.bool.config_gamepad_visible))
             return false
 
         /* Do not show if the device lacks a touch screen */

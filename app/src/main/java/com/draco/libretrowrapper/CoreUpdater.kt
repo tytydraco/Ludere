@@ -9,7 +9,7 @@ class CoreUpdater(
     context: Context,
     private val privateData: PrivateData
 ) {
-    private val coreName = context.getString(R.string.rom_core)
+    private val coreName = context.getString(R.string.config_core)
     private val abiName = Build.SUPPORTED_ABIS[0]
 
     private val coreDownloadURL = "https://buildbot.libretro.com/nightly/android/latest/$abiName/${coreName}_libretro_android.so.zip"

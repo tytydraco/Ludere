@@ -81,9 +81,9 @@ class GamePadConfig(
 
     private val radialGamePadTheme = RadialGamePadTheme(
         primaryDialBackground = Color.TRANSPARENT,
-        textColor = ContextCompat.getColor(context, R.color.rom_gamepad_icon_color),
-        normalColor = ContextCompat.getColor(context, R.color.rom_gamepad_button_color),
-        pressedColor = ContextCompat.getColor(context, R.color.rom_gamepad_pressed_color)
+        textColor = ContextCompat.getColor(context, R.color.config_gamepad_icon_color),
+        normalColor = ContextCompat.getColor(context, R.color.config_gamepad_button_color),
+        pressedColor = ContextCompat.getColor(context, R.color.config_gamepad_pressed_color)
     )
 
     val left = RadialGamePadConfig(
@@ -91,10 +91,10 @@ class GamePadConfig(
         sockets = 12,
         primaryDial = PrimaryDialConfig.Cross(GLRetroView.MOTION_SOURCE_DPAD),
         secondaryDials = listOfNotNull(
-            SecondaryDialConfig.SingleButton(2, 1, BUTTON_MUTE).takeIf { resources.getBoolean(R.bool.rom_gamepad_mute) },
-            SecondaryDialConfig.SingleButton(3, 1, BUTTON_L).takeIf { resources.getBoolean(R.bool.rom_gamepad_l) },
-            SecondaryDialConfig.SingleButton(4, 1, BUTTON_SELECT).takeIf { resources.getBoolean(R.bool.rom_gamepad_select) },
-            SecondaryDialConfig.SingleButton(8, 1, BUTTON_SAVE_STATE).takeIf { resources.getBoolean(R.bool.rom_gamepad_save_state) }
+            SecondaryDialConfig.SingleButton(2, 1, BUTTON_MUTE).takeIf { resources.getBoolean(R.bool.config_gamepad_mute) },
+            SecondaryDialConfig.SingleButton(3, 1, BUTTON_L).takeIf { resources.getBoolean(R.bool.config_gamepad_l) },
+            SecondaryDialConfig.SingleButton(4, 1, BUTTON_SELECT).takeIf { resources.getBoolean(R.bool.config_gamepad_select) },
+            SecondaryDialConfig.SingleButton(8, 1, BUTTON_SAVE_STATE).takeIf { resources.getBoolean(R.bool.config_gamepad_save_state) }
         )
     )
 
@@ -103,17 +103,17 @@ class GamePadConfig(
         sockets = 12,
         primaryDial = PrimaryDialConfig.PrimaryButtons(
             dials = listOfNotNull(
-                BUTTON_A.takeIf { resources.getBoolean(R.bool.rom_gamepad_a) },
-                BUTTON_X.takeIf { resources.getBoolean(R.bool.rom_gamepad_x) },
-                BUTTON_Y.takeIf { resources.getBoolean(R.bool.rom_gamepad_y) },
-                BUTTON_B.takeIf { resources.getBoolean(R.bool.rom_gamepad_b) }
+                BUTTON_A.takeIf { resources.getBoolean(R.bool.config_gamepad_a) },
+                BUTTON_X.takeIf { resources.getBoolean(R.bool.config_gamepad_x) },
+                BUTTON_Y.takeIf { resources.getBoolean(R.bool.config_gamepad_y) },
+                BUTTON_B.takeIf { resources.getBoolean(R.bool.config_gamepad_b) }
             )
         ),
         secondaryDials = listOfNotNull(
-            SecondaryDialConfig.SingleButton(2, 1, BUTTON_START).takeIf { resources.getBoolean(R.bool.rom_gamepad_start) },
-            SecondaryDialConfig.SingleButton(3, 1, BUTTON_R).takeIf { resources.getBoolean(R.bool.rom_gamepad_r) },
-            SecondaryDialConfig.SingleButton(4, 1, BUTTON_FAST_FORWARD).takeIf { resources.getBoolean(R.bool.rom_gamepad_fast_forward) },
-            SecondaryDialConfig.SingleButton(10, 1, BUTTON_LOAD_STATE).takeIf { resources.getBoolean(R.bool.rom_gamepad_load_state) }
+            SecondaryDialConfig.SingleButton(2, 1, BUTTON_START).takeIf { resources.getBoolean(R.bool.config_gamepad_start) },
+            SecondaryDialConfig.SingleButton(3, 1, BUTTON_R).takeIf { resources.getBoolean(R.bool.config_gamepad_r) },
+            SecondaryDialConfig.SingleButton(4, 1, BUTTON_FAST_FORWARD).takeIf { resources.getBoolean(R.bool.config_gamepad_fast_forward) },
+            SecondaryDialConfig.SingleButton(10, 1, BUTTON_LOAD_STATE).takeIf { resources.getBoolean(R.bool.config_gamepad_load_state) }
         )
     )
 }
