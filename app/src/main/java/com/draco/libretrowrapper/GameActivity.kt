@@ -72,6 +72,12 @@ class GameActivity : AppCompatActivity() {
         /* Setup core updater */
         coreUpdater = CoreUpdater(this, privateData)
 
+        /* Make sure we reapply immersive mode on rotate */
+        window.decorView.setOnApplyWindowInsetsListener { _, windowInsets ->
+            immersive()
+            return@setOnApplyWindowInsetsListener windowInsets
+        }
+
         Thread {
             /* Copy assets */
             if (savedInstanceState == null)
@@ -130,7 +136,7 @@ class GameActivity : AppCompatActivity() {
         /* Save state since Android killed us */
         val savedInstanceStateBytes = retroView?.serializeState()
         if (savedInstanceStateBytes != null)
-            with(privateData.savedInstanceState.outputStream()) {
+            with (privateData.savedInstanceState.outputStream()) {
                 write(savedInstanceStateBytes)
                 close()
             }
