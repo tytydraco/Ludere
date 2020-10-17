@@ -54,13 +54,6 @@ class GameActivity : AppCompatActivity() {
         KeyEvent.KEYCODE_BUTTON_SELECT
     )
 
-    private val validAssets = listOf(
-        "rom",      /* ROM file itself */
-        "core",     /* LibRetro core */
-        "save",     /* SRAM dump */
-        "state"     /* Save state dump */
-    )
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
@@ -153,25 +146,23 @@ class GameActivity : AppCompatActivity() {
                 val stateInputStream = privateData.savedInstanceState.inputStream()
                 val stateBytes = stateInputStream.readBytes()
                 stateInputStream.close()
-                
+
                 retroView!!.unserializeState(stateBytes)
             }
         }.start()
     }
 
     private fun initAssets() {
-        for (asset in validAssets) {
-            val assetFile = File("${filesDir.absolutePath}/$asset")
-            if (!assetFile.exists()) try {
-                val assetInputStream = assets.open(asset)
-                val assetOutputStream = assetFile.outputStream()
+        val assetFile = File("${filesDir.absolutePath}/${privateData.rom.name}")
+        if (!assetFile.exists()) try {
+            val assetInputStream = assets.open(privateData.rom.name)
+            val assetOutputStream = assetFile.outputStream()
 
-                assetInputStream.copyTo(assetOutputStream)
+            assetInputStream.copyTo(assetOutputStream)
 
-                assetOutputStream.close()
-                assetInputStream.close()
-            } catch (_: Exception) {}
-        }
+            assetOutputStream.close()
+            assetInputStream.close()
+        } catch (_: Exception) {}
 
         if (!privateData.core.exists())
             coreUpdater.update()
