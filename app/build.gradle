@@ -78,24 +78,6 @@ task copyAssets(type: Copy) {
         into "src/main/assets/"
         rename("${rom.romPath}", "rom")
     }
-
-    if (!rom.corePath.isEmpty()) {
-        from "${rootProject.projectDir}/config/${rom.corePath}"
-        into "src/main/assets/"
-        rename("${rom.corePath}", "core")
-    }
-
-    if (!rom.savePath.isEmpty()) {
-        from "${rootProject.projectDir}/config/${rom.savePath}"
-        into "src/main/assets/"
-        rename("${rom.savePath}", "save")
-    }
-
-    if (!rom.statePath.isEmpty()) {
-        from "${rootProject.projectDir}/config/${rom.statePath}"
-        into "src/main/assets/"
-        rename("${rom.statePath}", "state")
-    }
 }
 
 dependencies {

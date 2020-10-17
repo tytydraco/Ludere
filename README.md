@@ -51,8 +51,6 @@ Here's how LibRetroWrapper is configured:
 - Copy `config/rom.properties.sample` to `config/rom.properties`
 - Edit `config/rom.properties` and change your configuration
 - Place your rom in `config/`, usually named `rom` (configurable)
-- (Optional) Place your save state file at `config/save`
-- (Optional) Place your SRAM save file at `config/state`
 
 # Building
 It is usually best to build a release build to reduce the total file size and improve performance. This method requires manual signing afterwards.

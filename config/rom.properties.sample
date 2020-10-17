@@ -1,14 +1,8 @@
 # Sample ROM Properties
 # Rename to rom.properties
 
-# Path to your ROM files (relative to root project directory)
-# savePath and statePath are used if you wish to include existing
-# save files or save states in the game. If corePath is left empty,
-# the core will be fetched from LibRetro during runtime.
+# Path to your ROM file (relative to root project directory)
 romPath=rom
-corePath=
-savePath=
-statePath=
 
 # A ROM identifier to append to the app id
 id=examplerom
