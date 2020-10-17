@@ -21,15 +21,15 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="@dimen/gamepad_padding"
-        android:layout_marginBottom="@dimen/gamepad_padding"
+        android:layout_marginStart="@dimen/gamepad_padding_horizontal"
+        android:layout_marginBottom="@dimen/gamepad_padding_vertical"
         android:id="@+id/left_container" />
     <FrameLayout
         android:layout_width="@dimen/config_gamepad_size"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="@dimen/gamepad_padding"
-        android:layout_marginBottom="@dimen/gamepad_padding"
+        android:layout_marginEnd="@dimen/gamepad_padding_horizontal"
+        android:layout_marginBottom="@dimen/gamepad_padding_vertical"
         android:id="@+id/right_container" />
 </RelativeLayout>

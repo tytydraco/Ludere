@@ -30,15 +30,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:layout_marginStart="@dimen/gamepad_padding"
-            android:layout_marginBottom="@dimen/gamepad_padding"
+            android:layout_marginStart="@dimen/gamepad_padding_horizontal"
+            android:layout_marginBottom="@dimen/gamepad_padding_vertical"
             android:id="@+id/left_container" />
         <FrameLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:layout_marginEnd="@dimen/gamepad_padding"
-            android:layout_marginBottom="@dimen/gamepad_padding"
+            android:layout_marginEnd="@dimen/gamepad_padding_horizontal"
+            android:layout_marginBottom="@dimen/gamepad_padding_vertical"
             android:id="@+id/right_container" />
     </LinearLayout>
 
