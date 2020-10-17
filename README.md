@@ -53,8 +53,7 @@ Here's how LibRetroWrapper is configured:
 - Place your rom in `config/`, usually named `rom` (configurable)
 
 # Building
-It is usually best to build a release build to reduce the total file size and improve performance. This method requires manual signing afterwards.
-- `./gradlew assembleRelease` (don't forget to zipalign and apksigner)
+It is usually best to build a release build to reduce the total file size and improve performance.
+- `./gradlew assembleRelease`
 
-For testing, simply use a debug build. It does not require any extra steps.
-- `./gradlew assembleDebug`
+This uses the official LibRetroWrapper keystore to sign the APK. This is available in the root directory of the project. Feel free to use this key for your personal projects.

@@ -19,6 +19,15 @@ android {
         manifestPlaceholders = [orientation:rom.orientation]
     }
 
+    signingConfigs {
+        release {
+            storeFile file("${rootProject.projectDir}/libretrowrapper.jks")
+            storePassword 'libretrowrapper'
+            keyAlias 'key0'
+            keyPassword 'libretrowrapper'
+        }
+    }
+
     buildTypes {
         all {
             resValue("string", "config_name", rom.name)
@@ -61,6 +70,7 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
