@@ -3,22 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:descendantFocusability="blocksDescendants">
-    <FrameLayout
+    <androidx.fragment.app.FragmentContainerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_centerInParent="true"
         android:layout_above="@id/containers"
         android:layout_alignTop="@id/containers"
-        android:id="@+id/retroview_container">
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminate="true"
-            android:id="@+id/progress" />
-    </FrameLayout>
-
+        android:id="@+id/retroview_container" />
     <androidx.fragment.app.FragmentContainerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

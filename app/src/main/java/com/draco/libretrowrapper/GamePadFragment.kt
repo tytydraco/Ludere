@@ -43,6 +43,16 @@ class GamePadFragment : Fragment() {
         rightGamePad!!.pad.offsetY = 1f
         leftGamePad!!.pad.primaryDialMaxSizeDp = gamePadSize
         rightGamePad!!.pad.primaryDialMaxSizeDp = gamePadSize
+
+        /*
+         * Subscribe the input handler observables, which might be null
+         * if the activity is recreated. In which case, the subscription will
+         * occur later in the lifecycle.
+         */
+        if (retroView != null) {
+            leftGamePad!!.subscribe(retroView!!)
+            rightGamePad!!.subscribe(retroView!!)
+        }
     }
 
     override fun onCreateView(
@@ -73,16 +83,6 @@ class GamePadFragment : Fragment() {
         /* Add to layout */
         leftGamePadContainer.addView(leftGamePad!!.pad)
         rightGamePadContainer.addView(rightGamePad!!.pad)
-
-        /*
-         * Subscribe the input handler observables, which might be null
-         * if the activity is recreated. In which case, the subscription will
-         * occur later in the lifecycle.
-         */
-        if (retroView != null) {
-            leftGamePad!!.subscribe(retroView!!)
-            rightGamePad!!.subscribe(retroView!!)
-        }
     }
 
     private fun shouldShowGamePads(): Boolean {
