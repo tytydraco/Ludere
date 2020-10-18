@@ -24,7 +24,7 @@ class GameActivity : AppCompatActivity() {
     private lateinit var privateData: PrivateData
     private lateinit var coreUpdater: CoreUpdater
 
-    private lateinit var parent: FrameLayout
+    private lateinit var retroViewContainer: FrameLayout
     private lateinit var progress: ProgressBar
     private lateinit var leftGamePadContainer: FrameLayout
     private lateinit var rightGamePadContainer: FrameLayout
@@ -68,10 +68,10 @@ class GameActivity : AppCompatActivity() {
         coreUpdater = CoreUpdater(this, privateData)
 
         /* Initialize layout variables */
-        parent = findViewById(R.id.parent)
-        progress = findViewById(R.id.progress)
+        retroViewContainer = findViewById(R.id.retroview_container)
         leftGamePadContainer = findViewById(R.id.left_container)
         rightGamePadContainer = findViewById(R.id.right_container)
+        progress = findViewById(R.id.progress)
 
         /* Make sure we reapply immersive mode on rotate */
         window.decorView.setOnApplyWindowInsetsListener { _, windowInsets ->
@@ -99,7 +99,7 @@ class GameActivity : AppCompatActivity() {
             
             /* Add GLRetroView to main layout */
             runOnUiThread {
-                parent.addView(retroView)
+                retroViewContainer.addView(retroView)
                 progress.visibility = View.GONE
             }
 
