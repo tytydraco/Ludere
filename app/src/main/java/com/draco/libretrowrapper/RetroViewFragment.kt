@@ -125,38 +125,6 @@ class RetroViewFragment : Fragment() {
         return variables.toTypedArray()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-
-        /* Save a temporary state since Android killed the activity */
-        val savedInstanceStateBytes = retroView?.serializeState()
-        if (savedInstanceStateBytes != null) {
-            with(privateData.savedInstanceState.outputStream()) {
-                write(savedInstanceStateBytes)
-                close()
-            }
-        }
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-
-        /* Don't bother restoring a temporary state if it doesn't exist */
-        if (!privateData.savedInstanceState.exists())
-            return
-
-        Thread {
-            /* Wait for the GLRetroView to become usable */
-            retroViewReadyLatch.await()
-
-            /* Restore the temporary state */
-            val stateInputStream = privateData.savedInstanceState.inputStream()
-            val stateBytes = stateInputStream.readBytes()
-            stateInputStream.close()
-            retroView!!.unserializeState(stateBytes)
-        }.start()
-    }
-
     private fun restoreSettings() {
         retroView!!.fastForwardEnabled = sharedPreferences.getBoolean(fastForwardEnabledString, false)
         retroView!!.audioEnabled = sharedPreferences.getBoolean(audioEnabledString, true)
@@ -168,6 +136,39 @@ class RetroViewFragment : Fragment() {
             putBoolean(audioEnabledString, retroView!!.audioEnabled)
             apply()
         }
+    }
+
+    fun saveTempState() {
+        /* Save a temporary state since Android killed the activity */
+        val savedInstanceStateBytes = retroView?.serializeState()
+        if (savedInstanceStateBytes != null) {
+            with(privateData.savedInstanceState.outputStream()) {
+                write(savedInstanceStateBytes)
+                close()
+            }
+        }
+    }
+
+    fun restoreTempState() {
+        /* Don't bother restoring a temporary state if it doesn't exist */
+        if (!privateData.savedInstanceState.exists())
+            return
+
+        Thread {
+            /* Wait for the GLRetroView to become usable */
+            retroViewReadyLatch.await()
+
+            /* Fetch the state bytes */
+            val stateInputStream = privateData.savedInstanceState.inputStream()
+            val stateBytes = stateInputStream.readBytes()
+            stateInputStream.close()
+
+            /* Invalidate the temporary state so we cannot restore it twice */
+            privateData.savedInstanceState.delete()
+
+            /* Restore the temporary state */
+            retroView!!.unserializeState(stateBytes)
+        }.start()
     }
 
     override fun onStop() {

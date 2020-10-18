@@ -73,6 +73,16 @@ class GameActivity : AppCompatActivity() {
             retroViewFragment.retroViewReadyLatch.await()
 
             /*
+             * If we started this activity after a configuration change, restore the temp state.
+             * It is not reliable to handle this in the fragment since the fragment is recreated
+             * on a configuration change, meaning that the savedInstanceState will always report
+             * null, making it impossible to differentiate a cold start from a warm start. Handle
+             * the configurations in the parent activity.
+             */
+            if (savedInstanceState != null)
+                retroViewFragment.restoreTempState()
+
+            /*
              * If we initialize the GamePads too early, the user could load a state before the
              * emulator is ready, causing a crash. We MUST wait for the GLRetroView to render
              * a frame first.
@@ -91,6 +101,13 @@ class GameActivity : AppCompatActivity() {
                     .commit()
             }
         }.start()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        /* Android is about to kill the activity; save a temporary state snapshot */
+        retroViewFragment.saveTempState()
     }
 
     private fun initAssets() {
