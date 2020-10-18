@@ -1,10 +1,7 @@
 package com.draco.libretrowrapper
 
 import android.app.AlertDialog
-import android.app.Service
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
-import android.hardware.display.DisplayManager
 import android.os.Build
 import android.os.Bundle
 import android.view.*
@@ -27,14 +24,10 @@ class GameActivity : AppCompatActivity() {
 
     /* UI components */
     private lateinit var retroViewContainer: FrameLayout
-    private lateinit var leftGamePadContainer: FrameLayout
-    private lateinit var rightGamePadContainer: FrameLayout
     private lateinit var progress: ProgressBar
 
     /* Emulator objects */
     private var retroView: GLRetroView? = null
-    private var leftGamePad: GamePad? = null
-    private var rightGamePad: GamePad? = null
 
     /* Latch that gets decremented when the GLRetroView renders a frame */
     private val retroViewReadyLatch = CountDownLatch(1)
@@ -60,8 +53,6 @@ class GameActivity : AppCompatActivity() {
 
         /* Initialize UI components */
         retroViewContainer = findViewById(R.id.retroview_container)
-        leftGamePadContainer = findViewById(R.id.left_container)
-        rightGamePadContainer = findViewById(R.id.right_container)
         progress = findViewById(R.id.progress)
 
         /* Make sure we reapply immersive mode on rotate */
@@ -69,6 +60,9 @@ class GameActivity : AppCompatActivity() {
             immersive()
             return@setOnApplyWindowInsetsListener windowInsets
         }
+
+        /* Initialize fragments */
+        val gamePadFragment = GamePadFragment()
 
         /*
          * We have a progress spinner on the screen at this point until the GLRetroView
@@ -111,7 +105,14 @@ class GameActivity : AppCompatActivity() {
              * a frame first.
              */
             runOnUiThread {
-                initGamePads()
+                /* The fragment will subscribe the GLRetroView on start, prepare it */
+                gamePadFragment.retroView = retroView!!
+
+                /* It is now safe to begin the fragment life cycle */
+                supportFragmentManager
+                    .beginTransaction()
+                    .add(R.id.containers, gamePadFragment)
+                    .commit()
             }
 
             /* Restore emulator settings from last launch */
@@ -192,41 +193,6 @@ class GameActivity : AppCompatActivity() {
         compositeDisposable.add(renderDisposable)
     }
 
-    private fun initGamePads() {
-        /* Check if we should show or hide controls */
-        val visibility = if (shouldShowGamePads())
-            View.VISIBLE
-        else
-            View.GONE
-
-        /* Apply the new visibility state to the containers */
-        leftGamePadContainer.visibility = visibility
-        rightGamePadContainer.visibility = visibility
-
-        /* Initialize the GamePads */
-        val gamePadConfig = GamePadConfig(this, resources)
-        leftGamePad = GamePad(this, gamePadConfig.left, retroView, privateData)
-        rightGamePad = GamePad(this, gamePadConfig.right, retroView, privateData)
-
-        /* Subscribe the input handler observables */
-        leftGamePad!!.subscribe()
-        rightGamePad!!.subscribe()
-
-        /* Configure GamePad size and position */
-        val density = resources.displayMetrics.density
-        val gamePadSize = resources.getDimension(R.dimen.config_gamepad_size) / density
-        leftGamePad!!.pad.offsetX = -1f
-        leftGamePad!!.pad.offsetY = 1f
-        rightGamePad!!.pad.offsetX = 1f
-        rightGamePad!!.pad.offsetY = 1f
-        leftGamePad!!.pad.primaryDialMaxSizeDp = gamePadSize
-        rightGamePad!!.pad.primaryDialMaxSizeDp = gamePadSize
-
-        /* Add to layout */
-        leftGamePadContainer.addView(leftGamePad!!.pad)
-        rightGamePadContainer.addView(rightGamePad!!.pad)
-    }
-
     private fun restoreSettings() {
         retroView!!.fastForwardEnabled = sharedPreferences.getBoolean(fastForwardEnabledString, false)
         retroView!!.audioEnabled = sharedPreferences.getBoolean(audioEnabledString, true)
@@ -267,42 +233,6 @@ class GameActivity : AppCompatActivity() {
         /* Reapply our immersive mode on focus gain */
         if (hasFocus)
             immersive()
-    }
-
-    private fun shouldShowGamePads(): Boolean {
-        /* Do not show if we hardcoded the boolean */
-        if (!resources.getBoolean(R.bool.config_gamepad_visible))
-            return false
-
-        /* Do not show if the device lacks a touch screen */
-        if (!packageManager.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN))
-            return false
-
-        /* Do not show if the current display is external (i.e. wireless cast) */
-        val dm = getSystemService(Service.DISPLAY_SERVICE) as DisplayManager
-        if (dm.getDisplay(getCurrentDisplayId()).flags and Display.FLAG_PRESENTATION == Display.FLAG_PRESENTATION)
-            return false
-
-        /* Do not show if the device has a controller connected */
-        for (id in InputDevice.getDeviceIds()) {
-            InputDevice.getDevice(id).apply {
-                if (sources and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD ||
-                    sources and InputDevice.SOURCE_JOYSTICK == InputDevice.SOURCE_JOYSTICK)
-                    return false
-            }
-        }
-
-        /* Otherwise, show */
-        return true
-    }
-
-    private fun getCurrentDisplayId(): Int {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-            display!!.displayId
-        else {
-            val wm = getSystemService(WINDOW_SERVICE) as WindowManager
-            wm.defaultDisplay.displayId
-        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -366,8 +296,6 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        leftGamePad?.unsubscribe()
-        rightGamePad?.unsubscribe()
         compositeDisposable.dispose()
         super.onDestroy()
     }

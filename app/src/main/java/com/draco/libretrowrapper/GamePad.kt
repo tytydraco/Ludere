@@ -11,23 +11,16 @@ import io.reactivex.disposables.CompositeDisposable
 class GamePad(
     context: Context,
     padConfig: RadialGamePadConfig,
-    private val retroView: GLRetroView?,
     private val privateData: PrivateData
 ) {
     val pad: RadialGamePad = RadialGamePad(padConfig, 0f, context)
     private val compositeDisposable = CompositeDisposable()
 
-    private fun save() {
-        if (retroView == null)
-            return
-
+    private fun save(retroView: GLRetroView) {
         privateData.state.writeBytes(retroView.serializeState())
     }
 
-    private fun load() {
-        if (retroView == null)
-            return
-
+    private fun load(retroView: GLRetroView) {
         if (!privateData.state.exists())
             return
 
@@ -36,42 +29,33 @@ class GamePad(
             retroView.unserializeState(bytes)
     }
 
-    private fun fastForwardToggle() {
-        if (retroView == null)
-            return
-
+    private fun fastForwardToggle(retroView: GLRetroView) {
         retroView.fastForwardEnabled = !retroView.fastForwardEnabled
     }
 
-    private fun muteToggle() {
-        if (retroView == null)
-            return
-
+    private fun muteToggle(retroView: GLRetroView) {
         retroView.audioEnabled = !retroView.audioEnabled
     }
 
-    private fun eventHandler(event: Event, retroView: GLRetroView?) {
-        if (retroView == null)
-            return
-
+    private fun eventHandler(event: Event, retroView: GLRetroView) {
         when (event) {
             is Event.Button -> {
                 when (event.id) {
                     GamePadConfig.KEYCODE_SAVE_STATE -> {
                         if (event.action == KeyEvent.ACTION_DOWN)
-                            save()
+                            save(retroView)
                     }
                     GamePadConfig.KEYCODE_LOAD_STATE -> {
                         if (event.action == KeyEvent.ACTION_DOWN)
-                            load()
+                            load(retroView)
                     }
                     GamePadConfig.KEYCODE_FAST_FORWARD -> {
                         if (event.action == KeyEvent.ACTION_DOWN)
-                            fastForwardToggle()
+                            fastForwardToggle(retroView)
                     }
                     GamePadConfig.KEYCODE_MUTE -> {
                         if (event.action == KeyEvent.ACTION_DOWN)
-                            muteToggle()
+                            muteToggle(retroView)
                     }
                     else -> retroView.sendKeyEvent(event.action, event.id)
                 }
@@ -92,10 +76,15 @@ class GamePad(
         }
     }
 
-    fun subscribe() {
-        compositeDisposable.add(pad.events().subscribe {
+    fun subscribe(retroView: GLRetroView) {
+        /* Clear any existing subscriptions */
+        unsubscribe()
+
+        /* Register the observable */
+        val inputDisposable = pad.events().subscribe {
             eventHandler(it, retroView)
-        })
+        }
+        compositeDisposable.add(inputDisposable)
     }
 
     fun unsubscribe() {
