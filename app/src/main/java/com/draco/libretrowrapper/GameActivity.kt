@@ -68,7 +68,7 @@ class GameActivity : AppCompatActivity() {
         /* Setup essential objects */
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         privateData = PrivateData(this)
-        coreUpdater = CoreUpdater(this, privateData)
+        coreUpdater = CoreUpdater(this)
 
         /* Initialize UI components */
         retroViewContainer = findViewById(R.id.retroview_container)
