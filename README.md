@@ -48,9 +48,10 @@ Here's how LibRetroWrapper is configured:
 - [RetroArch](http://buildbot.libretro.com/nightly/): LibRetro emulator cores for Android
 
 # Configuration
-- Copy `config/rom.properties.sample` to `config/rom.properties`
-- Edit `config/rom.properties` and change your configuration
-- Place your rom in `config/`, usually named `rom` (configurable)
+- Copy `rom.properties.sample` to `rom.properties`
+- Edit `rom.properties` and change your configuration
+- Place your rom in `system/`, and make sure the file name matches the configuration file's `romName`
+- Place any other core assets in the system directory
 
 # Building
 It is usually best to build a release build to reduce the total file size and improve performance.

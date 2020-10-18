@@ -117,17 +117,19 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun initAssets() {
-        /* Copy over our ROM from the internal assets directory */
-        val assetFile = File("${filesDir.absolutePath}/${privateData.rom.name}")
-        if (!assetFile.exists()) try {
-            val assetInputStream = assets.open(privateData.rom.name)
-            val assetOutputStream = assetFile.outputStream()
+        /* Copy over our assets from the internal assets directory */
+        for (asset in assets.list("")!!) {
+            val assetFile = File("${filesDir.absolutePath}/$asset")
+            if (!assetFile.exists()) try {
+                val assetInputStream = assets.open(asset)
+                val assetOutputStream = assetFile.outputStream()
 
-            assetInputStream.copyTo(assetOutputStream)
+                assetInputStream.copyTo(assetOutputStream)
 
-            assetOutputStream.close()
-            assetInputStream.close()
-        } catch (_: Exception) {}
+                assetOutputStream.close()
+                assetInputStream.close()
+            } catch (_: Exception) {}
+        }
 
         /* Update the core from the internet if possible */
         if (!privateData.core.exists())

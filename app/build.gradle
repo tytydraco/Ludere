@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 ext.rom = new Properties()
-file("${rootProject.projectDir}/config/rom.properties").withInputStream { ext.rom.load(it) }
+file("${rootProject.projectDir}/rom.properties").withInputStream { ext.rom.load(it) }
 
 android {
     compileSdkVersion 30
@@ -30,6 +30,7 @@ android {
 
     buildTypes {
         all {
+            resValue('string', 'config_rom_file', rom.romFile)
             resValue('string', 'config_name', rom.name)
 
             resValue('string', 'config_core', rom.core)
@@ -79,11 +80,8 @@ task cleanAssets(type: Delete) {
 }
 
 task copyAssets(type: Copy) {
-    if (!rom.romPath.isEmpty()) {
-        from "${rootProject.projectDir}/config/${rom.romPath}"
-        into 'src/main/assets/'
-        rename("${rom.romPath}", 'rom')
-    }
+    from "${rootProject.projectDir}/system/"
+    into 'src/main/assets/'
 }
 
 dependencies {

@@ -10,15 +10,9 @@
 .cxx
 
 # Base configuration
-config/*
-!config/*.properties.sample
-app/src/main/assets/*
+*.properties
+!*.properties.sample
 
-# Rom files
-*.gba
-*.gbc
-*.gb
-*.nes
-*.snes
-*.iso
-*.nds
+# Assets
+system/*
+app/src/main/assets/*
