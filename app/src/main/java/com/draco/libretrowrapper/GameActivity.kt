@@ -77,11 +77,11 @@ class GameActivity : AppCompatActivity() {
             /* Setup ROM and core if we haven't already */
             try {
                 initAssets()
-            } catch (e: UnknownHostException) {
+            } catch (_: UnknownHostException) {
                 runOnUiThread {
                     AlertDialog.Builder(this)
                         .setTitle(getString(R.string.fetch_error_dialog_title))
-                        .setMessage("${getString(R.string.fetch_error_dialog_message)}\n\n${e.message}")
+                        .setMessage(getString(R.string.fetch_error_dialog_message))
                         .setPositiveButton(getString(R.string.fetch_error_dialog_exit)) { _, _ -> finishAffinity() }
                         .setCancelable(false)
                         .show()
@@ -92,11 +92,11 @@ class GameActivity : AppCompatActivity() {
             /* Instantiate our GLRetroView */
             try {
                 initRetroView()
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 runOnUiThread {
                     AlertDialog.Builder(this)
                         .setTitle(getString(R.string.load_error_dialog_title))
-                        .setMessage("${getString(R.string.load_error_dialog_message)}\n\n${e.cause}")
+                        .setMessage(getString(R.string.load_error_dialog_message))
                         .setPositiveButton(getString(R.string.load_error_dialog_exit)) { _, _ -> finishAffinity() }
                         .setCancelable(false)
                         .show()
