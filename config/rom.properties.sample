@@ -46,11 +46,11 @@ gamePadVisible=true
 
 # GamePad colors
 # The color of the icon or label within the button
-gamePadIconColor=#ffffff
+gamePadIconColor=#ffffffff
 # The color of the button
-gamePadButtonColor=#aa424242
+gamePadButtonColor=#aa1e88e5
 # The color of the button when pressed down
-gamePadPressedColor=#aa212121
+gamePadPressedColor=#aa1a5276
 
 # GamePad buttons to show
 gamePadA=true
