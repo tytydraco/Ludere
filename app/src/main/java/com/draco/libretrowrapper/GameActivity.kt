@@ -46,6 +46,7 @@ class GameActivity : AppCompatActivity() {
     private val fastForwardEnabledString = "fast_forward_enabled"
     private val audioEnabledString = "audio_enabled"
 
+    /* Store all observable subscriptions */
     private val compositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
