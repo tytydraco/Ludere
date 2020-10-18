@@ -39,27 +39,14 @@ class GameActivity : AppCompatActivity() {
     /* Latch that gets decremented when the GLRetroView renders a frame */
     private val retroViewReadyLatch = CountDownLatch(1)
 
+    /* Input handler for GLRetroView */
+    private val input = Input()
+
     /* Shared preference keys */
     private val fastForwardEnabledString = "fast_forward_enabled"
     private val audioEnabledString = "audio_enabled"
 
     private val compositeDisposable = CompositeDisposable()
-
-    /* List of valid keycodes that can be piped */
-    private val validKeyCodes = listOf(
-        KeyEvent.KEYCODE_BUTTON_A,
-        KeyEvent.KEYCODE_BUTTON_B,
-        KeyEvent.KEYCODE_BUTTON_X,
-        KeyEvent.KEYCODE_BUTTON_Y,
-        KeyEvent.KEYCODE_DPAD_UP,
-        KeyEvent.KEYCODE_DPAD_LEFT,
-        KeyEvent.KEYCODE_DPAD_DOWN,
-        KeyEvent.KEYCODE_DPAD_RIGHT,
-        KeyEvent.KEYCODE_BUTTON_L1,
-        KeyEvent.KEYCODE_BUTTON_R1,
-        KeyEvent.KEYCODE_BUTTON_START,
-        KeyEvent.KEYCODE_BUTTON_SELECT
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -311,47 +298,6 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleKeyEvent(keyCode: Int, event: KeyEvent): Boolean {
-        /* Don't pass through invalid keycodes */
-        if (keyCode !in validKeyCodes)
-            return false
-
-        /* Pipe the keycode to the GLRetroView */
-        retroView?.sendKeyEvent(event.action, keyCode)
-        return true
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        return handleKeyEvent(keyCode, event)
-    }
-
-    override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
-        return handleKeyEvent(keyCode, event)
-    }
-
-    override fun onGenericMotionEvent(event: MotionEvent): Boolean {
-        /* Handle analog input events */
-        if (retroView != null) with (retroView!!) {
-            sendMotionEvent(
-                GLRetroView.MOTION_SOURCE_DPAD,
-                event.getAxisValue(MotionEvent.AXIS_HAT_X),
-                event.getAxisValue(MotionEvent.AXIS_HAT_Y)
-            )
-            sendMotionEvent(
-                GLRetroView.MOTION_SOURCE_ANALOG_LEFT,
-                event.getAxisValue(MotionEvent.AXIS_X),
-                event.getAxisValue(MotionEvent.AXIS_Y)
-            )
-            sendMotionEvent(
-                GLRetroView.MOTION_SOURCE_ANALOG_RIGHT,
-                event.getAxisValue(MotionEvent.AXIS_Z),
-                event.getAxisValue(MotionEvent.AXIS_RZ)
-            )
-        }
-
-        return super.onGenericMotionEvent(event)
-    }
-
     private fun restoreSettings() {
         retroView!!.fastForwardEnabled = sharedPreferences.getBoolean(fastForwardEnabledString, false)
         retroView!!.audioEnabled = sharedPreferences.getBoolean(audioEnabledString, true)
@@ -424,5 +370,20 @@ class GameActivity : AppCompatActivity() {
             stateInputStream.close()
             retroView!!.unserializeState(stateBytes)
         }.start()
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        return input.handleKeyEvent(retroView, keyCode, event)
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
+        return input.handleKeyEvent(retroView, keyCode, event)
+    }
+
+    override fun onGenericMotionEvent(event: MotionEvent): Boolean {
+        if (input.handleGenericMotionEvent(retroView, event))
+            return true
+
+        return super.onGenericMotionEvent(event)
     }
 }

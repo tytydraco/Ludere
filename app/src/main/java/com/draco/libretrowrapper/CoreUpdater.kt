@@ -5,7 +5,7 @@ import android.os.Build
 import java.net.URL
 import java.util.zip.ZipFile
 
-class CoreUpdater(context: Context, ) {
+class CoreUpdater(context: Context) {
     private val privateData = PrivateData(context)
     private val coreName = context.getString(R.string.config_core)
     private val abiName = Build.SUPPORTED_ABIS[0]
