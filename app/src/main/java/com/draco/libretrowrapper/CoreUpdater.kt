@@ -11,9 +11,7 @@ class CoreUpdater(
 ) {
     private val coreName = context.getString(R.string.config_core)
     private val abiName = Build.SUPPORTED_ABIS[0]
-
     private val coreDownloadURL = "https://buildbot.libretro.com/nightly/android/latest/$abiName/${coreName}_libretro_android.so.zip"
-
     private val tempCoreFile = createTempFile("core", "zip")
 
     fun update() {
