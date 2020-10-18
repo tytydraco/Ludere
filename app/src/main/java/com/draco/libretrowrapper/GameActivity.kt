@@ -207,33 +207,6 @@ class GameActivity : AppCompatActivity() {
         compositeDisposable.add(renderDisposable)
     }
 
-    private fun shouldShowGamePads(): Boolean {
-        /* Do not show if we hardcoded the boolean */
-        if (!resources.getBoolean(R.bool.config_gamepad_visible))
-            return false
-
-        /* Do not show if the device lacks a touch screen */
-        if (!packageManager.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN))
-            return false
-
-        /* Do not show if the current display is external (i.e. wireless cast) */
-        val dm = getSystemService(Service.DISPLAY_SERVICE) as DisplayManager
-        if (dm.getDisplay(getCurrentDisplayId()).flags and Display.FLAG_PRESENTATION == Display.FLAG_PRESENTATION)
-            return false
-
-        /* Do not show if the device has a controller connected */
-        for (id in InputDevice.getDeviceIds()) {
-            InputDevice.getDevice(id).apply {
-                if (sources and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD ||
-                    sources and InputDevice.SOURCE_JOYSTICK == InputDevice.SOURCE_JOYSTICK)
-                    return false
-            }
-        }
-
-        /* Otherwise, show */
-        return true
-    }
-
     private fun initGamePads() {
         /* Check if we should show or hide controls */
         val visibility = if (shouldShowGamePads())
@@ -269,12 +242,17 @@ class GameActivity : AppCompatActivity() {
         rightGamePadContainer.addView(rightGamePad!!.pad)
     }
 
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
+    private fun restoreSettings() {
+        retroView!!.fastForwardEnabled = sharedPreferences.getBoolean(fastForwardEnabledString, false)
+        retroView!!.audioEnabled = sharedPreferences.getBoolean(audioEnabledString, true)
+    }
 
-        /* Reapply our immersive mode on focus gain */
-        if (hasFocus)
-            immersive()
+    private fun saveSettings() {
+        with (sharedPreferences.edit()) {
+            putBoolean(fastForwardEnabledString, retroView!!.fastForwardEnabled)
+            putBoolean(audioEnabledString, retroView!!.audioEnabled)
+            apply()
+        }
     }
 
     private fun immersive() {
@@ -298,17 +276,39 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    private fun restoreSettings() {
-        retroView!!.fastForwardEnabled = sharedPreferences.getBoolean(fastForwardEnabledString, false)
-        retroView!!.audioEnabled = sharedPreferences.getBoolean(audioEnabledString, true)
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+
+        /* Reapply our immersive mode on focus gain */
+        if (hasFocus)
+            immersive()
     }
 
-    private fun saveSettings() {
-        with (sharedPreferences.edit()) {
-            putBoolean(fastForwardEnabledString, retroView!!.fastForwardEnabled)
-            putBoolean(audioEnabledString, retroView!!.audioEnabled)
-            apply()
+    private fun shouldShowGamePads(): Boolean {
+        /* Do not show if we hardcoded the boolean */
+        if (!resources.getBoolean(R.bool.config_gamepad_visible))
+            return false
+
+        /* Do not show if the device lacks a touch screen */
+        if (!packageManager.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN))
+            return false
+
+        /* Do not show if the current display is external (i.e. wireless cast) */
+        val dm = getSystemService(Service.DISPLAY_SERVICE) as DisplayManager
+        if (dm.getDisplay(getCurrentDisplayId()).flags and Display.FLAG_PRESENTATION == Display.FLAG_PRESENTATION)
+            return false
+
+        /* Do not show if the device has a controller connected */
+        for (id in InputDevice.getDeviceIds()) {
+            InputDevice.getDevice(id).apply {
+                if (sources and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD ||
+                    sources and InputDevice.SOURCE_JOYSTICK == InputDevice.SOURCE_JOYSTICK)
+                    return false
+            }
         }
+
+        /* Otherwise, show */
+        return true
     }
 
     private fun getCurrentDisplayId(): Int {
@@ -318,27 +318,6 @@ class GameActivity : AppCompatActivity() {
             val wm = getSystemService(WINDOW_SERVICE) as WindowManager
             wm.defaultDisplay.displayId
         }
-    }
-
-    override fun onStop() {
-        /* Save emulator settings for next launch */
-        saveSettings()
-
-        /* Save SRAM to the disk only if the emulator was able to render a frame */
-        if (retroViewReadyLatch.count == 0L) {
-            with(privateData.save.outputStream()) {
-                write(retroView?.serializeSRAM())
-                close()
-            }
-        }
-        super.onStop()
-    }
-
-    override fun onDestroy() {
-        leftGamePad?.unsubscribe()
-        rightGamePad?.unsubscribe()
-        compositeDisposable.dispose()
-        super.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -385,5 +364,26 @@ class GameActivity : AppCompatActivity() {
             return true
 
         return super.onGenericMotionEvent(event)
+    }
+
+    override fun onStop() {
+        /* Save emulator settings for next launch */
+        saveSettings()
+
+        /* Save SRAM to the disk only if the emulator was able to render a frame */
+        if (retroViewReadyLatch.count == 0L) {
+            with(privateData.save.outputStream()) {
+                write(retroView?.serializeSRAM())
+                close()
+            }
+        }
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        leftGamePad?.unsubscribe()
+        rightGamePad?.unsubscribe()
+        compositeDisposable.dispose()
+        super.onDestroy()
     }
 }
