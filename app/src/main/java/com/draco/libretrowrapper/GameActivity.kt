@@ -90,19 +90,7 @@ class GameActivity : AppCompatActivity() {
             }
 
             /* Instantiate our GLRetroView */
-            try {
-                initRetroView()
-            } catch (_: Exception) {
-                runOnUiThread {
-                    AlertDialog.Builder(this)
-                        .setTitle(getString(R.string.load_error_dialog_title))
-                        .setMessage(getString(R.string.load_error_dialog_message))
-                        .setPositiveButton(getString(R.string.load_error_dialog_exit)) { _, _ -> finishAffinity() }
-                        .setCancelable(false)
-                        .show()
-                }
-                return@Thread
-            }
+            initRetroView()
             
             /* Add the GLRetroView to main layout and hide the progress spinner */
             runOnUiThread {

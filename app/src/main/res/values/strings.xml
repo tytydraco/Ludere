@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="load_error_dialog_title">Initialization Failure</string>
-    <string name="load_error_dialog_message">Failed to load the emulator. Ensure the app is correctly configured.</string>
-    <string name="load_error_dialog_exit">Exit</string>
-
     <string name="fetch_error_dialog_title">Fetch Failure</string>
     <string name="fetch_error_dialog_message">Failed to fetch the core. Ensure your network configuration is correct.</string>
     <string name="fetch_error_dialog_exit">Exit</string>
