@@ -2,6 +2,7 @@ package com.draco.libretrowrapper
 
 import android.app.AlertDialog
 import android.app.Service
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.hardware.display.DisplayManager
 import android.os.Build
@@ -10,6 +11,7 @@ import android.view.*
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.libretrodroid.Variable
 import io.reactivex.disposables.CompositeDisposable
@@ -18,6 +20,7 @@ import java.net.UnknownHostException
 import java.util.concurrent.CountDownLatch
 
 class GameActivity : AppCompatActivity() {
+    private lateinit var sharedPreferences: SharedPreferences
     private lateinit var privateData: PrivateData
     private lateinit var coreUpdater: CoreUpdater
 
@@ -60,17 +63,15 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        privateData = PrivateData(this)
+        coreUpdater = CoreUpdater(this, privateData)
+
         /* Initialize layout variables */
         parent = findViewById(R.id.parent)
         progress = findViewById(R.id.progress)
         leftGamePadContainer = findViewById(R.id.left_container)
         rightGamePadContainer = findViewById(R.id.right_container)
-
-        /* Setup private data handler */
-        privateData = PrivateData(this)
-
-        /* Setup core updater */
-        coreUpdater = CoreUpdater(this, privateData)
 
         /* Make sure we reapply immersive mode on rotate */
         window.decorView.setOnApplyWindowInsetsListener { _, windowInsets ->
@@ -104,6 +105,9 @@ class GameActivity : AppCompatActivity() {
 
             retroViewReadyLatch.await()
 
+            /* Restore settings */
+            restoreSettings()
+
             /* Create GamePads */
             runOnUiThread { initGamePads() }
         }.start()
@@ -130,9 +134,6 @@ class GameActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        outState.putBoolean(fastForwardEnabledString, retroView!!.fastForwardEnabled)
-        outState.putBoolean(audioEnabledString, retroView!!.audioEnabled)
-
         /* Save state since Android killed us */
         val savedInstanceStateBytes = retroView?.serializeState()
         if (savedInstanceStateBytes != null)
@@ -147,10 +148,6 @@ class GameActivity : AppCompatActivity() {
 
         Thread {
             retroViewReadyLatch.await()
-
-            /* Restore settings */
-            retroView!!.fastForwardEnabled = savedInstanceState.getBoolean(fastForwardEnabledString)
-            retroView!!.audioEnabled = savedInstanceState.getBoolean(audioEnabledString)
 
             /* Restore state */
             if (privateData.savedInstanceState.exists()) {
@@ -332,6 +329,19 @@ class GameActivity : AppCompatActivity() {
         return super.onGenericMotionEvent(event)
     }
 
+    private fun restoreSettings() {
+        retroView!!.fastForwardEnabled = sharedPreferences.getBoolean(fastForwardEnabledString, false)
+        retroView!!.audioEnabled = sharedPreferences.getBoolean(audioEnabledString, true)
+    }
+
+    private fun saveSettings() {
+        with (sharedPreferences.edit()) {
+            putBoolean(fastForwardEnabledString, retroView!!.fastForwardEnabled)
+            putBoolean(audioEnabledString, retroView!!.audioEnabled)
+            apply()
+        }
+    }
+
     private fun getCurrentDisplayId(): Int {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
             display!!.displayId
@@ -369,11 +379,16 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
-        if (retroViewReadyLatch.count == 0L)
-            with (privateData.save.outputStream()) {
+        /* Save settings */
+        saveSettings()
+
+        /* Save SRAM */
+        if (retroViewReadyLatch.count == 0L) {
+            with(privateData.save.outputStream()) {
                 write(retroView?.serializeSRAM())
                 close()
             }
+        }
         super.onStop()
     }
 
