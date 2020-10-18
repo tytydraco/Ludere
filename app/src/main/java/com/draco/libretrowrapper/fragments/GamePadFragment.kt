@@ -1,4 +1,4 @@
-package com.draco.libretrowrapper
+package com.draco.libretrowrapper.fragments
 
 import android.app.Service
 import android.content.Context
@@ -10,6 +10,10 @@ import android.view.*
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.draco.libretrowrapper.utils.GamePad
+import com.draco.libretrowrapper.utils.GamePadConfig
+import com.draco.libretrowrapper.utils.PrivateData
+import com.draco.libretrowrapper.R
 import com.swordfish.libretrodroid.GLRetroView
 
 class GamePadFragment : Fragment() {

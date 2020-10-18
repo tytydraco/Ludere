@@ -1,4 +1,4 @@
-package com.draco.libretrowrapper
+package com.draco.libretrowrapper.fragments
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -11,6 +11,8 @@ import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import com.draco.libretrowrapper.R
+import com.draco.libretrowrapper.utils.PrivateData
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.libretrodroid.Variable
 import io.reactivex.disposables.CompositeDisposable

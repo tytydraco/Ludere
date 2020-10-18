@@ -1,4 +1,4 @@
-package com.draco.libretrowrapper
+package com.draco.libretrowrapper.utils
 
 import android.view.KeyEvent
 import android.view.MotionEvent

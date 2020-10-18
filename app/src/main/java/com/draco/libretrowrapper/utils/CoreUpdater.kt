@@ -1,7 +1,8 @@
-package com.draco.libretrowrapper
+package com.draco.libretrowrapper.utils
 
 import android.content.Context
 import android.os.Build
+import com.draco.libretrowrapper.R
 import java.net.URL
 import java.util.zip.ZipFile
 

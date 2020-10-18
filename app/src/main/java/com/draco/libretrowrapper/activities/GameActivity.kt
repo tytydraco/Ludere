@@ -1,4 +1,4 @@
-package com.draco.libretrowrapper
+package com.draco.libretrowrapper.activities
 
 import android.app.AlertDialog
 import android.content.SharedPreferences
@@ -7,6 +7,12 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
+import com.draco.libretrowrapper.R
+import com.draco.libretrowrapper.fragments.GamePadFragment
+import com.draco.libretrowrapper.fragments.RetroViewFragment
+import com.draco.libretrowrapper.utils.CoreUpdater
+import com.draco.libretrowrapper.utils.Input
+import com.draco.libretrowrapper.utils.PrivateData
 import java.io.File
 import java.net.UnknownHostException
 

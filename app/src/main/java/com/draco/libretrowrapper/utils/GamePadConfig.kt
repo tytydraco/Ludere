@@ -1,10 +1,11 @@
-package com.draco.libretrowrapper
+package com.draco.libretrowrapper.utils
 
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.view.KeyEvent
 import androidx.core.content.ContextCompat
+import com.draco.libretrowrapper.R
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.radialgamepad.library.config.*
 
@@ -94,7 +95,9 @@ class GamePadConfig(
             SecondaryDialConfig.SingleButton(2, 1, BUTTON_MUTE).takeIf { resources.getBoolean(R.bool.config_gamepad_mute) },
             SecondaryDialConfig.SingleButton(3, 1, BUTTON_L).takeIf { resources.getBoolean(R.bool.config_gamepad_l) },
             SecondaryDialConfig.SingleButton(4, 1, BUTTON_SELECT).takeIf { resources.getBoolean(R.bool.config_gamepad_select) },
-            SecondaryDialConfig.SingleButton(8, 1, BUTTON_SAVE_STATE).takeIf { resources.getBoolean(R.bool.config_gamepad_save_state) }
+            SecondaryDialConfig.SingleButton(8, 1, BUTTON_SAVE_STATE).takeIf { resources.getBoolean(
+                R.bool.config_gamepad_save_state
+            ) }
         )
     )
 
@@ -112,8 +115,12 @@ class GamePadConfig(
         secondaryDials = listOfNotNull(
             SecondaryDialConfig.SingleButton(2, 1, BUTTON_START).takeIf { resources.getBoolean(R.bool.config_gamepad_start) },
             SecondaryDialConfig.SingleButton(3, 1, BUTTON_R).takeIf { resources.getBoolean(R.bool.config_gamepad_r) },
-            SecondaryDialConfig.SingleButton(4, 1, BUTTON_FAST_FORWARD).takeIf { resources.getBoolean(R.bool.config_gamepad_fast_forward) },
-            SecondaryDialConfig.SingleButton(10, 1, BUTTON_LOAD_STATE).takeIf { resources.getBoolean(R.bool.config_gamepad_load_state) }
+            SecondaryDialConfig.SingleButton(4, 1, BUTTON_FAST_FORWARD).takeIf { resources.getBoolean(
+                R.bool.config_gamepad_fast_forward
+            ) },
+            SecondaryDialConfig.SingleButton(10, 1, BUTTON_LOAD_STATE).takeIf { resources.getBoolean(
+                R.bool.config_gamepad_load_state
+            ) }
         )
     )
 }
