@@ -78,7 +78,14 @@ class GameActivity : AppCompatActivity() {
             try {
                 initAssets()
             } catch (e: UnknownHostException) {
-                runOnUiThread { showFetchError(e) }
+                runOnUiThread {
+                    AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.fetch_error_dialog_title))
+                        .setMessage("${getString(R.string.fetch_error_dialog_message)}\n\n${e.message}")
+                        .setPositiveButton(getString(R.string.fetch_error_dialog_exit)) { _, _ -> finishAffinity() }
+                        .setCancelable(false)
+                        .show()
+                }
                 return@Thread
             }
 
@@ -86,7 +93,14 @@ class GameActivity : AppCompatActivity() {
             try {
                 initRetroView()
             } catch (e: Exception) {
-                runOnUiThread { showLoadError(e) }
+                runOnUiThread {
+                    AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.load_error_dialog_title))
+                        .setMessage("${getString(R.string.load_error_dialog_message)}\n\n${e.cause}")
+                        .setPositiveButton(getString(R.string.load_error_dialog_exit)) { _, _ -> finishAffinity() }
+                        .setCancelable(false)
+                        .show()
+                }
                 return@Thread
             }
             
@@ -114,24 +128,6 @@ class GameActivity : AppCompatActivity() {
             /* Restore emulator settings from last launch */
             restoreSettings()
         }.start()
-    }
-
-    private fun showFetchError(e: Exception) {
-        AlertDialog.Builder(this)
-            .setTitle(getString(R.string.fetch_error_dialog_title))
-            .setMessage("${getString(R.string.fetch_error_dialog_message)}\n\n${e.message}")
-            .setPositiveButton(getString(R.string.fetch_error_dialog_exit)) { _, _ -> finishAffinity() }
-            .setCancelable(false)
-            .show()
-    }
-
-    private fun showLoadError(e: Exception) {
-        AlertDialog.Builder(this)
-            .setTitle(getString(R.string.load_error_dialog_title))
-            .setMessage("${getString(R.string.load_error_dialog_message)}\n\n${e.cause}")
-            .setPositiveButton(getString(R.string.load_error_dialog_exit)) { _, _ -> finishAffinity() }
-            .setCancelable(false)
-            .show()
     }
 
     private fun initAssets() {
