@@ -27,9 +27,9 @@ class GameActivity : AppCompatActivity() {
 
     /* UI components */
     private lateinit var retroViewContainer: FrameLayout
-    private lateinit var progress: ProgressBar
     private lateinit var leftGamePadContainer: FrameLayout
     private lateinit var rightGamePadContainer: FrameLayout
+    private lateinit var progress: ProgressBar
 
     /* Emulator objects */
     private var retroView: GLRetroView? = null
