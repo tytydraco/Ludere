@@ -50,6 +50,7 @@ Here's how LibRetroWrapper is configured:
 # Configuration
 - Copy `rom.properties.sample` to `rom.properties`
 - Edit `rom.properties` and change your configuration
+- Create a new directory called `system`
 - Place your rom in `system/`, and make sure the file name matches the configuration file's `romName`
 - Place any other core assets in the system directory
 
