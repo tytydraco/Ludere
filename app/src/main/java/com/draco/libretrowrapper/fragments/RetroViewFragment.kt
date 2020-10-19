@@ -52,7 +52,7 @@ class RetroViewFragment : Fragment() {
 
         /* Create the GLRetroView */
         retroView = GLRetroView(
-            requireContext(),
+            context,
             privateData.core.absolutePath,
             privateData.rom.absolutePath,
             saveRAMState = saveBytes,
