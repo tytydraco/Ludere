@@ -62,8 +62,11 @@ class GameActivity : AppCompatActivity() {
          */
         Thread {
             /* Setup ROM and core if we haven't already */
+            initAssets()
+            
             try {
-                initAssets()
+                /* Update the core from the internet if possible */
+                coreUpdater.update()
             } catch (_: UnknownHostException) {
                 runOnUiThread {
                     AlertDialog.Builder(this)
@@ -163,9 +166,6 @@ class GameActivity : AppCompatActivity() {
             zipEntryOutFileOutputStream.close()
         }
         zipInputStream.close()
-
-        /* Update the core from the internet if possible */
-        coreUpdater.update()
     }
 
     private fun immersive() {
