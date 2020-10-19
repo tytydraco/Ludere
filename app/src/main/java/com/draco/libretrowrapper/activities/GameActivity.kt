@@ -15,6 +15,7 @@ import com.draco.libretrowrapper.utils.Input
 import com.draco.libretrowrapper.utils.PrivateData
 import java.io.File
 import java.net.UnknownHostException
+import java.util.concurrent.CountDownLatch
 
 class GameActivity : AppCompatActivity() {
     /* Essential objects */
@@ -28,6 +29,9 @@ class GameActivity : AppCompatActivity() {
 
     /* Input handler for GLRetroView */
     private val input = Input()
+
+    /* Latch that waits until the activity is focused before continuing */
+    private var canCommitFragmentsLatch = CountDownLatch(1)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,13 +67,20 @@ class GameActivity : AppCompatActivity() {
                 }
                 return@Thread
             }
-            
+
+            /*
+             * It is unsafe to commit fragments after onSaveInstanceState is called. We MUST
+             * wait until the activity resumes focus before continuing.
+             */
+            canCommitFragmentsLatch.await()
+
             /* Add the GLRetroView to main layout now that the assets are prepared */
             runOnUiThread {
                 supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.retroview_container, retroViewFragment)
-                    .commitAllowingStateLoss()
+                    .runOnCommit { canCommitFragmentsLatch = CountDownLatch(1) }
+                    .commitNow()
             }
 
             /*
@@ -89,22 +100,21 @@ class GameActivity : AppCompatActivity() {
                 retroViewFragment.restoreTempState()
 
             /*
+             * The fragment will subscribe the GLRetroView on start, prepare it.
+             * It is also guaranteed that the GLRetroView is prepared in the Fragment class.
+             */
+            gamePadFragment.retroView = retroViewFragment.retroView!!
+
+            /*
              * If we initialize the GamePads too early, the user could load a state before the
              * emulator is ready, causing a crash. We MUST wait for the GLRetroView to render
              * a frame first.
              */
             runOnUiThread {
-                /*
-                 * The fragment will subscribe the GLRetroView on start, prepare it.
-                 * It is also guaranteed that the GLRetroView is prepared in the Fragment class.
-                 */
-                gamePadFragment.retroView = retroViewFragment.retroView!!
-
-                /* It is now safe to begin the GamePad life cycle */
                 supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.containers, gamePadFragment)
-                    .commitAllowingStateLoss()
+                    .commitNow()
             }
         }.start()
     }
@@ -160,9 +170,14 @@ class GameActivity : AppCompatActivity() {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
 
-        /* Reapply our immersive mode on focus gain */
-        if (hasFocus)
-            immersive()
+        if (!hasFocus)
+            return
+
+        /* Reapply our immersive mode again */
+        immersive()
+
+        /* Let waiting threads know that it is now safe to commit fragments */
+        canCommitFragmentsLatch.countDown()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
