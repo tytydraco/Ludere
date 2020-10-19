@@ -5,27 +5,7 @@ import android.view.MotionEvent
 import com.swordfish.libretrodroid.GLRetroView
 
 class Input {
-    /* List of valid keycodes that can be piped */
-    private val validKeyCodes = listOf(
-        KeyEvent.KEYCODE_BUTTON_A,
-        KeyEvent.KEYCODE_BUTTON_B,
-        KeyEvent.KEYCODE_BUTTON_X,
-        KeyEvent.KEYCODE_BUTTON_Y,
-        KeyEvent.KEYCODE_DPAD_UP,
-        KeyEvent.KEYCODE_DPAD_LEFT,
-        KeyEvent.KEYCODE_DPAD_DOWN,
-        KeyEvent.KEYCODE_DPAD_RIGHT,
-        KeyEvent.KEYCODE_BUTTON_L1,
-        KeyEvent.KEYCODE_BUTTON_R1,
-        KeyEvent.KEYCODE_BUTTON_START,
-        KeyEvent.KEYCODE_BUTTON_SELECT
-    )
-
     fun handleKeyEvent(retroView: GLRetroView?, keyCode: Int, event: KeyEvent): Boolean {
-        /* Don't pass through invalid keycodes */
-        if (keyCode !in validKeyCodes)
-            return false
-
         /* Pipe the keycode to the GLRetroView */
         retroView?.sendKeyEvent(event.action, keyCode)
         return true
