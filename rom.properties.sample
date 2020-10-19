@@ -1,8 +1,8 @@
 # Sample ROM Properties
 # Rename to rom.properties
 
-# Path to your ROM file (relative to root project directory)
-romPath=rom
+# Name of the ROM file under the system directory
+romFile=rom
 
 # A ROM identifier to append to the app id
 id=examplerom
