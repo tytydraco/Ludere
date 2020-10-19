@@ -29,14 +29,6 @@ class GamePad(
             retroView.unserializeState(bytes)
     }
 
-    private fun fastForwardToggle(retroView: GLRetroView) {
-        retroView.fastForwardEnabled = !retroView.fastForwardEnabled
-    }
-
-    private fun muteToggle(retroView: GLRetroView) {
-        retroView.audioEnabled = !retroView.audioEnabled
-    }
-
     private fun eventHandler(event: Event, retroView: GLRetroView) {
         when (event) {
             is Event.Button -> {
@@ -48,14 +40,6 @@ class GamePad(
                     GamePadConfig.KEYCODE_LOAD_STATE -> {
                         if (event.action == KeyEvent.ACTION_DOWN)
                             load(retroView)
-                    }
-                    GamePadConfig.KEYCODE_FAST_FORWARD -> {
-                        if (event.action == KeyEvent.ACTION_DOWN)
-                            fastForwardToggle(retroView)
-                    }
-                    GamePadConfig.KEYCODE_MUTE -> {
-                        if (event.action == KeyEvent.ACTION_DOWN)
-                            muteToggle(retroView)
                     }
                     else -> retroView.sendKeyEvent(event.action, event.id)
                 }

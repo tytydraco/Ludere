@@ -16,8 +16,6 @@ class GamePadConfig(
     companion object {
         const val KEYCODE_LOAD_STATE = -1
         const val KEYCODE_SAVE_STATE = -2
-        const val KEYCODE_FAST_FORWARD = -3
-        const val KEYCODE_MUTE = -4
 
         val BUTTON_START = ButtonConfig(
             id = KeyEvent.KEYCODE_BUTTON_START,
