@@ -19,6 +19,9 @@ import java.util.concurrent.CountDownLatch
 import java.util.zip.ZipInputStream
 
 class GameActivity : AppCompatActivity() {
+    /* Constants */
+    private val systemZipName = "system.zip"
+
     /* Essential objects */
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var privateData: PrivateData
@@ -133,7 +136,7 @@ class GameActivity : AppCompatActivity() {
             return
 
         /* Prepare to unzip our system zip from the assets folder */
-        val systemZip = assets.open("system.zip")
+        val systemZip = assets.open(systemZipName)
 
         /* Iterate over all zipped items */
         val zipInputStream = ZipInputStream(systemZip)
@@ -155,8 +158,7 @@ class GameActivity : AppCompatActivity() {
         zipInputStream.close()
 
         /* Update the core from the internet if possible */
-        if (!privateData.core.exists())
-            coreUpdater.update()
+        coreUpdater.update()
     }
 
     private fun immersive() {
