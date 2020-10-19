@@ -63,7 +63,7 @@ class GameActivity : AppCompatActivity() {
         Thread {
             /* Setup ROM and core if we haven't already */
             initAssets()
-            
+
             try {
                 /* Update the core from the internet if possible */
                 coreUpdater.update()
@@ -90,8 +90,7 @@ class GameActivity : AppCompatActivity() {
                 supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.retroview_container, retroViewFragment)
-                    .runOnCommit { canCommitFragmentsLatch = CountDownLatch(1) }
-                    .commitNow()
+                    .commit()
 
                 /* Completely hide the progress spinner */
                 progress.visibility = View.GONE
