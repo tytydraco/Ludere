@@ -72,16 +72,18 @@ android {
     }
 
     preBuild.dependsOn 'cleanAssets'
-    preBuild.dependsOn 'copyAssets'
+    preBuild.dependsOn 'packageAssets'
 }
 
 task cleanAssets(type: Delete) {
     delete file('src/main/assets/').listFiles()
 }
 
-task copyAssets(type: Copy) {
+task packageAssets(type: Zip) {
     from "${rootProject.projectDir}/system/"
-    into 'src/main/assets/'
+    include '**'
+    archiveName 'system.zip'
+    destinationDir(file('src/main/assets/'))
 }
 
 dependencies {

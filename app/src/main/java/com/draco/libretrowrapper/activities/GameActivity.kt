@@ -16,6 +16,7 @@ import com.draco.libretrowrapper.utils.PrivateData
 import java.io.File
 import java.net.UnknownHostException
 import java.util.concurrent.CountDownLatch
+import java.util.zip.ZipInputStream
 
 class GameActivity : AppCompatActivity() {
     /* Essential objects */
@@ -127,19 +128,31 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun initAssets() {
-        /* Copy over our assets from the internal assets directory */
-        for (asset in assets.list("")!!) {
-            val assetFile = File("${filesDir.absolutePath}/$asset")
-            if (!assetFile.exists()) try {
-                val assetInputStream = assets.open(asset)
-                val assetOutputStream = assetFile.outputStream()
+        /* Only init assets if this is our very first launch */
+        if (filesDir.list()!!.isNotEmpty())
+            return
 
-                assetInputStream.copyTo(assetOutputStream)
+        /* Prepare to unzip our system zip from the assets folder */
+        val systemZip = assets.open("system.zip")
 
-                assetOutputStream.close()
-                assetInputStream.close()
-            } catch (_: Exception) {}
+        /* Iterate over all zipped items */
+        val zipInputStream = ZipInputStream(systemZip)
+        while (true) {
+            val zipEntry = zipInputStream.nextEntry ?: break
+            val zipEntryOutFile = File(filesDir, zipEntry.name)
+
+            /* If this is a directory, prepare the file structure and skip */
+            if (zipEntry.isDirectory) {
+                zipEntryOutFile.mkdir()
+                continue
+            }
+
+            /* Copy the file to the output location */
+            val zipEntryOutFileOutputStream = zipEntryOutFile.outputStream()
+            zipInputStream.copyTo(zipEntryOutFileOutputStream)
+            zipEntryOutFileOutputStream.close()
         }
+        zipInputStream.close()
 
         /* Update the core from the internet if possible */
         if (!privateData.core.exists())
