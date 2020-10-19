@@ -60,8 +60,6 @@ android {
             resValue('bool', 'config_gamepad_load_state', rom.gamePadLoadState)
             resValue('bool', 'config_gamepad_analog_left', rom.gamePadAnalogLeft)
             resValue('bool', 'config_gamepad_analog_right', rom.gamePadAnalogRight)
-            resValue('bool', 'config_gamepad_fast_forward', rom.gamePadFastForward)
-            resValue('bool', 'config_gamepad_mute', rom.gamePadMute)
         }
         release {
             minifyEnabled true
