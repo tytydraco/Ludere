@@ -69,7 +69,7 @@ class GameActivity : AppCompatActivity() {
                 supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.retroview_container, retroViewFragment)
-                    .commit()
+                    .commitAllowingStateLoss()
             }
 
             /*
@@ -104,7 +104,7 @@ class GameActivity : AppCompatActivity() {
                 supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.containers, gamePadFragment)
-                    .commit()
+                    .commitAllowingStateLoss()
             }
         }.start()
     }
