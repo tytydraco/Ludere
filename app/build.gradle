@@ -74,7 +74,9 @@ android {
 }
 
 task cleanAssets(type: Delete) {
-    delete file('src/main/assets/').listFiles()
+    def assets = file('src/main/assets/').listFiles()
+    if (assets != null)
+        delete assets
 }
 
 task packageAssets(type: Zip) {
