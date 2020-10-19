@@ -6,7 +6,6 @@
         android:layout_width="@dimen/config_gamepad_size"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/gamepad_padding_horizontal"
-        android:layout_marginBottom="@dimen/gamepad_padding_vertical"
         android:layout_alignParentStart="true"
         android:clipToPadding="true"
         android:id="@+id/left_container" />
@@ -14,7 +13,6 @@
         android:layout_width="@dimen/config_gamepad_size"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/gamepad_padding_horizontal"
-        android:layout_marginBottom="@dimen/gamepad_padding_vertical"
         android:layout_alignParentEnd="true"
         android:clipToPadding="true"
         android:id="@+id/right_container" />
