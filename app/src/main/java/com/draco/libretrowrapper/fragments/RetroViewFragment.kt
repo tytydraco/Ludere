@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.draco.libretrowrapper.R
@@ -25,9 +24,6 @@ class RetroViewFragment : Fragment() {
 
     /* Emulator objects */
     var retroView: GLRetroView? = null
-
-    /* UI components */
-    private lateinit var progress: ProgressBar
 
     /* Latch that gets decremented when the GLRetroView renders a frame */
     val retroViewReadyLatch = CountDownLatch(1)
@@ -76,9 +72,6 @@ class RetroViewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        /* Initialize UI components */
-        progress = view.findViewById(R.id.progress)
-
         /* Hook the GLRetroView to the fragment lifecycle */
         lifecycle.addObserver(retroView!!)
 
@@ -91,7 +84,6 @@ class RetroViewFragment : Fragment() {
         retroView!!.layoutParams = params
 
         (view as FrameLayout).addView(retroView)
-        progress.visibility = View.GONE
 
         /* Start tracking the frame state of the GLRetroView */
         val renderDisposable = retroView!!

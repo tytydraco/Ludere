@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.view.*
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.draco.libretrowrapper.R
@@ -27,6 +28,9 @@ class GameActivity : AppCompatActivity() {
     private lateinit var privateData: PrivateData
     private lateinit var coreUpdater: CoreUpdater
 
+    /* UI components */
+    private lateinit var progress: ProgressBar
+
     /* Fragments */
     private val retroViewFragment = RetroViewFragment()
     private val gamePadFragment = GamePadFragment()
@@ -45,6 +49,9 @@ class GameActivity : AppCompatActivity() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         privateData = PrivateData(this)
         coreUpdater = CoreUpdater(this)
+
+        /* Initialize UI components */
+        progress = findViewById(R.id.progress)
 
         /* Make sure we reapply immersive mode on rotate */
         window.decorView.setOnApplyWindowInsetsListener { _, windowInsets ->
@@ -85,6 +92,9 @@ class GameActivity : AppCompatActivity() {
                     .replace(R.id.retroview_container, retroViewFragment)
                     .runOnCommit { canCommitFragmentsLatch = CountDownLatch(1) }
                     .commitNow()
+
+                /* Completely hide the progress spinner */
+                progress.visibility = View.GONE
             }
 
             /*
