@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
@@ -65,8 +66,9 @@ class GameActivity : AppCompatActivity() {
             initAssets()
 
             try {
-                /* Update the core from the internet if possible */
-                coreUpdater.update()
+                /* Update the core from the internet if it's missing */
+                if (!privateData.core.exists())
+                    coreUpdater.update()
             } catch (_: UnknownHostException) {
                 runOnUiThread {
                     AlertDialog.Builder(this)
@@ -139,7 +141,7 @@ class GameActivity : AppCompatActivity() {
 
     private fun initAssets() {
         /* Only init assets if this is our very first launch */
-        if (filesDir.list()!!.isNotEmpty())
+        if (filesDir.listFiles()!!.isNotEmpty())
             return
 
         /* Prepare to unzip our system zip from the assets folder */
