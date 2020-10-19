@@ -90,10 +90,6 @@ class GamePadFragment : Fragment() {
     }
 
     private fun shouldShowGamePads(): Boolean {
-        /* Do not show if we hardcoded the boolean */
-        if (!resources.getBoolean(R.bool.config_gamepad_visible))
-            return false
-
         /* Do not show if the device lacks a touch screen */
         if (!requireContext().packageManager.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN))
             return false

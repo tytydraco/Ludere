@@ -114,21 +114,24 @@ class GameActivity : AppCompatActivity() {
             if (savedInstanceState != null)
                 retroViewFragment.restoreTempState()
 
-            /*
-             * The fragment will subscribe the GLRetroView on start, prepare it.
-             * It is also guaranteed that the GLRetroView is prepared in the Fragment class.
-             */
-            gamePadFragment.retroView = retroViewFragment.retroView!!
+            /* Initialize the GamePad fragment if it's enabled in the config */
+            if (resources.getBoolean(R.bool.config_gamepad_visible)) {
+                /*
+                 * The fragment will subscribe the GLRetroView on start, prepare it.
+                 * It is also guaranteed that the GLRetroView is prepared in the Fragment class.
+                 */
+                gamePadFragment.retroView = retroViewFragment.retroView!!
 
-            /*
-             * If we initialize the GamePads too early, the user could load a state before the
-             * emulator is ready, causing a crash. We MUST wait for the GLRetroView to render
-             * a frame first.
-             */
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.containers, gamePadFragment)
-                .commit()
+                /*
+                 * If we initialize the GamePads too early, the user could load a state before the
+                 * emulator is ready, causing a crash. We MUST wait for the GLRetroView to render
+                 * a frame first.
+                 */
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.containers, gamePadFragment)
+                    .commit()
+            }
         }.start()
     }
 
