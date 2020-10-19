@@ -58,3 +58,5 @@ It is usually best to build a release build to reduce the total file size and im
 - `./gradlew assembleRelease`
 
 This uses the official LibRetroWrapper keystore to sign the APK. This is available in the root directory of the project. Feel free to use this key for your personal projects.
+
+The output APK is located here: `app/build/outputs/apk/release/app-release.apk`
