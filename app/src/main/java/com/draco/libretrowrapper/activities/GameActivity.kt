@@ -86,12 +86,12 @@ class GameActivity : AppCompatActivity() {
             canCommitFragmentsLatch.await()
 
             /* Add the GLRetroView to main layout now that the assets are prepared */
-            runOnUiThread {
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.retroview_container, retroViewFragment)
-                    .commit()
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.retroview_container, retroViewFragment)
+                .commit()
 
+            runOnUiThread {
                 /* Completely hide the progress spinner */
                 progress.visibility = View.GONE
             }
@@ -123,12 +123,10 @@ class GameActivity : AppCompatActivity() {
              * emulator is ready, causing a crash. We MUST wait for the GLRetroView to render
              * a frame first.
              */
-            runOnUiThread {
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.containers, gamePadFragment)
-                    .commitNow()
-            }
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.containers, gamePadFragment)
+                .commit()
         }.start()
     }
 
