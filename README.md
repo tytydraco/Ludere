@@ -79,3 +79,10 @@ I know a lot of users are not experienced in building Android Studio projects bu
 You can watch the build in realtime if you'd like. It can take quite a while to build, around 8 minutes. When it finishes, your fork will have a new release with the APK attached. You can find the releases tab from the home page of your fork. And that's it! You can install that APK on any device you'd like.
 
 **You can find a video tutorial here: https://photos.app.goo.gl/V2RvJDsB2QBdMy3V9**
+
+# Keystore
+There is a keystore for signing LibRetroWrapper packages that is public and free to use. Here are the details you should know when signing with it:
+
+- Keystore Password: `libretrowrapper`
+- Key Alias: `key0`
+- Key password: `libretrowrapper`
