@@ -80,6 +80,14 @@ class GameActivity : AppCompatActivity() {
                 return@Thread
             }
 
+            /* Add the GLRetroView to main layout now that the assets are prepared */
+            val fragmentTransaction = supportFragmentManager.beginTransaction()
+
+            with (fragmentTransaction) {
+                replace(R.id.retroview_container, retroViewFragment)
+                replace(R.id.containers, gamePadFragment)
+            }
+
             /*
              * It is unsafe to commit fragments after onSaveInstanceState is called. We MUST
              * wait until the activity resumes focus before continuing.
@@ -87,15 +95,9 @@ class GameActivity : AppCompatActivity() {
             canCommitFragmentsLatch.await()
 
             runOnUiThread {
-                /* Add the GLRetroView to main layout now that the assets are prepared */
-                with (supportFragmentManager.beginTransaction()) {
-                    replace(R.id.retroview_container, retroViewFragment)
-                    replace(R.id.containers, gamePadFragment)
-
-                    /* It's possible for the FragmentManager to die here */
-                    if (!supportFragmentManager.isDestroyed)
-                        commitNow()
-                }
+                /* It's possible for the FragmentManager to die here */
+                if (!supportFragmentManager.isDestroyed)
+                    fragmentTransaction.commitNow()
 
                 /* Completely hide the progress spinner */
                 progress.visibility = View.GONE
