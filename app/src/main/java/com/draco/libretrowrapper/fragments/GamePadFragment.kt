@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Context
 import android.content.pm.PackageManager
 import android.hardware.display.DisplayManager
+import android.hardware.input.InputManager
 import android.os.Build
 import android.os.Bundle
 import android.view.*
@@ -73,6 +74,21 @@ class GamePadFragment : Fragment() {
         leftGamePadContainer = view.findViewById(R.id.left_container)
         rightGamePadContainer = view.findViewById(R.id.right_container)
 
+        val inputManager = context?.getSystemService(Service.INPUT_SERVICE) as InputManager
+        inputManager.registerInputDeviceListener(object : InputManager.InputDeviceListener {
+            override fun onInputDeviceAdded(deviceId: Int) { updateVisibility() }
+            override fun onInputDeviceRemoved(deviceId: Int) { updateVisibility() }
+            override fun onInputDeviceChanged(deviceId: Int) { updateVisibility() }
+        }, null)
+
+        updateVisibility()
+
+        /* Add to layout */
+        leftGamePadContainer.addView(leftGamePad!!.pad)
+        rightGamePadContainer.addView(rightGamePad!!.pad)
+    }
+
+    private fun updateVisibility() {
         /* Check if we should show or hide controls */
         val visibility = if (shouldShowGamePads())
             View.VISIBLE
@@ -82,10 +98,6 @@ class GamePadFragment : Fragment() {
         /* Apply the new visibility state to the containers */
         leftGamePadContainer.visibility = visibility
         rightGamePadContainer.visibility = visibility
-
-        /* Add to layout */
-        leftGamePadContainer.addView(leftGamePad!!.pad)
-        rightGamePadContainer.addView(rightGamePad!!.pad)
     }
 
     private fun shouldShowGamePads(): Boolean {
