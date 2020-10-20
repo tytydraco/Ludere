@@ -74,6 +74,7 @@ class GamePadFragment : Fragment() {
         leftGamePadContainer = view.findViewById(R.id.left_container)
         rightGamePadContainer = view.findViewById(R.id.right_container)
 
+        /* Detect when controllers are added so we can disable or enable the GamePads */
         val inputManager = context?.getSystemService(Service.INPUT_SERVICE) as InputManager
         inputManager.registerInputDeviceListener(object : InputManager.InputDeviceListener {
             override fun onInputDeviceAdded(deviceId: Int) { updateVisibility() }
@@ -81,6 +82,7 @@ class GamePadFragment : Fragment() {
             override fun onInputDeviceChanged(deviceId: Int) { updateVisibility() }
         }, null)
 
+        /* Perform this check right now */
         updateVisibility()
 
         /* Add to layout */
