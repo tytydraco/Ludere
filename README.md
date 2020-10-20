@@ -29,9 +29,10 @@ Here's how LibRetroWrapper is configured:
 
 ```
 └── LibRetroDroid
-    ├── rom.gba
-    ├── rom.sav
-    └── rom.state
+    ├── rom
+    ├── save
+    ├── state
+    └── *other system files*
 ```
 
 # Features
