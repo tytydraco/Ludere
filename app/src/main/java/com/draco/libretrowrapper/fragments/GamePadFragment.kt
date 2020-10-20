@@ -104,7 +104,8 @@ class GamePadFragment : Fragment() {
 
     private fun shouldShowGamePads(): Boolean {
         /* Do not show if the device lacks a touch screen */
-        if (!requireContext().packageManager.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN))
+        val hasTouchScreen = context?.packageManager?.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)
+        if (hasTouchScreen == null || hasTouchScreen == false)
             return false
 
         /* Do not show if the current display is external (i.e. wireless cast) */
