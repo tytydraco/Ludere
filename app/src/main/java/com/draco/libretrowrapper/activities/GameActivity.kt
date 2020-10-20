@@ -14,10 +14,11 @@ import com.draco.libretrowrapper.fragments.RetroViewFragment
 import com.draco.libretrowrapper.utils.CoreUpdater
 import com.draco.libretrowrapper.utils.Input
 import com.draco.libretrowrapper.utils.PrivateData
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
 import java.io.File
 import java.net.UnknownHostException
 import java.util.concurrent.CountDownLatch
-import java.util.zip.ZipInputStream
 
 class GameActivity : AppCompatActivity() {
     /* Essential objects */
@@ -145,26 +146,30 @@ class GameActivity : AppCompatActivity() {
             return
 
         /* Prepare to unzip our system zip from the assets folder */
-        val systemZip = assets.open("system.zip")
+        val systemTarInputStream = assets.open("system.bin")
 
-        /* Iterate over all zipped items */
-        val zipInputStream = ZipInputStream(systemZip)
+        /* Iterate over all tarred items */
+        val gzipCompressorInputStream = GzipCompressorInputStream(systemTarInputStream)
+        val tarInputStream = TarArchiveInputStream(gzipCompressorInputStream)
+
         while (true) {
-            val zipEntry = zipInputStream.nextEntry ?: break
-            val zipEntryOutFile = File(filesDir, zipEntry.name)
+            val tarEntry = tarInputStream.nextEntry ?: break
+            val tarEntryOutFile = File(filesDir, tarEntry.name)
 
             /* If this is a directory, prepare the file structure and skip */
-            if (zipEntry.isDirectory) {
-                zipEntryOutFile.mkdir()
+            if (tarEntry.isDirectory) {
+                tarEntryOutFile.mkdir()
                 continue
             }
 
             /* Copy the file to the output location */
-            val zipEntryOutFileOutputStream = zipEntryOutFile.outputStream()
-            zipInputStream.copyTo(zipEntryOutFileOutputStream)
-            zipEntryOutFileOutputStream.close()
+            val tarEntryOutFileOutputStream = tarEntryOutFile.outputStream()
+            tarInputStream.copyTo(tarEntryOutFileOutputStream)
+            tarEntryOutFileOutputStream.close()
         }
-        zipInputStream.close()
+        tarInputStream.close()
+        gzipCompressorInputStream.close()
+        systemTarInputStream.close()
     }
 
     private fun immersive() {
