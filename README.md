@@ -77,3 +77,5 @@ I know a lot of users are not experienced in building Android Studio projects bu
 4) Now we get to build the APK! Navigate to your forked LibRetroWrapper repository we made in step 1. You should see a tab called "Actions" with a little play button icon next to it. Click on it. If you get a prompt asking you to enable Actions, just hit enable. Now, find the "Online Packager" tab. If your browser is zoomed in, you might see a drop-down where you can switch the tab from "All workflows" to "Online Packager". Now you should see a button that says "Run workflow" and it will prompt you for your **Config URL** and **ROM URL**. Paste them here and click "Run workflow".
 
 You can watch the build in realtime if you'd like. It can take quite a while to build, around 8 minutes. When it finishes, your fork will have a new release with the APK attached. You can find the releases tab from the home page of your fork. And that's it! You can install that APK on any device you'd like.
+
+**You can find a video tutorial here: https://photos.app.goo.gl/V2RvJDsB2QBdMy3V9**
