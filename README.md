@@ -68,7 +68,7 @@ I know a lot of users are not experienced in building Android Studio projects bu
 
 **TL;DR: You can build LibRetroWrapper packages online**
 
-1) Fork this repository by clicking the button in the top right corner of the repository. You may need to be on Desktop Mode for this to show up. I also suggest making your repo private so that you don't end up leaking release APKs with ROMs in them. You can learn how to privatize your repo [here](https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/setting-repository-visibility#changing-a-repositorys-visibility).
+1) Fork this repository by clicking the button in the top right corner of the repository. You may need to be on Desktop Mode for this to show up.
 
 2) Get a direct URL to your ROM of choice. Since GitHub Actions doesn't let us directly select a file to upload, you need to get a direct URL that the workflow can download. The easiest way to do this is by using Google Drive. Upload your ROM to Google Drive, then right click on it and click "Get link". Make sure it's set to "Anyone with the link" and copy it to your clipboard. The share link itself is not a direct download link, so head over to [this site](https://sites.google.com/site/gdocs2direct/home) to convert it into one. Keep the direct URL handy, we'll need it later.
 
