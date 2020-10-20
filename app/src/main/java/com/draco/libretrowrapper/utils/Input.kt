@@ -31,7 +31,11 @@ class Input {
             return false
 
         /* Pipe the keycode to the GLRetroView */
-        retroView?.sendKeyEvent(event.action, keyCode)
+        retroView?.sendKeyEvent(
+            event.action,
+            keyCode,
+            event.device.controllerNumber
+        )
         return true
     }
 
@@ -41,17 +45,20 @@ class Input {
             sendMotionEvent(
                 GLRetroView.MOTION_SOURCE_DPAD,
                 event.getAxisValue(MotionEvent.AXIS_HAT_X),
-                event.getAxisValue(MotionEvent.AXIS_HAT_Y)
+                event.getAxisValue(MotionEvent.AXIS_HAT_Y),
+                event.device.controllerNumber
             )
             sendMotionEvent(
                 GLRetroView.MOTION_SOURCE_ANALOG_LEFT,
                 event.getAxisValue(MotionEvent.AXIS_X),
-                event.getAxisValue(MotionEvent.AXIS_Y)
+                event.getAxisValue(MotionEvent.AXIS_Y),
+                event.device.controllerNumber
             )
             sendMotionEvent(
                 GLRetroView.MOTION_SOURCE_ANALOG_RIGHT,
                 event.getAxisValue(MotionEvent.AXIS_Z),
-                event.getAxisValue(MotionEvent.AXIS_RZ)
+                event.getAxisValue(MotionEvent.AXIS_RZ),
+                event.device.controllerNumber
             )
             return true
         }
