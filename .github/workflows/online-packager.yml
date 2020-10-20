@@ -1,0 +1,56 @@
+name: Online Packager
+
+on:
+  workflow_dispatch:
+    inputs:
+      config:
+        description: 'Custom rom.properties content (sample can be found at rom.properties.sample)'
+      romURL:
+        description: 'ROM Direct URL'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install NDK
+        run: echo "y" | sudo /usr/local/lib/android/sdk/tools/bin/sdkmanager --install "ndk;21.0.6113669" --sdk_root=$ANDROID_SDK_ROOT
+
+      - name: Write Config
+        run: echo "${{ github.event.inputs.config }}" > rom.properties
+
+      - name: Fetch ROM
+        run: |
+          mkdir -p system
+          curl -L# "${{ github.event.inputs.romURL }}" > ./system/rom
+      
+      - name: Build Release APK
+        run: |
+          chmod +x ./gradlew
+          ./gradlew assembleRelease
+          
+      - name: Get Date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H:%M:%S')"
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: wrapper-${{ steps.date.outputs.date }}
+          release_name: Wrapper ${{ steps.date.outputs.date }}
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./app/build/outputs/apk/release/app-release.apk
+          asset_name: wrapper.apk
+          asset_content_type: application/apk
