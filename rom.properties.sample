@@ -35,7 +35,7 @@ variables=
 # 1) unspecified		The default value, usually allowing portrait and landscape
 # 2) portrait			Only allow the device in the upright position
 # 3) userLandscape		Allow either landscape or reverse landscape
-# 4) locked				Use whatever orientation the device was in earlier
+# 4) locked			Use whatever orientation the device was in earlier
 orientation=unspecified
 
 # By default, the GamePad will not show for these cases:
