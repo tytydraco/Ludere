@@ -133,10 +133,10 @@ class GameActivity : AppCompatActivity() {
         /* It is no longer save to add fragments */
         canCommitFragmentsLatch = CountDownLatch(1)
 
+        super.onSaveInstanceState(outState)
+
         /* Android is about to kill the activity; save a temporary state snapshot */
         retroViewFragment.saveTempState()
-
-        super.onSaveInstanceState(outState)
     }
 
     private fun initAssets() {
