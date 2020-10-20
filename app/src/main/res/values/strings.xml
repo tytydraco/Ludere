@@ -3,4 +3,9 @@
     <string name="fetch_error_dialog_title">Fetch Failure</string>
     <string name="fetch_error_dialog_message">Failed to fetch the core. Ensure your network configuration is correct.</string>
     <string name="fetch_error_dialog_exit">Exit</string>
+
+    <string name="panic_title">Panic</string>
+    <string name="panic_message_load_core">The core failed to load. Ensure the core configuration is correct.</string>
+    <string name="panic_message_load_game">The ROM failed to load. Ensure the ROM configuration is correct.</string>
+    <string name="panic_message_gles">This version of OpenGLES is unsupported.</string>
 </resources>

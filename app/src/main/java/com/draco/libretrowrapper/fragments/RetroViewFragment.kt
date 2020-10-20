@@ -1,5 +1,6 @@
 package com.draco.libretrowrapper.fragments
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -59,6 +60,23 @@ class RetroViewFragment : Fragment() {
             shader = GLRetroView.SHADER_SHARP,
             variables = getCoreVariables()
         )
+
+        /* Also start tracking any errors we come across */
+        val errorDisposable = retroView!!
+            .getGLRetroErrors()
+            .subscribe {
+                val errorMessage = when (it) {
+                    GLRetroView.ERROR_LOAD_LIBRARY -> R.string.panic_message_load_core
+                    GLRetroView.ERROR_LOAD_GAME -> R.string.panic_message_load_game
+                    GLRetroView.ERROR_GL_NOT_COMPATIBLE -> R.string.panic_message_gles
+                    else -> null
+                }
+
+                /* Fatal error, panic accordingly */
+                if (errorMessage != null)
+                    activity?.runOnUiThread { panic(errorMessage) }
+            }
+        compositeDisposable.add(errorDisposable)
     }
 
     override fun onCreateView(
@@ -100,6 +118,16 @@ class RetroViewFragment : Fragment() {
             /* Restore emulator settings from last launch */
             restoreSettings()
         }.start()
+    }
+
+    private fun panic(errorResId: Int) {
+        AlertDialog.Builder(context)
+            .setTitle("Panic")
+            .setMessage(getString(errorResId))
+            .setCancelable(false)
+            .setPositiveButton("Exit") { _, _ -> activity?.finishAffinity() }
+            .setNegativeButton("Ignore", null)
+            .show()
     }
 
     private fun getCoreVariables(): Array<Variable> {
