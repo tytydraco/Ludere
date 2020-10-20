@@ -30,35 +30,41 @@ class Input {
         if (keyCode !in validKeyCodes)
             return false
 
+        /* Controller numbers are [1, inf), we need [0, inf) */
+        val port = (event.device?.controllerNumber ?: 1) - 1
+
         /* Pipe the keycode to the GLRetroView */
         retroView?.sendKeyEvent(
             event.action,
             keyCode,
-            event.device.controllerNumber
+            port
         )
         return true
     }
 
     fun handleGenericMotionEvent(retroView: GLRetroView?, event: MotionEvent): Boolean {
+        /* Controller numbers are [1, inf), we need [0, inf) */
+        val port = (event.device?.controllerNumber ?: 1) - 1
+
         /* Handle analog input events */
         if (retroView != null) with(retroView) {
             sendMotionEvent(
                 GLRetroView.MOTION_SOURCE_DPAD,
                 event.getAxisValue(MotionEvent.AXIS_HAT_X),
                 event.getAxisValue(MotionEvent.AXIS_HAT_Y),
-                event.device.controllerNumber
+                port
             )
             sendMotionEvent(
                 GLRetroView.MOTION_SOURCE_ANALOG_LEFT,
                 event.getAxisValue(MotionEvent.AXIS_X),
                 event.getAxisValue(MotionEvent.AXIS_Y),
-                event.device.controllerNumber
+                port
             )
             sendMotionEvent(
                 GLRetroView.MOTION_SOURCE_ANALOG_RIGHT,
                 event.getAxisValue(MotionEvent.AXIS_Z),
                 event.getAxisValue(MotionEvent.AXIS_RZ),
-                event.device.controllerNumber
+                port
             )
             return true
         }
