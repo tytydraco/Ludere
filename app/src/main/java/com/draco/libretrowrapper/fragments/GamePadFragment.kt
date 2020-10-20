@@ -25,7 +25,6 @@ class GamePadFragment : Fragment() {
     private lateinit var rightGamePadContainer: FrameLayout
 
     /* Emulator objects */
-    var retroView: GLRetroView? = null
     private var leftGamePad: GamePad? = null
     private var rightGamePad: GamePad? = null
 
@@ -47,16 +46,16 @@ class GamePadFragment : Fragment() {
         rightGamePad!!.pad.offsetY = 1f
         leftGamePad!!.pad.primaryDialMaxSizeDp = gamePadSize
         rightGamePad!!.pad.primaryDialMaxSizeDp = gamePadSize
+    }
 
+    fun subscribe(retroView: GLRetroView) {
         /*
          * Subscribe the input handler observables, which might be null
          * if the activity is recreated. In which case, the subscription will
          * occur later in the lifecycle.
          */
-        if (retroView != null) {
-            leftGamePad!!.subscribe(retroView!!)
-            rightGamePad!!.subscribe(retroView!!)
-        }
+        leftGamePad!!.subscribe(retroView)
+        rightGamePad!!.subscribe(retroView)
     }
 
     override fun onCreateView(

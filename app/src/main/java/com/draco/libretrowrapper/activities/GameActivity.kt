@@ -86,18 +86,17 @@ class GameActivity : AppCompatActivity() {
              */
             canCommitFragmentsLatch.await()
 
-            /* Add the GLRetroView to main layout now that the assets are prepared */
             runOnUiThread {
+                /* Add the GLRetroView to main layout now that the assets are prepared */
                 with (supportFragmentManager.beginTransaction()) {
                     replace(R.id.retroview_container, retroViewFragment)
+                    replace(R.id.containers, gamePadFragment)
 
                     /* It's possible for the FragmentManager to die here */
                     if (!supportFragmentManager.isDestroyed)
                         commitNow()
                 }
-            }
 
-            runOnUiThread {
                 /* Completely hide the progress spinner */
                 progress.visibility = View.GONE
             }
@@ -124,25 +123,7 @@ class GameActivity : AppCompatActivity() {
                  * The fragment will subscribe the GLRetroView on start, prepare it.
                  * It is also guaranteed that the GLRetroView is prepared in the Fragment class.
                  */
-                gamePadFragment.retroView = retroViewFragment.retroView!!
-
-                /* Once again, wait until fragments are allowed to be committed */
-                canCommitFragmentsLatch.await()
-
-                /*
-                 * If we initialize the GamePads too early, the user could load a state before the
-                 * emulator is ready, causing a crash. We MUST wait for the GLRetroView to render
-                 * a frame first.
-                 */
-                runOnUiThread {
-                    with (supportFragmentManager.beginTransaction()) {
-                        replace(R.id.containers, gamePadFragment)
-
-                        /* It's possible for the FragmentManager to die here */
-                        if (!supportFragmentManager.isDestroyed)
-                            commitNow()
-                    }
-                }
+                gamePadFragment.subscribe(retroViewFragment.retroView!!)
             }
         }.start()
     }
@@ -206,16 +187,14 @@ class GameActivity : AppCompatActivity() {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
 
-        if (hasFocus) {
-            /* Reapply our immersive mode again */
-            immersive()
+        if (!hasFocus)
+            return
 
-            /* Let waiting threads know that it is now safe to commit fragments */
-            canCommitFragmentsLatch.countDown()
-        } else {
-            /* It is no longer safe to commit fragments */
-            canCommitFragmentsLatch = CountDownLatch(1)
-        }
+        /* Reapply our immersive mode again */
+        immersive()
+
+        /* Let waiting threads know that it is now safe to commit fragments */
+        canCommitFragmentsLatch.countDown()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
