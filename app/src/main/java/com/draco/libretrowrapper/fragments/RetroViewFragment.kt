@@ -125,8 +125,8 @@ class RetroViewFragment : Fragment() {
             .setTitle("Panic")
             .setMessage(getString(errorResId))
             .setCancelable(false)
-            .setPositiveButton("Exit") { _, _ -> activity?.finishAffinity() }
-            .setNegativeButton("Ignore", null)
+            .setPositiveButton(getString(R.string.button_exit)) { _, _ -> activity?.finishAffinity() }
+            .setNegativeButton(getString(R.string.button_ignore), null)
             .show()
     }
 

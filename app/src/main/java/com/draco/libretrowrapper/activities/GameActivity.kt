@@ -73,7 +73,7 @@ class GameActivity : AppCompatActivity() {
                     AlertDialog.Builder(this)
                         .setTitle(getString(R.string.fetch_error_dialog_title))
                         .setMessage(getString(R.string.fetch_error_dialog_message))
-                        .setPositiveButton(getString(R.string.fetch_error_dialog_exit)) { _, _ -> finishAffinity() }
+                        .setPositiveButton(getString(R.string.button_exit)) { _, _ -> finishAffinity() }
                         .setCancelable(false)
                         .show()
                 }
