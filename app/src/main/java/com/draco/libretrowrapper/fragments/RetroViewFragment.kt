@@ -122,7 +122,7 @@ class RetroViewFragment : Fragment() {
 
     private fun panic(errorResId: Int) {
         AlertDialog.Builder(context)
-            .setTitle("Panic")
+            .setTitle(getString(R.string.panic_title))
             .setMessage(getString(errorResId))
             .setCancelable(false)
             .setPositiveButton(getString(R.string.button_exit)) { _, _ -> activity?.finishAffinity() }
