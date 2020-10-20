@@ -82,7 +82,6 @@ class GameActivity : AppCompatActivity() {
 
             /* Add the GLRetroView to main layout now that the assets are prepared */
             val fragmentTransaction = supportFragmentManager.beginTransaction()
-
             with (fragmentTransaction) {
                 replace(R.id.retroview_container, retroViewFragment)
                 replace(R.id.containers, gamePadFragment)
@@ -131,10 +130,13 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
+        /* It is no longer save to add fragments */
+        canCommitFragmentsLatch = CountDownLatch(1)
 
         /* Android is about to kill the activity; save a temporary state snapshot */
         retroViewFragment.saveTempState()
+
+        super.onSaveInstanceState(outState)
     }
 
     private fun initAssets() {
