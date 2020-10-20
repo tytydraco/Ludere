@@ -21,4 +21,4 @@
 #-renamesourcefileattribute SourceFile
 
 # Keep LibretroDroid classes from being stripped by minify
--keep class com.swordfish.libretrodroid.** { *; }
+-keep class com.swordfish.libretrodroid.* { *; }
