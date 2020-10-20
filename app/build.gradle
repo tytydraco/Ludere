@@ -42,6 +42,8 @@ android {
 
             resValue('bool', 'config_gamepad_visible', rom.gamePadVisible)
 
+            resValue('bool', 'config_gamepad_haptic', rom.gamePadHaptic)
+
             resValue('color', 'config_gamepad_icon_color', rom.gamePadIconColor)
             resValue('color', 'config_gamepad_button_color', rom.gamePadButtonColor)
             resValue('color', 'config_gamepad_pressed_color', rom.gamePadPressedColor)

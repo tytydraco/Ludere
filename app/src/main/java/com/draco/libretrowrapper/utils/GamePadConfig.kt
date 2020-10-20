@@ -86,6 +86,7 @@ class GamePadConfig(
     )
 
     val left = RadialGamePadConfig(
+        haptic = resources.getBoolean(R.bool.config_gamepad_haptic),
         theme = radialGamePadTheme,
         sockets = 12,
         primaryDial = PrimaryDialConfig.Cross(GLRetroView.MOTION_SOURCE_DPAD),
@@ -99,6 +100,7 @@ class GamePadConfig(
     )
 
     val right = RadialGamePadConfig(
+        haptic = resources.getBoolean(R.bool.config_gamepad_haptic),
         theme = radialGamePadTheme,
         sockets = 12,
         primaryDial = PrimaryDialConfig.PrimaryButtons(

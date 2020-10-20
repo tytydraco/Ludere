@@ -44,6 +44,9 @@ orientation=unspecified
 # 3) When a gamepad or joystick is connected
 gamePadVisible=true
 
+# Enable or disable vibration on input events
+gamePadHaptic=true
+
 # GamePad colors
 # The color of the icon or label within the button
 gamePadIconColor=#ffffffff
