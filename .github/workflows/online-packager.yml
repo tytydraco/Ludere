@@ -33,7 +33,7 @@ jobs:
           
       - name: Get Date
         id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H:%M:%S')"
+        run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H-%M-%S')"
 
       - name: Create Release
         id: create_release
