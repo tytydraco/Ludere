@@ -34,9 +34,6 @@ class GameActivity : AppCompatActivity() {
     private val retroViewFragment = RetroViewFragment()
     private val gamePadFragment = GamePadFragment()
 
-    /* Input handler for GLRetroView */
-    private val input = Input()
-
     /* Latch that waits until the activity is focused before continuing */
     private var canCommitFragmentsLatch = CountDownLatch(1)
 
@@ -215,15 +212,15 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        return input.handleKeyEvent(retroViewFragment.retroView, keyCode, event)
+        return Input.handleKeyEvent(retroViewFragment.retroView, keyCode, event)
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
-        return input.handleKeyEvent(retroViewFragment.retroView, keyCode, event)
+        return Input.handleKeyEvent(retroViewFragment.retroView, keyCode, event)
     }
 
     override fun onGenericMotionEvent(event: MotionEvent): Boolean {
-        if (input.handleGenericMotionEvent(retroViewFragment.retroView, event))
+        if (Input.handleGenericMotionEvent(retroViewFragment.retroView, event))
             return true
 
         return super.onGenericMotionEvent(event)
