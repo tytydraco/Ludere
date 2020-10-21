@@ -117,8 +117,7 @@ class GameActivity : AppCompatActivity() {
             if (savedInstanceState != null)
                 RetroViewUtils.restoreTempState(
                     retroViewFragment.retroView!!,
-                    privateData,
-                    retroViewFragment.retroViewReadyLatch
+                    privateData
                 )
 
             /* Initialize the GamePad fragment if it's enabled in the config */

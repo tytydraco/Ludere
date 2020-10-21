@@ -1,7 +1,6 @@
 package com.draco.libretrowrapper.utils
 
 import com.swordfish.libretrodroid.GLRetroView
-import java.util.concurrent.CountDownLatch
 
 class RetroViewUtils {
     companion object {
@@ -27,26 +26,21 @@ class RetroViewUtils {
             }
         }
 
-        fun restoreTempState(retroView: GLRetroView, privateData: PrivateData, retroViewReadyLatch: CountDownLatch) {
+        fun restoreTempState(retroView: GLRetroView, privateData: PrivateData) {
             /* Don't bother restoring a temporary state if it doesn't exist */
             if (!privateData.savedInstanceState.exists())
                 return
 
-            Thread {
-                /* Wait for the GLRetroView to become usable */
-                retroViewReadyLatch.await()
+            /* Fetch the state bytes */
+            val stateInputStream = privateData.savedInstanceState.inputStream()
+            val stateBytes = stateInputStream.readBytes()
+            stateInputStream.close()
 
-                /* Fetch the state bytes */
-                val stateInputStream = privateData.savedInstanceState.inputStream()
-                val stateBytes = stateInputStream.readBytes()
-                stateInputStream.close()
+            /* Invalidate the temporary state so we cannot restore it twice */
+            privateData.savedInstanceState.delete()
 
-                /* Invalidate the temporary state so we cannot restore it twice */
-                privateData.savedInstanceState.delete()
-
-                /* Restore the temporary state */
-                retroView.unserializeState(stateBytes)
-            }.start()
+            /* Restore the temporary state */
+            retroView.unserializeState(stateBytes)
         }
     }
 }
