@@ -14,6 +14,7 @@ import com.draco.libretrowrapper.fragments.RetroViewFragment
 import com.draco.libretrowrapper.utils.CoreUpdater
 import com.draco.libretrowrapper.utils.Input
 import com.draco.libretrowrapper.utils.PrivateData
+import com.draco.libretrowrapper.utils.RetroViewUtils
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
 import java.io.File
@@ -117,7 +118,11 @@ class GameActivity : AppCompatActivity() {
              * the configurations in the parent activity.
              */
             if (savedInstanceState != null)
-                retroViewFragment.restoreTempState()
+                RetroViewUtils.restoreTempState(
+                    retroViewFragment.retroView!!,
+                    privateData,
+                    retroViewFragment.retroViewReadyLatch
+                )
 
             /* Initialize the GamePad fragment if it's enabled in the config */
             if (resources.getBoolean(R.bool.config_gamepad_visible)) {
@@ -137,7 +142,10 @@ class GameActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
 
         /* Android is about to kill the activity; save a temporary state snapshot */
-        retroViewFragment.saveTempState()
+        RetroViewUtils.saveTempState(
+            retroViewFragment.retroView!!,
+            privateData
+        )
     }
 
     private fun initAssets() {

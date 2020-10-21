@@ -16,30 +16,17 @@ class GamePad(
     val pad: RadialGamePad = RadialGamePad(padConfig, 0f, context)
     private val compositeDisposable = CompositeDisposable()
 
-    private fun save(retroView: GLRetroView) {
-        privateData.state.writeBytes(retroView.serializeState())
-    }
-
-    private fun load(retroView: GLRetroView) {
-        if (!privateData.state.exists())
-            return
-
-        val bytes = privateData.state.readBytes()
-        if (bytes.isNotEmpty())
-            retroView.unserializeState(bytes)
-    }
-
     private fun eventHandler(event: Event, retroView: GLRetroView) {
         when (event) {
             is Event.Button -> {
                 when (event.id) {
                     GamePadConfig.KEYCODE_SAVE_STATE -> {
                         if (event.action == KeyEvent.ACTION_DOWN)
-                            save(retroView)
+                            RetroViewUtils.save(retroView, privateData)
                     }
                     GamePadConfig.KEYCODE_LOAD_STATE -> {
                         if (event.action == KeyEvent.ACTION_DOWN)
-                            load(retroView)
+                            RetroViewUtils.load(retroView, privateData)
                     }
                     else -> retroView.sendKeyEvent(event.action, event.id)
                 }
