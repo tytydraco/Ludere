@@ -22,11 +22,11 @@ class GamePad(
                 when (event.id) {
                     GamePadConfig.KEYCODE_SAVE_STATE -> {
                         if (event.action == KeyEvent.ACTION_DOWN)
-                            RetroViewUtils.save(retroView, privateData)
+                            RetroViewUtils.saveState(retroView, privateData)
                     }
                     GamePadConfig.KEYCODE_LOAD_STATE -> {
                         if (event.action == KeyEvent.ACTION_DOWN)
-                            RetroViewUtils.load(retroView, privateData)
+                            RetroViewUtils.loadState(retroView, privateData)
                     }
                     else -> retroView.sendKeyEvent(event.action, event.id)
                 }

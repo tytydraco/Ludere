@@ -5,11 +5,11 @@ import java.util.concurrent.CountDownLatch
 
 class RetroViewUtils {
     companion object {
-        fun save(retroView: GLRetroView, privateData: PrivateData) {
+        fun saveState(retroView: GLRetroView, privateData: PrivateData) {
             privateData.state.writeBytes(retroView.serializeState())
         }
 
-        fun load(retroView: GLRetroView, privateData: PrivateData) {
+        fun loadState(retroView: GLRetroView, privateData: PrivateData) {
             if (!privateData.state.exists())
                 return
 
