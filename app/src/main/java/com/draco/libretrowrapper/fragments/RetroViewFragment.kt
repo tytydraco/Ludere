@@ -23,6 +23,9 @@ class RetroViewFragment : Fragment() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var privateData: PrivateData
 
+    /* Panic dialog for if we crash */
+    private lateinit var panicDialog: AlertDialog
+
     /* Emulator objects */
     var retroView: GLRetroView? = null
 
@@ -77,6 +80,13 @@ class RetroViewFragment : Fragment() {
                     activity?.runOnUiThread { panic(errorMessage) }
             }
         compositeDisposable.add(errorDisposable)
+
+        /* Prepare skeleton of panic dialog */
+        panicDialog = AlertDialog.Builder(context)
+            .setTitle(getString(R.string.panic_title))
+            .setCancelable(false)
+            .setPositiveButton(getString(R.string.button_exit)) { _, _ -> activity?.finishAffinity() }
+            .create()
     }
 
     override fun onCreateView(
@@ -121,12 +131,10 @@ class RetroViewFragment : Fragment() {
     }
 
     private fun panic(errorResId: Int) {
-        AlertDialog.Builder(context)
-            .setTitle(getString(R.string.panic_title))
-            .setMessage(getString(errorResId))
-            .setCancelable(false)
-            .setPositiveButton(getString(R.string.button_exit)) { _, _ -> activity?.finishAffinity() }
-            .show()
+        with (panicDialog) {
+            setMessage(getString(errorResId))
+            show()
+        }
     }
 
     private fun getCoreVariables(): Array<Variable> {
@@ -160,6 +168,10 @@ class RetroViewFragment : Fragment() {
     }
 
     override fun onStop() {
+        /* Dismiss the panic dialog to avoid leaking the window */
+        if (panicDialog.isShowing)
+            panicDialog.dismiss()
+
         /* Save emulator settings for next launch */
         saveSettings()
 
