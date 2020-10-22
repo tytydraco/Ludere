@@ -138,10 +138,12 @@ class GameActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
 
         /* Android is about to kill the activity; save a temporary state snapshot */
-        RetroViewUtils.saveTempState(
-            retroViewFragment.retroView!!,
-            privateData
-        )
+        if (retroViewFragment.retroView != null) {
+            RetroViewUtils.saveTempState(
+                retroViewFragment.retroView!!,
+                privateData
+            )
+        }
     }
 
     private fun initAssets() {
