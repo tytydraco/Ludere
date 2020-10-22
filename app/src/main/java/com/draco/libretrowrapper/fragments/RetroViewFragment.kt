@@ -126,7 +126,6 @@ class RetroViewFragment : Fragment() {
             .setMessage(getString(errorResId))
             .setCancelable(false)
             .setPositiveButton(getString(R.string.button_exit)) { _, _ -> activity?.finishAffinity() }
-            .setNegativeButton(getString(R.string.button_ignore), null)
             .show()
     }
 
