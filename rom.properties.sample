@@ -36,7 +36,7 @@ variables=
 # 2) portrait			Only allow the device in the upright position
 # 3) userLandscape		Allow either landscape or reverse landscape
 # 4) locked			Use whatever orientation the device was in earlier
-orientation=unspecified
+orientation=userLandscape
 
 # By default, the GamePad will not show for these cases:
 # 1) Devices without a touchscreen
@@ -49,11 +49,11 @@ gamePadHaptic=true
 
 # GamePad colors
 # The color of the icon or label within the button
-gamePadIconColor=#ffffffff
+gamePadIconColor=#88ffffff
 # The color of the button
-gamePadButtonColor=#aa1e88e5
+gamePadButtonColor=#88424242
 # The color of the button when pressed down
-gamePadPressedColor=#aa1a5276
+gamePadPressedColor=#88263238
 
 # GamePad buttons to show
 gamePadA=true
