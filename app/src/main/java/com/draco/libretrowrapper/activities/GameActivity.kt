@@ -71,8 +71,10 @@ class GameActivity : AppCompatActivity() {
         /*
          * If this is a fresh launch, make sure our temporary state is invalidated to prevent a
          * state load from a previous launch.
+         *
+         * If we WANT to preserve the state, do not delete it. Instead, load it later on.
          */
-        if (savedInstanceState == null)
+        if (savedInstanceState == null && !resources.getBoolean(R.bool.config_preserve_state))
             privateData.savedInstanceState.delete()
 
         /*
@@ -134,12 +136,10 @@ class GameActivity : AppCompatActivity() {
              * null, making it impossible to differentiate a cold start from a warm start. Handle
              * the configurations in the parent activity.
              */
-            if (savedInstanceState != null) {
-                RetroViewUtils.restoreTempState(
-                    retroViewFragment.retroView!!,
-                    privateData
-                )
-            }
+            RetroViewUtils.restoreTempState(
+                retroViewFragment.retroView!!,
+                privateData
+            )
 
             /* Initialize the GamePad fragment if it's enabled in the config */
             if (resources.getBoolean(R.bool.config_gamepad_visible)) {
