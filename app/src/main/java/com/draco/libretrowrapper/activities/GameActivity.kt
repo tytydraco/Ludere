@@ -123,11 +123,12 @@ class GameActivity : AppCompatActivity() {
              * null, making it impossible to differentiate a cold start from a warm start. Handle
              * the configurations in the parent activity.
              */
-            if (savedInstanceState != null)
+            if (savedInstanceState != null) {
                 RetroViewUtils.restoreTempState(
                     retroViewFragment.retroView!!,
                     privateData
                 )
+            }
 
             /* Initialize the GamePad fragment if it's enabled in the config */
             if (resources.getBoolean(R.bool.config_gamepad_visible)) {
