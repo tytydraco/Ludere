@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- The full file name of the rom under the system directory -->
-    <string name="config_rom_file">example.nes</string>
+    <string name="config_rom_file">rom</string>
     <!-- A ROM identifier for the app (no spaces allowed) -->
     <string name="config_rom_id">examplerom</string>
     <!-- The pretty name for the app -->
