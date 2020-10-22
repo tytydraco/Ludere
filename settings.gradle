@@ -1,6 +1,2 @@
 include ':app', ':libretrodroid'
-
-ext.rom = new Properties()
-file("${rootProject.projectDir}/rom.properties").withInputStream { ext.rom.load(it) }
-
-rootProject.name = rom.name
+rootProject.name = 'LibRetroWrapper'

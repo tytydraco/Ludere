@@ -2,6 +2,7 @@ package com.draco.libretrowrapper.activities
 
 import android.app.AlertDialog
 import android.content.SharedPreferences
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.view.*
@@ -48,6 +49,14 @@ class GameActivity : AppCompatActivity() {
 
         /* Initialize UI components */
         progress = findViewById(R.id.progress)
+
+        /* Set orientation based on config */
+        val requestedOrientation = when (getString(R.string.config_orientation)) {
+            "portrait" -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            "landscape" -> ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE
+            else -> ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+        setRequestedOrientation(requestedOrientation)
 
         /* Make sure we reapply immersive mode on rotate */
         window.decorView.setOnApplyWindowInsetsListener { _, windowInsets ->

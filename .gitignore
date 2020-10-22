@@ -9,10 +9,6 @@
 .externalNativeBuild
 .cxx
 
-# Base configuration
-*.properties
-!*.properties.sample
-
 # Assets
 system/*
 app/src/main/assets/system.bin

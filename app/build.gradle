@@ -2,21 +2,22 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
-ext.rom = new Properties()
-file("${rootProject.projectDir}/rom.properties").withInputStream { ext.rom.load(it) }
+def configValue = { id ->
+    return new XmlParser()
+        .parse(file("${rootProject.projectDir.path}/app/src/main/res/values/config.xml"))
+        .string.find { it.@name.equals id }.text()
+}
 
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "com.draco.libretrowrapper.${rom.id}"
+        applicationId "com.draco.libretrowrapper.${configValue('config_rom_id')}"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
-
-        manifestPlaceholders = [orientation:rom.orientation]
     }
 
     signingConfigs {
@@ -29,40 +30,6 @@ android {
     }
 
     buildTypes {
-        all {
-            resValue('string', 'config_rom_file', rom.romFile)
-            resValue('string', 'config_name', rom.name)
-
-            resValue('string', 'config_core', rom.core)
-
-            resValue('color', 'config_foreground_color', rom.foregroundColor)
-            resValue('color', 'config_background_color', rom.backgroundColor)
-
-            resValue('string', 'config_variables', rom.variables)
-
-            resValue('bool', 'config_gamepad_visible', rom.gamePadVisible)
-
-            resValue('bool', 'config_gamepad_haptic', rom.gamePadHaptic)
-
-            resValue('color', 'config_gamepad_icon_color', rom.gamePadIconColor)
-            resValue('color', 'config_gamepad_button_color', rom.gamePadButtonColor)
-            resValue('color', 'config_gamepad_pressed_color', rom.gamePadPressedColor)
-
-            resValue('bool', 'config_gamepad_a', rom.gamePadA)
-            resValue('bool', 'config_gamepad_b', rom.gamePadB)
-            resValue('bool', 'config_gamepad_x', rom.gamePadX)
-            resValue('bool', 'config_gamepad_y', rom.gamePadY)
-            resValue('bool', 'config_gamepad_start', rom.gamePadStart)
-            resValue('bool', 'config_gamepad_select', rom.gamePadSelect)
-            resValue('bool', 'config_gamepad_l1', rom.gamePadL1)
-            resValue('bool', 'config_gamepad_l2', rom.gamePadL2)
-            resValue('bool', 'config_gamepad_r1', rom.gamePadR1)
-            resValue('bool', 'config_gamepad_r2', rom.gamePadR2)
-            resValue('bool', 'config_gamepad_save_state', rom.gamePadSaveState)
-            resValue('bool', 'config_gamepad_load_state', rom.gamePadLoadState)
-            resValue('bool', 'config_gamepad_analog_left', rom.gamePadAnalogLeft)
-            resValue('bool', 'config_gamepad_analog_right', rom.gamePadAnalogRight)
-        }
         release {
             minifyEnabled true
             shrinkResources true
