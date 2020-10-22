@@ -49,11 +49,9 @@ Here's how LibRetroWrapper is configured:
 - [RetroArch](http://buildbot.libretro.com/nightly/): LibRetro emulator cores for Android
 
 # Configuration
-- Copy `rom.properties.sample` to `rom.properties`
-- Edit `rom.properties` and change your configuration
-- Create a new directory called `system`
-- Place your ROM in `system/`, and make sure the file name matches the configuration file's `romName`
-- Place any other core assets in the system directory
+- Edit `app/src/main/res/values/config.xml` and change your configuration
+- Create a new directory called `system` in the root directory
+- Place your ROM and any other core assets in `system/`, and make sure the file name matches the configuration file's `config_rom_name`
 
 # Building Offline
 It is usually best to build a release build to reduce the total file size and improve performance.
