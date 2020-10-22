@@ -168,10 +168,6 @@ class RetroViewFragment : Fragment() {
     }
 
     override fun onStop() {
-        /* Dismiss the panic dialog to avoid leaking the window */
-        if (panicDialog.isShowing)
-            panicDialog.dismiss()
-
         /* Save emulator settings for next launch */
         saveSettings()
 
@@ -187,6 +183,10 @@ class RetroViewFragment : Fragment() {
     }
 
     override fun onDestroy() {
+        /* Dismiss the panic dialog to avoid leaking the window */
+        if (panicDialog.isShowing)
+            panicDialog.dismiss()
+
         compositeDisposable.dispose()
         super.onDestroy()
     }
