@@ -36,9 +36,6 @@ class RetroViewUtils {
             val stateBytes = stateInputStream.readBytes()
             stateInputStream.close()
 
-            /* Invalidate the temporary state so we cannot restore it twice */
-            privateData.savedInstanceState.delete()
-
             /* Restore the temporary state */
             retroView.unserializeState(stateBytes)
         }
