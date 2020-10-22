@@ -5,6 +5,8 @@ import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.*
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
@@ -60,7 +62,9 @@ class GameActivity : AppCompatActivity() {
 
         /* Make sure we reapply immersive mode on rotate */
         window.decorView.setOnApplyWindowInsetsListener { _, windowInsets ->
-            immersive()
+            Handler(Looper.getMainLooper()).postDelayed({
+                immersive()
+            }, 200)
             return@setOnApplyWindowInsetsListener windowInsets
         }
 
