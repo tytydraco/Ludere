@@ -20,11 +20,11 @@ class GamePad(
         when (event) {
             is Event.Button -> {
                 when (event.id) {
-                    GamePadConfig.KEYCODE_SAVE_STATE -> {
+                    Input.KEYCODE_SAVE_STATE -> {
                         if (event.action == KeyEvent.ACTION_DOWN)
                             RetroViewUtils.saveState(retroView, privateData)
                     }
-                    GamePadConfig.KEYCODE_LOAD_STATE -> {
+                    Input.KEYCODE_LOAD_STATE -> {
                         if (event.action == KeyEvent.ACTION_DOWN)
                             RetroViewUtils.loadState(retroView, privateData)
                     }

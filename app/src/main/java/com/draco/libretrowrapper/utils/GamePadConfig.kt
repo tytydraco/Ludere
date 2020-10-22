@@ -14,9 +14,6 @@ class GamePadConfig(
     private val resources: Resources
 ) {
     companion object {
-        const val KEYCODE_LOAD_STATE = -1
-        const val KEYCODE_SAVE_STATE = -2
-
         val BUTTON_START = ButtonConfig(
             id = KeyEvent.KEYCODE_BUTTON_START,
             iconId = R.drawable.ic_baseline_play_arrow_24
@@ -28,12 +25,12 @@ class GamePadConfig(
         )
 
         val BUTTON_SAVE_STATE = ButtonConfig(
-            id = KEYCODE_SAVE_STATE,
+            id = Input.KEYCODE_SAVE_STATE,
             iconId = R.drawable.ic_baseline_save_24
         )
 
         val BUTTON_LOAD_STATE = ButtonConfig(
-            id = KEYCODE_LOAD_STATE,
+            id = Input.KEYCODE_LOAD_STATE,
             iconId = R.drawable.ic_baseline_get_app_24
         )
 
