@@ -16,20 +16,34 @@ class GamePad(
     val pad: RadialGamePad = RadialGamePad(padConfig, 0f, context)
     private val compositeDisposable = CompositeDisposable()
 
+    private fun overrideButtonEvent(event: Event.Button, retroView: GLRetroView): Boolean {
+        /* We only accept down key events */
+        if (event.action != KeyEvent.ACTION_DOWN)
+            return false
+
+        /* If we recognize the event ID, handle it */
+        when (event.id) {
+            Input.KEYCODE_SAVE_STATE -> RetroViewUtils.saveState(retroView, privateData)
+            Input.KEYCODE_LOAD_STATE -> RetroViewUtils.loadState(retroView, privateData)
+
+            /* ID unrecognized, return false */
+            else -> return false
+        }
+
+        /* We handled the event */
+        return true
+    }
+
     private fun eventHandler(event: Event, retroView: GLRetroView) {
         when (event) {
             is Event.Button -> {
-                when (event.id) {
-                    Input.KEYCODE_SAVE_STATE -> {
-                        if (event.action == KeyEvent.ACTION_DOWN)
-                            RetroViewUtils.saveState(retroView, privateData)
-                    }
-                    Input.KEYCODE_LOAD_STATE -> {
-                        if (event.action == KeyEvent.ACTION_DOWN)
-                            RetroViewUtils.loadState(retroView, privateData)
-                    }
-                    else -> retroView.sendKeyEvent(event.action, event.id)
-                }
+                /*
+                 * Attempt to override the event to handle unorthodox keycodes, such as save
+                 * and load states. If the override handler returns false, the event was not
+                 * overridden, so we should pass the event to the GLRetroView as-is.
+                 */
+                if (!overrideButtonEvent(event, retroView))
+                    retroView.sendKeyEvent(event.action, event.id)
             }
             is Event.Direction -> {
                 when (event.id) {
