@@ -69,6 +69,13 @@ class GameActivity : AppCompatActivity() {
         }
 
         /*
+         * If this is a fresh launch, make sure our temporary state is invalidated to prevent a
+         * state load from a previous launch.
+         */
+        if (savedInstanceState == null)
+            privateData.savedInstanceState.delete()
+
+        /*
          * We have a progress spinner on the screen at this point until the GLRetroView
          * renders a frame. Let's setup our ROM, core, and GLRetroView in a background thread.
          */
