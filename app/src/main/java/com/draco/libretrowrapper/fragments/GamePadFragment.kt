@@ -41,10 +41,6 @@ class GamePadFragment : Fragment() {
         /* Configure GamePad size and position */
         val density = resources.displayMetrics.density
         val gamePadSize = resources.getDimension(R.dimen.config_gamepad_size) / density
-        leftGamePad!!.pad.offsetX = -1f
-        leftGamePad!!.pad.offsetY = 1f
-        rightGamePad!!.pad.offsetX = 1f
-        rightGamePad!!.pad.offsetY = 1f
         leftGamePad!!.pad.primaryDialMaxSizeDp = gamePadSize
         rightGamePad!!.pad.primaryDialMaxSizeDp = gamePadSize
     }
