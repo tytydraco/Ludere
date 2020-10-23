@@ -40,9 +40,9 @@ class GameActivity : AppCompatActivity() {
     private lateinit var coreUpdater: CoreUpdater
 
     /* Emulator objects */
-    private lateinit var retroView: GLRetroView
-    private lateinit var leftGamePad: GamePad
-    private lateinit var rightGamePad: GamePad
+    private var retroView: GLRetroView? = null
+    private var leftGamePad: GamePad? = null
+    private var rightGamePad: GamePad? = null
 
     /* Alert dialogs*/
     private lateinit var panicDialog: AlertDialog
@@ -150,14 +150,14 @@ class GameActivity : AppCompatActivity() {
              * null, making it impossible to differentiate a cold start from a warm start. Handle
              * the configurations in the parent activity.
              */
-            RetroViewUtils.restoreTempState(retroView, privateData)
+            RetroViewUtils.restoreTempState(retroView!!, privateData)
 
             /* Initialize the GamePads if they are enabled in the config */
             if (resources.getBoolean(R.bool.config_gamepad_visible)) {
                 runOnUiThread {
                     setupGamePads()
-                    leftGamePad.subscribe(retroView)
-                    rightGamePad.subscribe(retroView)
+                    leftGamePad!!.subscribe(retroView!!)
+                    rightGamePad!!.subscribe(retroView!!)
                 }
             }
         }.start()
@@ -183,7 +183,7 @@ class GameActivity : AppCompatActivity() {
         )
 
         /* Hook the GLRetroView to the fragment lifecycle */
-        lifecycle.addObserver(retroView)
+        lifecycle.addObserver(retroView!!)
 
         /* Center the view in the parent container */
         val params = FrameLayout.LayoutParams(
@@ -191,12 +191,12 @@ class GameActivity : AppCompatActivity() {
             FrameLayout.LayoutParams.WRAP_CONTENT,
         )
         params.gravity = Gravity.CENTER
-        retroView.layoutParams = params
+        retroView!!.layoutParams = params
 
-        retroViewContainer.addView(retroView)
+        retroViewContainer.addView(retroView!!)
 
         /* Start tracking the frame state of the GLRetroView */
-        val renderDisposable = retroView
+        val renderDisposable = retroView!!
             .getGLRetroEvents()
             .subscribe {
                 if (it == GLRetroView.GLRetroEvents.FrameRendered)
@@ -205,7 +205,7 @@ class GameActivity : AppCompatActivity() {
         compositeDisposable.add(renderDisposable)
 
         /* Also start tracking any errors we come across */
-        val errorDisposable = retroView
+        val errorDisposable = retroView!!
             .getGLRetroErrors()
             .subscribe {
                 val errorMessage = when (it) {
@@ -231,8 +231,8 @@ class GameActivity : AppCompatActivity() {
         /* Configure GamePad size and position */
         val density = resources.displayMetrics.density
         val gamePadSize = resources.getDimension(R.dimen.config_gamepad_size) / density
-        leftGamePad.pad.primaryDialMaxSizeDp = gamePadSize
-        rightGamePad.pad.primaryDialMaxSizeDp = gamePadSize
+        leftGamePad!!.pad.primaryDialMaxSizeDp = gamePadSize
+        rightGamePad!!.pad.primaryDialMaxSizeDp = gamePadSize
 
         /* Detect when controllers are added so we can disable or enable the GamePads */
         val inputManager = getSystemService(Service.INPUT_SERVICE) as InputManager
@@ -246,8 +246,8 @@ class GameActivity : AppCompatActivity() {
         updateVisibility()
 
         /* Add to layout */
-        leftGamePadContainer.addView(leftGamePad.pad)
-        rightGamePadContainer.addView(rightGamePad.pad)
+        leftGamePadContainer.addView(leftGamePad!!.pad)
+        rightGamePadContainer.addView(rightGamePad!!.pad)
     }
 
     private fun panic(errorResId: Int) {
@@ -275,14 +275,14 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun restoreSettings() {
-        retroView.fastForwardEnabled = sharedPreferences.getBoolean(fastForwardEnabledString, false)
-        retroView.audioEnabled = sharedPreferences.getBoolean(audioEnabledString, true)
+        retroView?.fastForwardEnabled = sharedPreferences.getBoolean(fastForwardEnabledString, false)
+        retroView?.audioEnabled = sharedPreferences.getBoolean(audioEnabledString, true)
     }
 
     private fun saveSettings() {
-        with (sharedPreferences.edit()) {
-            putBoolean(fastForwardEnabledString, retroView.fastForwardEnabled)
-            putBoolean(audioEnabledString, retroView.audioEnabled)
+        if (retroView != null) with (sharedPreferences.edit()) {
+            putBoolean(fastForwardEnabledString, retroView!!.fastForwardEnabled)
+            putBoolean(audioEnabledString, retroView!!.audioEnabled)
             apply()
         }
     }
@@ -337,7 +337,7 @@ class GameActivity : AppCompatActivity() {
 
         /* Android is about to kill the activity; save a temporary state snapshot */
         if (retroViewReadyLatch.count == 0L)
-            RetroViewUtils.saveTempState(retroView, privateData)
+            RetroViewUtils.saveTempState(retroView!!, privateData)
     }
 
     private fun initAssets() {
@@ -425,7 +425,7 @@ class GameActivity : AppCompatActivity() {
         /* Save SRAM to the disk only if the emulator was able to render a frame */
         if (retroViewReadyLatch.count == 0L) {
             with(privateData.save.outputStream()) {
-                write(retroView.serializeSRAM())
+                write(retroView!!.serializeSRAM())
                 close()
             }
         }
@@ -434,8 +434,8 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        leftGamePad.unsubscribe()
-        rightGamePad.unsubscribe()
+        leftGamePad?.unsubscribe()
+        rightGamePad?.unsubscribe()
 
         /* Dismiss dialogs to avoid leaking the window */
         if (panicDialog.isShowing) panicDialog.dismiss()
