@@ -1,23 +1,26 @@
 package com.draco.libretrowrapper.activities
 
 import android.app.AlertDialog
+import android.app.Service
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
+import android.hardware.display.DisplayManager
+import android.hardware.input.InputManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.*
+import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.draco.libretrowrapper.R
-import com.draco.libretrowrapper.fragments.GamePadFragment
-import com.draco.libretrowrapper.fragments.RetroViewFragment
-import com.draco.libretrowrapper.utils.CoreUpdater
-import com.draco.libretrowrapper.utils.Input
-import com.draco.libretrowrapper.utils.PrivateData
-import com.draco.libretrowrapper.utils.RetroViewUtils
+import com.draco.libretrowrapper.utils.*
+import com.swordfish.libretrodroid.GLRetroView
+import com.swordfish.libretrodroid.Variable
+import io.reactivex.disposables.CompositeDisposable
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
 import java.io.File
@@ -25,32 +28,50 @@ import java.net.UnknownHostException
 import java.util.concurrent.CountDownLatch
 
 class GameActivity : AppCompatActivity() {
+    /* UI components */
+    private lateinit var progress: ProgressBar
+    private lateinit var retroViewContainer: FrameLayout
+    private lateinit var leftGamePadContainer: FrameLayout
+    private lateinit var rightGamePadContainer: FrameLayout
+
     /* Essential objects */
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var privateData: PrivateData
     private lateinit var coreUpdater: CoreUpdater
 
-    /* UI components */
-    private lateinit var progress: ProgressBar
+    /* Emulator objects */
+    private lateinit var retroView: GLRetroView
+    private lateinit var leftGamePad: GamePad
+    private lateinit var rightGamePad: GamePad
 
-    /* Fragments */
-    private val retroViewFragment = RetroViewFragment()
-    private val gamePadFragment = GamePadFragment()
+    /* Alert dialogs*/
+    private lateinit var panicDialog: AlertDialog
+    private lateinit var fetchErrorDialog: AlertDialog
 
-    /* Latch that waits until the activity is focused before continuing */
-    private var canCommitFragmentsLatch = CountDownLatch(1)
+    /* Latch that gets decremented when the GLRetroView renders a frame */
+    private val retroViewReadyLatch = CountDownLatch(1)
+
+    /* Store all observable subscriptions */
+    private val compositeDisposable = CompositeDisposable()
+
+    /* Shared preference keys */
+    private val fastForwardEnabledString = "fast_forward_enabled"
+    private val audioEnabledString = "audio_enabled"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
+        /* Initialize UI components */
+        progress = findViewById(R.id.progress)
+        retroViewContainer = findViewById(R.id.retroview_container)
+        leftGamePadContainer = findViewById(R.id.left_container)
+        rightGamePadContainer = findViewById(R.id.right_container)
+
         /* Setup essential objects */
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         privateData = PrivateData(this)
         coreUpdater = CoreUpdater(this)
-
-        /* Initialize UI components */
-        progress = findViewById(R.id.progress)
 
         /* Set orientation based on config */
         val requestedOrientation = when (getString(R.string.config_orientation)) {
@@ -77,6 +98,23 @@ class GameActivity : AppCompatActivity() {
         if (savedInstanceState == null && !resources.getBoolean(R.bool.config_preserve_state))
             privateData.savedInstanceState.delete()
 
+        /* Prepare skeleton of dialogs */
+        panicDialog = AlertDialog.Builder(this)
+            .setTitle(getString(R.string.panic_title))
+            .setCancelable(false)
+            .setPositiveButton(getString(R.string.button_exit)) { _, _ -> finishAffinity() }
+            .create()
+        fetchErrorDialog = AlertDialog.Builder(this)
+            .setTitle(getString(R.string.fetch_error_dialog_title))
+            .setMessage(getString(R.string.fetch_error_dialog_message))
+            .setPositiveButton(getString(R.string.button_exit)) { _, _ -> finishAffinity() }
+            .setCancelable(false)
+            .create()
+
+        /* Setup both the GLRetroView and on-screen controls */
+        setupRetroView()
+        setupGamePads()
+
         /*
          * We have a progress spinner on the screen at this point until the GLRetroView
          * renders a frame. Let's setup our ROM, core, and GLRetroView in a background thread.
@@ -90,44 +128,21 @@ class GameActivity : AppCompatActivity() {
                 if (!privateData.core.exists())
                     coreUpdater.update()
             } catch (_: UnknownHostException) {
-                runOnUiThread {
-                    AlertDialog.Builder(this)
-                        .setTitle(getString(R.string.fetch_error_dialog_title))
-                        .setMessage(getString(R.string.fetch_error_dialog_message))
-                        .setPositiveButton(getString(R.string.button_exit)) { _, _ -> finishAffinity() }
-                        .setCancelable(false)
-                        .show()
-                }
+                runOnUiThread { fetchErrorDialog.show() }
                 return@Thread
             }
 
-            /* Add the GLRetroView to main layout now that the assets are prepared */
-            val fragmentTransaction = supportFragmentManager.beginTransaction()
-            with (fragmentTransaction) {
-                replace(R.id.retroview_container, retroViewFragment)
-                replace(R.id.containers, gamePadFragment)
-            }
-
-            /*
-             * It is unsafe to commit fragments after onSaveInstanceState is called. We MUST
-             * wait until the activity resumes focus before continuing.
-             */
-            canCommitFragmentsLatch.await()
-
-            runOnUiThread {
-                /* It's possible for the FragmentManager to die here */
-                if (!supportFragmentManager.isDestroyed)
-                    fragmentTransaction.commitNow()
-
-                /* Completely hide the progress spinner */
-                progress.visibility = View.GONE
-            }
+            /* Completely hide the progress spinner */
+            runOnUiThread { progress.visibility = View.GONE }
 
             /*
              * The GLRetroView will take a while to load up the ROM and core, so before we
              * finish up, we should wait for the GLRetroView to become usable.
              */
-            retroViewFragment.retroViewReadyLatch.await()
+            retroViewReadyLatch.await()
+
+            /* Restore emulator settings from last launch */
+            restoreSettings()
 
             /*
              * If we started this activity after a configuration change, restore the temp state.
@@ -136,35 +151,191 @@ class GameActivity : AppCompatActivity() {
              * null, making it impossible to differentiate a cold start from a warm start. Handle
              * the configurations in the parent activity.
              */
-            RetroViewUtils.restoreTempState(
-                retroViewFragment.retroView!!,
-                privateData
-            )
+            RetroViewUtils.restoreTempState(retroView, privateData)
 
             /* Initialize the GamePad fragment if it's enabled in the config */
             if (resources.getBoolean(R.bool.config_gamepad_visible)) {
-                /*
-                 * The fragment will subscribe the GLRetroView on start, prepare it.
-                 * It is also guaranteed that the GLRetroView is prepared in the Fragment class.
-                 */
-                gamePadFragment.subscribe(retroViewFragment.retroView!!)
+                leftGamePad.subscribe(retroView)
+                rightGamePad.subscribe(retroView)
             }
         }.start()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        /* It is no longer save to add fragments */
-        canCommitFragmentsLatch = CountDownLatch(1)
+    private fun setupRetroView() {
+        /* Prepare the SRAM bytes if the file exists */
+        var saveBytes = byteArrayOf()
+        if (privateData.save.exists()) {
+            val saveInputStream = privateData.save.inputStream()
+            saveBytes = saveInputStream.readBytes()
+            saveInputStream.close()
+        }
 
+        /* Create the GLRetroView */
+        retroView = GLRetroView(
+            this,
+            privateData.core.absolutePath,
+            privateData.rom.absolutePath,
+            saveRAMState = saveBytes,
+            shader = GLRetroView.SHADER_SHARP,
+            variables = getCoreVariables()
+        )
+
+        /* Hook the GLRetroView to the fragment lifecycle */
+        lifecycle.addObserver(retroView)
+
+        /* Center the view in the parent container */
+        val params = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+        )
+        params.gravity = Gravity.CENTER
+        retroView.layoutParams = params
+
+        retroViewContainer.addView(retroView)
+
+        /* Start tracking the frame state of the GLRetroView */
+        val renderDisposable = retroView
+            .getGLRetroEvents()
+            .subscribe {
+                if (it == GLRetroView.GLRetroEvents.FrameRendered)
+                    retroViewReadyLatch.countDown()
+            }
+        compositeDisposable.add(renderDisposable)
+
+        /* Also start tracking any errors we come across */
+        val errorDisposable = retroView
+            .getGLRetroErrors()
+            .subscribe {
+                val errorMessage = when (it) {
+                    GLRetroView.ERROR_LOAD_LIBRARY -> R.string.panic_message_load_core
+                    GLRetroView.ERROR_LOAD_GAME -> R.string.panic_message_load_game
+                    GLRetroView.ERROR_GL_NOT_COMPATIBLE -> R.string.panic_message_gles
+                    else -> null
+                }
+
+                /* Fatal error, panic accordingly */
+                if (errorMessage != null)
+                    runOnUiThread { panic(errorMessage) }
+            }
+        compositeDisposable.add(errorDisposable)
+    }
+
+    private fun setupGamePads() {
+        /* Initialize the GamePads */
+        val gamePadConfig = GamePadConfig(this, resources)
+        leftGamePad = GamePad(this, gamePadConfig.left)
+        rightGamePad = GamePad(this, gamePadConfig.right)
+
+        /* Configure GamePad size and position */
+        val density = resources.displayMetrics.density
+        val gamePadSize = resources.getDimension(R.dimen.config_gamepad_size) / density
+        leftGamePad.pad.primaryDialMaxSizeDp = gamePadSize
+        rightGamePad.pad.primaryDialMaxSizeDp = gamePadSize
+
+        /* Detect when controllers are added so we can disable or enable the GamePads */
+        val inputManager = getSystemService(Service.INPUT_SERVICE) as InputManager
+        inputManager.registerInputDeviceListener(object : InputManager.InputDeviceListener {
+            override fun onInputDeviceAdded(deviceId: Int) { updateVisibility() }
+            override fun onInputDeviceRemoved(deviceId: Int) { updateVisibility() }
+            override fun onInputDeviceChanged(deviceId: Int) { updateVisibility() }
+        }, null)
+
+        /* Perform this check right now */
+        updateVisibility()
+
+        /* Add to layout */
+        leftGamePadContainer.addView(leftGamePad.pad)
+        rightGamePadContainer.addView(rightGamePad.pad)
+    }
+
+    private fun panic(errorResId: Int) {
+        with (panicDialog) {
+            setMessage(getString(errorResId))
+            show()
+        }
+    }
+
+    private fun getCoreVariables(): Array<Variable> {
+        /* Parse the variables string into a Variable array */
+        val variables = arrayListOf<Variable>()
+        val rawVariablesString = getString(R.string.config_variables)
+        val rawVariables = rawVariablesString.split(",")
+
+        for (rawVariable in rawVariables) {
+            val rawVariableSplit = rawVariable.split("=")
+            if (rawVariableSplit.size != 2)
+                continue
+
+            variables.add(Variable(rawVariableSplit[0], rawVariableSplit[1]))
+        }
+
+        return variables.toTypedArray()
+    }
+
+    private fun restoreSettings() {
+        retroView.fastForwardEnabled = sharedPreferences.getBoolean(fastForwardEnabledString, false)
+        retroView.audioEnabled = sharedPreferences.getBoolean(audioEnabledString, true)
+    }
+
+    private fun saveSettings() {
+        with (sharedPreferences.edit()) {
+            putBoolean(fastForwardEnabledString, retroView.fastForwardEnabled)
+            putBoolean(audioEnabledString, retroView.audioEnabled)
+            apply()
+        }
+    }
+
+    private fun updateVisibility() {
+        /* Check if we should show or hide controls */
+        val visibility = if (shouldShowGamePads())
+            View.VISIBLE
+        else
+            View.GONE
+
+        /* Apply the new visibility state to the containers */
+        leftGamePadContainer.visibility = visibility
+        rightGamePadContainer.visibility = visibility
+    }
+
+    private fun shouldShowGamePads(): Boolean {
+        /* Do not show if the device lacks a touch screen */
+        val hasTouchScreen = packageManager?.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)
+        if (hasTouchScreen == null || hasTouchScreen == false)
+            return false
+
+        /* Do not show if the current display is external (i.e. wireless cast) */
+        val dm = getSystemService(Service.DISPLAY_SERVICE) as DisplayManager
+        if (dm.getDisplay(getCurrentDisplayId()).flags and Display.FLAG_PRESENTATION == Display.FLAG_PRESENTATION)
+            return false
+
+        /* Do not show if the device has a controller connected */
+        for (id in InputDevice.getDeviceIds()) {
+            InputDevice.getDevice(id).apply {
+                if (sources and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD ||
+                    sources and InputDevice.SOURCE_JOYSTICK == InputDevice.SOURCE_JOYSTICK)
+                    return false
+            }
+        }
+
+        /* Otherwise, show */
+        return true
+    }
+
+    private fun getCurrentDisplayId(): Int {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            display!!.displayId
+        else {
+            val wm = getSystemService(WINDOW_SERVICE) as WindowManager
+            wm.defaultDisplay.displayId
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
         /* Android is about to kill the activity; save a temporary state snapshot */
-        if (retroViewFragment.retroViewReadyLatch.count == 0L) {
-            RetroViewUtils.saveTempState(
-                retroViewFragment.retroView!!,
-                privateData
-            )
-        }
+        if (retroViewReadyLatch.count == 0L)
+            RetroViewUtils.saveTempState(retroView, privateData)
     }
 
     private fun initAssets() {
@@ -228,23 +399,47 @@ class GameActivity : AppCompatActivity() {
 
         /* Reapply our immersive mode again */
         immersive()
-
-        /* Let waiting threads know that it is now safe to commit fragments */
-        canCommitFragmentsLatch.countDown()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        return Input.handleKeyEvent(retroViewFragment.retroView, keyCode, event)
+        return Input.handleKeyEvent(retroView, keyCode, event)
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
-        return Input.handleKeyEvent(retroViewFragment.retroView, keyCode, event)
+        return Input.handleKeyEvent(retroView, keyCode, event)
     }
 
     override fun onGenericMotionEvent(event: MotionEvent): Boolean {
-        if (Input.handleGenericMotionEvent(retroViewFragment.retroView, event))
+        if (Input.handleGenericMotionEvent(retroView, event))
             return true
 
         return super.onGenericMotionEvent(event)
+    }
+
+    override fun onStop() {
+        /* Save emulator settings for next launch */
+        saveSettings()
+
+        /* Save SRAM to the disk only if the emulator was able to render a frame */
+        if (retroViewReadyLatch.count == 0L) {
+            with(privateData.save.outputStream()) {
+                write(retroView.serializeSRAM())
+                close()
+            }
+        }
+
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        leftGamePad.unsubscribe()
+        rightGamePad.unsubscribe()
+
+        /* Dismiss dialogs to avoid leaking the window */
+        if (panicDialog.isShowing) panicDialog.dismiss()
+        if (fetchErrorDialog.isShowing) fetchErrorDialog.dismiss()
+
+        compositeDisposable.dispose()
+        super.onDestroy()
     }
 }

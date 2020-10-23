@@ -11,10 +11,10 @@ import io.reactivex.disposables.CompositeDisposable
 class GamePad(
     context: Context,
     padConfig: RadialGamePadConfig,
-    private val privateData: PrivateData
 ) {
     val pad: RadialGamePad = RadialGamePad(padConfig, 0f, context)
     private val compositeDisposable = CompositeDisposable()
+    private val privateData = PrivateData(context)
 
     private fun overrideButtonEvent(event: Event.Button, retroView: GLRetroView): Boolean {
         /* We only accept down key events */
