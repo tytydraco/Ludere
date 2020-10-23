@@ -111,10 +111,6 @@ class GameActivity : AppCompatActivity() {
             .setCancelable(false)
             .create()
 
-        /* Setup both the GLRetroView and on-screen controls */
-        setupRetroView()
-        setupGamePads()
-
         /*
          * We have a progress spinner on the screen at this point until the GLRetroView
          * renders a frame. Let's setup our ROM, core, and GLRetroView in a background thread.
@@ -132,8 +128,11 @@ class GameActivity : AppCompatActivity() {
                 return@Thread
             }
 
-            /* Completely hide the progress spinner */
-            runOnUiThread { progress.visibility = View.GONE }
+            /* Add the GLRetroView to the screen */
+            runOnUiThread {
+                setupRetroView()
+                progress.visibility = View.GONE
+            }
 
             /*
              * The GLRetroView will take a while to load up the ROM and core, so before we
@@ -153,10 +152,13 @@ class GameActivity : AppCompatActivity() {
              */
             RetroViewUtils.restoreTempState(retroView, privateData)
 
-            /* Initialize the GamePad fragment if it's enabled in the config */
+            /* Initialize the GamePads if they are enabled in the config */
             if (resources.getBoolean(R.bool.config_gamepad_visible)) {
-                leftGamePad.subscribe(retroView)
-                rightGamePad.subscribe(retroView)
+                runOnUiThread {
+                    setupGamePads()
+                    leftGamePad.subscribe(retroView)
+                    rightGamePad.subscribe(retroView)
+                }
             }
         }.start()
     }
