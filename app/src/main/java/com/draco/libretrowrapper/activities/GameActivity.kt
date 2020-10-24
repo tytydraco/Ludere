@@ -96,7 +96,7 @@ class GameActivity : AppCompatActivity() {
          * If we WANT to preserve the state, do not delete it. Instead, load it later on.
          */
         if (savedInstanceState == null && !resources.getBoolean(R.bool.config_preserve_state))
-            privateData.savedInstanceState.delete()
+            privateData.tempState.delete()
 
         /* Prepare skeleton of dialogs */
         panicDialog = AlertDialog.Builder(this)
@@ -117,7 +117,8 @@ class GameActivity : AppCompatActivity() {
          */
         Thread {
             /* Setup ROM and core if we haven't already */
-            initAssets()
+            if (File(privateData.systemDirPath).listFiles().isNullOrEmpty())
+                initAssets()
 
             try {
                 /* Update the core from the internet if it's missing */
@@ -341,10 +342,6 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun initAssets() {
-        /* Only init assets if this is our very first launch */
-        if (filesDir.listFiles()!!.isNotEmpty())
-            return
-
         /* Prepare to unzip our system zip from the assets folder */
         val systemTarInputStream = assets.open("system.bin")
 
@@ -354,7 +351,7 @@ class GameActivity : AppCompatActivity() {
 
         while (true) {
             val tarEntry = tarInputStream.nextEntry ?: break
-            val tarEntryOutFile = File(filesDir, tarEntry.name)
+            val tarEntryOutFile = File(privateData.systemDirPath, tarEntry.name)
 
             /* If this is a directory, prepare the file structure and skip */
             if (tarEntry.isDirectory) {

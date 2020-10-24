@@ -20,7 +20,7 @@ class RetroViewUtils {
         fun saveTempState(retroView: GLRetroView, privateData: PrivateData) {
             /* Save a temporary state since Android killed the activity */
             val savedInstanceStateBytes = retroView.serializeState()
-            with (privateData.savedInstanceState.outputStream()) {
+            with (privateData.tempState.outputStream()) {
                 write(savedInstanceStateBytes)
                 close()
             }
@@ -28,11 +28,11 @@ class RetroViewUtils {
 
         fun restoreTempState(retroView: GLRetroView, privateData: PrivateData) {
             /* Don't bother restoring a temporary state if it doesn't exist */
-            if (!privateData.savedInstanceState.exists())
+            if (!privateData.tempState.exists())
                 return
 
             /* Fetch the state bytes */
-            val stateInputStream = privateData.savedInstanceState.inputStream()
+            val stateInputStream = privateData.tempState.inputStream()
             val stateBytes = stateInputStream.readBytes()
             stateInputStream.close()
 

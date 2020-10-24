@@ -5,9 +5,17 @@ import com.draco.libretrowrapper.R
 import java.io.File
 
 class PrivateData(context: Context) {
-    val rom = File("${context.filesDir.absolutePath}/${context.getString(R.string.config_rom_file)}")
-    val core = File("${context.filesDir.absolutePath}/core")
-    val save = File("${context.filesDir.absolutePath}/save")
-    val state = File("${context.filesDir.absolutePath}/state")
-    val savedInstanceState = File("${context.cacheDir.absolutePath}/saved_instance_state")
+    val systemDirPath = "${context.filesDir.absolutePath}/system"
+    val internalDirPath = "${context.filesDir.absolutePath}/internal"
+
+    init {
+        File(systemDirPath).mkdirs()
+        File(internalDirPath).mkdirs()
+    }
+
+    val rom = File("$systemDirPath/${context.getString(R.string.config_rom_file)}")
+    val core = File("$internalDirPath/core")
+    val save = File("$internalDirPath/save")
+    val state = File("$internalDirPath/state")
+    val tempState = File("$internalDirPath/temp_state")
 }
