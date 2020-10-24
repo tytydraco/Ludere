@@ -7,6 +7,9 @@ os.chdir(dname)
 
 shutil.copy('../app/src/main/res/values/config.xml', 'config.tmp.txt')
 for file in os.listdir('input'):
+    if file is '.gitignore':
+        continue
+
     romname = os.path.splitext(file)[0]
     romext = os.path.splitext(file)[1]
     romid = re.sub(r'[^A-Za-z0-9]+', '', romname)
