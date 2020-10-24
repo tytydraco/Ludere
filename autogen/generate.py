@@ -1,8 +1,6 @@
 import xml.etree.ElementTree as ET
 import os, shutil, sys, re
 
-core = sys.argv[1]
-
 abspath = os.path.abspath(__file__)
 dname = os.path.dirname(abspath)
 os.chdir(dname)
@@ -12,7 +10,6 @@ for file in os.listdir('input'):
     romname = os.path.splitext(file)[0]
     romext = os.path.splitext(file)[1]
     romid = re.sub(r'[^A-Za-z0-9]+', '', romname)
-    romcore = core
 
     tree = ET.parse('../app/src/main/res/values/config.xml')
     root = tree.getroot()
@@ -26,7 +23,7 @@ for file in os.listdir('input'):
     tree.write('../app/src/main/res/values/config.xml')
     os.chdir('..')
     
-    print(f'Building {romname} for {romcore}...')
+    print(f' * Building {romname}...')
     os.system('gradlew assembleRelease')
     os.chdir(dname)
 
