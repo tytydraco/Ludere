@@ -24,7 +24,10 @@ for file in os.listdir('input'):
     os.chdir('..')
     
     print(f' * Building {romname}...')
-    os.system('gradlew assembleRelease')
+    if os.name is 'nt':
+        os.system('gradlew assembleRelease')
+    else:
+        os.system('./gradlew assembleRelease')
     os.chdir(dname)
 
     shutil.copy('../app/build/outputs/apk/release/app-release.apk', f'output/{romid}.apk')
