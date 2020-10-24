@@ -1,10 +1,6 @@
 import xml.etree.ElementTree as ET
 import os, shutil, sys, re
 
-if (len(sys.argv) < 2):
-    print('No core specified')
-    exit(1)
-
 core = sys.argv[1]
 
 abspath = os.path.abspath(__file__)
@@ -27,8 +23,6 @@ for file in os.listdir('input'):
             element.text = romid
         if 'config_name' in element.attrib.get('name'):
             element.text = romname
-        if 'config_core' in element.attrib.get('name'):
-            element.text = romcore
     tree.write('../app/src/main/res/values/config.xml')
     os.chdir('..')
     
