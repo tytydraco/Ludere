@@ -16,12 +16,12 @@ class GamePadConfig(
     companion object {
         val BUTTON_START = ButtonConfig(
             id = KeyEvent.KEYCODE_BUTTON_START,
-            iconId = R.drawable.ic_baseline_play_arrow_24
+            label = "+"
         )
 
         val BUTTON_SELECT = ButtonConfig(
             id = KeyEvent.KEYCODE_BUTTON_SELECT,
-            iconId = R.drawable.ic_baseline_stop_24
+            label = "-"
         )
 
         val BUTTON_SAVE_STATE = ButtonConfig(
