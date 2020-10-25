@@ -1,4 +1,4 @@
-package com.draco.libretrowrapper.utils
+package com.draco.ludere.utils
 
 import android.content.Context
 import android.view.KeyEvent

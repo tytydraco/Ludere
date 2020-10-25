@@ -41,8 +41,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: wrapper-${{ steps.date.outputs.date }}
-          release_name: Wrapper ${{ steps.date.outputs.date }}
+          tag_name: ludere-${{ steps.date.outputs.date }}
+          release_name: Ludere ${{ steps.date.outputs.date }}
 
       - name: Upload Release Asset
         id: upload-release-asset
@@ -52,5 +52,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./app/build/outputs/apk/release/app-release.apk
-          asset_name: wrapper.apk
+          asset_name: ludere.apk
           asset_content_type: application/apk

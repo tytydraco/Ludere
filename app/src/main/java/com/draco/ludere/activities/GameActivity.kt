@@ -1,4 +1,4 @@
-package com.draco.libretrowrapper.activities
+package com.draco.ludere.activities
 
 import android.app.AlertDialog
 import android.app.Service
@@ -16,8 +16,8 @@ import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
-import com.draco.libretrowrapper.R
-import com.draco.libretrowrapper.utils.*
+import com.draco.ludere.R
+import com.draco.ludere.utils.*
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.libretrodroid.Variable
 import io.reactivex.disposables.CompositeDisposable

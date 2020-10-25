@@ -13,7 +13,7 @@ android {
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "com.draco.libretrowrapper.${configValue('config_rom_id')}"
+        applicationId "com.draco.ludere.${configValue('config_rom_id')}"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
@@ -22,10 +22,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("${rootProject.projectDir}/libretrowrapper.jks")
-            storePassword 'libretrowrapper'
+            storeFile file("${rootProject.projectDir}/ludere.jks")
+            storePassword 'ludere'
             keyAlias 'key0'
-            keyPassword 'libretrowrapper'
+            keyPassword 'ludere'
         }
     }
 

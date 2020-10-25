@@ -1,7 +1,7 @@
-package com.draco.libretrowrapper.utils
+package com.draco.ludere.utils
 
 import android.content.Context
-import com.draco.libretrowrapper.R
+import com.draco.ludere.R
 import java.io.File
 
 class PrivateData(context: Context) {
