@@ -342,6 +342,10 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun initAssets() {
+        /* Bail if we are missing our assets */
+        if (!assets.list("")!!.contains("system.bin"))
+            return
+
         /* Prepare to unzip our system zip from the assets folder */
         val systemTarInputStream = assets.open("system.bin")
 
