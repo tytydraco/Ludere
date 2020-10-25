@@ -5,9 +5,12 @@ abspath = os.path.abspath(__file__)
 dname = os.path.dirname(abspath)
 os.chdir(dname)
 
+if not os.path.isdir('../system'):
+    os.mkdir('../system')
+
 shutil.copy('../app/src/main/res/values/config.xml', 'config.tmp.txt')
 for file in os.listdir('input'):
-    if file is '.gitignore':
+    if file == '.gitignore':
         continue
 
     romname = os.path.splitext(file)[0]
@@ -27,7 +30,7 @@ for file in os.listdir('input'):
     os.chdir('..')
     
     print(f' * Building {romname}...')
-    if os.name is 'nt':
+    if os.name == 'nt':
         os.system('gradlew assembleRelease')
     else:
         os.system('./gradlew assembleRelease')
