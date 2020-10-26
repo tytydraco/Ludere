@@ -24,7 +24,6 @@ import io.reactivex.disposables.CompositeDisposable
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
 import java.io.File
-import java.net.UnknownHostException
 import java.util.concurrent.CountDownLatch
 
 class GameActivity : AppCompatActivity() {
@@ -37,7 +36,6 @@ class GameActivity : AppCompatActivity() {
     /* Essential objects */
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var privateData: PrivateData
-    private lateinit var coreUpdater: CoreUpdater
 
     /* Emulator objects */
     private var retroView: GLRetroView? = null
@@ -46,7 +44,6 @@ class GameActivity : AppCompatActivity() {
 
     /* Alert dialogs*/
     private lateinit var panicDialog: AlertDialog
-    private lateinit var fetchErrorDialog: AlertDialog
 
     /* Latch that gets decremented when the GLRetroView renders a frame */
     private val retroViewReadyLatch = CountDownLatch(1)
@@ -71,7 +68,6 @@ class GameActivity : AppCompatActivity() {
         /* Setup essential objects */
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         privateData = PrivateData(this)
-        coreUpdater = CoreUpdater(this)
 
         /* Set orientation based on config */
         val requestedOrientation = when (getString(R.string.config_orientation)) {
@@ -104,12 +100,6 @@ class GameActivity : AppCompatActivity() {
             .setCancelable(false)
             .setPositiveButton(getString(R.string.button_exit)) { _, _ -> finishAffinity() }
             .create()
-        fetchErrorDialog = AlertDialog.Builder(this)
-            .setTitle(getString(R.string.fetch_error_dialog_title))
-            .setMessage(getString(R.string.fetch_error_dialog_message))
-            .setPositiveButton(getString(R.string.button_exit)) { _, _ -> finishAffinity() }
-            .setCancelable(false)
-            .create()
 
         /*
          * We have a progress spinner on the screen at this point until the GLRetroView
@@ -119,16 +109,6 @@ class GameActivity : AppCompatActivity() {
             /* Setup ROM and core if we haven't already */
             if (File(privateData.systemDirPath).listFiles().isNullOrEmpty())
                 initAssets()
-
-            /* Update the core from the internet if it's missing */
-            if (!privateData.core.exists()) {
-                try {
-                    coreUpdater.update()
-                } catch (_: UnknownHostException) {
-                    runOnUiThread { fetchErrorDialog.show() }
-                    return@Thread
-                }
-            }
 
             /* Add the GLRetroView to the screen */
             runOnUiThread {
@@ -177,7 +157,7 @@ class GameActivity : AppCompatActivity() {
         /* Create the GLRetroView */
         retroView = GLRetroView(
             this,
-            privateData.core.absolutePath,
+            "${getString(R.string.config_core)}_libretro_android.so",
             privateData.rom.absolutePath,
             saveRAMState = saveBytes,
             shader = GLRetroView.SHADER_SHARP,
@@ -445,7 +425,6 @@ class GameActivity : AppCompatActivity() {
 
         /* Dismiss dialogs to avoid leaking the window */
         if (panicDialog.isShowing) panicDialog.dismiss()
-        if (fetchErrorDialog.isShowing) fetchErrorDialog.dismiss()
 
         compositeDisposable.dispose()
         super.onDestroy()

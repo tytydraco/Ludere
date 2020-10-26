@@ -41,6 +41,7 @@ android {
 
     preBuild.dependsOn 'cleanAssets'
     preBuild.dependsOn 'packageAssets'
+    preBuild.dependsOn 'prepareCore'
 }
 
 task cleanAssets(type: Delete) {
@@ -55,6 +56,26 @@ task packageAssets(type: Tar) {
     archiveName 'system.bin'
     compression(Compression.GZIP)
     destinationDir(file('src/main/assets/'))
+}
+
+task prepareCore {
+    delete {
+        delete "${rootProject.projectDir}/app/src/main/jniLibs"
+    }
+    for (abi in ['x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a']) {
+        file("${rootProject.projectDir}/app/src/main/jniLibs/$abi").mkdirs()
+        download {
+            src "https://buildbot.libretro.com/nightly/android/latest/$abi/${configValue('config_core')}_libretro_android.so.zip"
+            dest "${rootProject.projectDir}/app/src/main/jniLibs/$abi"
+        }
+        copy {
+            from zipTree("${rootProject.projectDir}/app/src/main/jniLibs/$abi/${configValue('config_core')}_libretro_android.so.zip")
+            into "${rootProject.projectDir}/app/src/main/jniLibs/$abi"
+        }
+        delete {
+            delete "${rootProject.projectDir}/app/src/main/jniLibs/$abi/${configValue('config_core')}_libretro_android.so.zip"
+        }
+    }
 }
 
 dependencies {

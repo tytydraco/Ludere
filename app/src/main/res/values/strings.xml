@@ -2,9 +2,6 @@
 <resources>
     <string name="button_exit">Exit</string>
 
-    <string name="fetch_error_dialog_title">Fetch Failure</string>
-    <string name="fetch_error_dialog_message">Failed to fetch the core. Ensure your network configuration is correct.</string>
-
     <string name="panic_title">Panic</string>
     <string name="panic_message_load_core">The core failed to load. Ensure the core configuration is correct, or try clearing the application\'s data.</string>
     <string name="panic_message_load_game">The ROM failed to load. Ensure the ROM configuration is correct, or try clearing the application\'s data.</string>

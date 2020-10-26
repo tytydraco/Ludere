@@ -12,3 +12,6 @@
 # Assets
 system/*
 app/src/main/assets/system.bin
+
+# Core
+*.so
