@@ -200,9 +200,13 @@ class GameActivity : AppCompatActivity() {
         /* Start tracking the frame state of the GLRetroView */
         val renderDisposable = retroView!!
             .getGLRetroEvents()
+            .takeUntil { retroViewReadyLatch.count == 0L }
             .subscribe {
-                if (it == GLRetroView.GLRetroEvents.FrameRendered)
-                    retroViewReadyLatch.countDown()
+                if (it == GLRetroView.GLRetroEvents.FrameRendered) {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        retroViewReadyLatch.countDown()
+                    }, 100)
+                }
             }
         compositeDisposable.add(renderDisposable)
 
