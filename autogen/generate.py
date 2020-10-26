@@ -10,8 +10,11 @@ if not os.path.isdir('../system'):
 
 shutil.copy('../app/src/main/res/values/config.xml', 'config.tmp.txt')
 for file in os.listdir('input'):
-    if file == '.gitignore':
+    if not os.path.isfile(file):
         continue
+
+    if file == '.gitignore':
+        continue 
 
     romname = os.path.splitext(file)[0]
     romext = os.path.splitext(file)[1]
