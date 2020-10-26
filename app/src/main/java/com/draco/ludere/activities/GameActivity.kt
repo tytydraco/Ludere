@@ -157,7 +157,7 @@ class GameActivity : AppCompatActivity() {
         /* Create the GLRetroView */
         retroView = GLRetroView(
             this,
-            "${getString(R.string.config_core)}_libretro_android.so",
+            "libcore.so",
             privateData.rom.absolutePath,
             saveRAMState = saveBytes,
             shader = GLRetroView.SHADER_SHARP,
