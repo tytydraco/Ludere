@@ -2,6 +2,8 @@ package com.draco.ludere.activities
 
 import android.app.AlertDialog
 import android.app.Service
+import android.app.UiModeManager
+import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
@@ -299,8 +301,7 @@ class GameActivity : AppCompatActivity() {
         /* Do not show if the device has a controller connected */
         for (id in InputDevice.getDeviceIds()) {
             InputDevice.getDevice(id).apply {
-                if (sources and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD ||
-                    sources and InputDevice.SOURCE_JOYSTICK == InputDevice.SOURCE_JOYSTICK)
+                if (sources and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD)
                     return false
             }
         }
