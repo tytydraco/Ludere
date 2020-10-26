@@ -10,7 +10,7 @@ if not os.path.isdir('../system'):
 
 shutil.copy('../app/src/main/res/values/config.xml', 'config.tmp.txt')
 for file in os.listdir('input'):
-    if not os.path.isfile(file):
+    if not os.path.isfile(f'input/{file}'):
         continue
 
     if file == '.gitignore':
