@@ -120,13 +120,14 @@ class GameActivity : AppCompatActivity() {
             if (File(privateData.systemDirPath).listFiles().isNullOrEmpty())
                 initAssets()
 
-            try {
-                /* Update the core from the internet if it's missing */
-                if (!privateData.core.exists())
+            /* Update the core from the internet if it's missing */
+            if (!privateData.core.exists()) {
+                try {
                     coreUpdater.update()
-            } catch (_: UnknownHostException) {
-                runOnUiThread { fetchErrorDialog.show() }
-                return@Thread
+                } catch (_: UnknownHostException) {
+                    runOnUiThread { fetchErrorDialog.show() }
+                    return@Thread
+                }
             }
 
             /* Add the GLRetroView to the screen */
