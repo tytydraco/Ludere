@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       configURL:
-        description: 'Config Direct URL'
+        description: 'Direct URL to config.xml'
       romURL:
-        description: 'ROM Direct URL'
+        description: 'Direct URL to ROM'
 
 jobs:
   build:
@@ -19,7 +19,7 @@ jobs:
         run: echo "y" | sudo /usr/local/lib/android/sdk/tools/bin/sdkmanager --install "ndk;21.0.6113669" --sdk_root=$ANDROID_SDK_ROOT
 
       - name: Fetch Config
-        run: curl -L# "${{ github.event.inputs.configURL }}" > rom.properties
+        run: curl -L# "${{ github.event.inputs.configURL }}" > ./app/src/main/res/values/config.xml
 
       - name: Fetch ROM
         run: |
@@ -41,8 +41,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: wrapper-${{ steps.date.outputs.date }}
-          release_name: Wrapper ${{ steps.date.outputs.date }}
+          tag_name: ludere-${{ steps.date.outputs.date }}
+          release_name: Ludere ${{ steps.date.outputs.date }}
 
       - name: Upload Release Asset
         id: upload-release-asset
@@ -52,5 +52,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./app/build/outputs/apk/release/app-release.apk
-          asset_name: wrapper.apk
+          asset_name: ludere.apk
           asset_content_type: application/apk

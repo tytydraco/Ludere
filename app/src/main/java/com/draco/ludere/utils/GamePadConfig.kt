@@ -1,11 +1,11 @@
-package com.draco.libretrowrapper.utils
+package com.draco.ludere.utils
 
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.view.KeyEvent
 import androidx.core.content.ContextCompat
-import com.draco.libretrowrapper.R
+import com.draco.ludere.R
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.radialgamepad.library.config.*
 
@@ -14,26 +14,23 @@ class GamePadConfig(
     private val resources: Resources
 ) {
     companion object {
-        const val KEYCODE_LOAD_STATE = -1
-        const val KEYCODE_SAVE_STATE = -2
-
         val BUTTON_START = ButtonConfig(
             id = KeyEvent.KEYCODE_BUTTON_START,
-            iconId = R.drawable.ic_baseline_play_arrow_24
+            label = "+"
         )
 
         val BUTTON_SELECT = ButtonConfig(
             id = KeyEvent.KEYCODE_BUTTON_SELECT,
-            iconId = R.drawable.ic_baseline_stop_24
+            label = "-"
         )
 
         val BUTTON_SAVE_STATE = ButtonConfig(
-            id = KEYCODE_SAVE_STATE,
+            id = Input.KEYCODE_SAVE_STATE,
             iconId = R.drawable.ic_baseline_save_24
         )
 
         val BUTTON_LOAD_STATE = ButtonConfig(
-            id = KEYCODE_LOAD_STATE,
+            id = Input.KEYCODE_LOAD_STATE,
             iconId = R.drawable.ic_baseline_get_app_24
         )
 
