@@ -3,9 +3,10 @@ package com.draco.ludere.utils
 import android.content.Context
 import android.view.KeyEvent
 import android.view.MotionEvent
+import com.draco.ludere.R
 import com.swordfish.libretrodroid.GLRetroView
 
-class Input(context: Context) {
+class Input(private val context: Context) {
     companion object {
         /* Custom keycodes */
         const val KEYCODE_LOAD_STATE = -1
@@ -32,6 +33,7 @@ class Input(context: Context) {
         )
     }
 
+    /* Access ROM specific files */
     private val privateData = PrivateData(context)
 
     /* Is the modifier buttons currently held down? */
@@ -58,13 +60,13 @@ class Input(context: Context) {
         /* Catch modifier actions */
         when (keyCode) {
             KeyEvent.KEYCODE_BUTTON_L1 -> {
-                if (event.action == KeyEvent.ACTION_DOWN) {
+                if (event.action == KeyEvent.ACTION_DOWN && context.resources.getBoolean(R.bool.config_modifier_keys)) {
                     if (selectButtonDown) RetroViewUtils.loadState(retroView, privateData)
                     if (startButtonDown) retroView.audioEnabled = !retroView.audioEnabled
                 }
             }
             KeyEvent.KEYCODE_BUTTON_R1 -> {
-                if (event.action == KeyEvent.ACTION_DOWN) {
+                if (event.action == KeyEvent.ACTION_DOWN && context.resources.getBoolean(R.bool.config_modifier_keys)) {
                     if (selectButtonDown) RetroViewUtils.saveState(retroView, privateData)
                     if (startButtonDown) retroView.fastForwardEnabled = !retroView.fastForwardEnabled
                 }
