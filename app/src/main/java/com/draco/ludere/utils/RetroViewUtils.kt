@@ -37,7 +37,9 @@ class RetroViewUtils {
             stateInputStream.close()
 
             /* Restore the temporary state */
-            retroView.unserializeState(stateBytes)
+            var remainingTries = 10
+            while (!retroView.unserializeState(stateBytes) && remainingTries-- > 0)
+                Thread.sleep(50)
         }
     }
 }
