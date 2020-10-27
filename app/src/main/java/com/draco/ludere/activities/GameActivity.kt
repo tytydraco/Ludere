@@ -2,8 +2,6 @@ package com.draco.ludere.activities
 
 import android.app.AlertDialog
 import android.app.Service
-import android.app.UiModeManager
-import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
@@ -38,6 +36,7 @@ class GameActivity : AppCompatActivity() {
     /* Essential objects */
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var privateData: PrivateData
+    private lateinit var input: Input
 
     /* Emulator objects */
     private var retroView: GLRetroView? = null
@@ -70,6 +69,7 @@ class GameActivity : AppCompatActivity() {
         /* Setup essential objects */
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         privateData = PrivateData(this)
+        input = Input(this)
 
         /* Set orientation based on config */
         val requestedOrientation = when (getString(R.string.config_orientation)) {
@@ -388,15 +388,15 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        return Input.handleKeyEvent(retroView, keyCode, event)
+        return input.handleKeyEvent(retroView, keyCode, event)
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
-        return Input.handleKeyEvent(retroView, keyCode, event)
+        return input.handleKeyEvent(retroView, keyCode, event)
     }
 
     override fun onGenericMotionEvent(event: MotionEvent): Boolean {
-        if (Input.handleGenericMotionEvent(retroView, event))
+        if (input.handleGenericMotionEvent(retroView, event))
             return true
 
         return super.onGenericMotionEvent(event)
