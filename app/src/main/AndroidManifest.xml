@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.draco.ludere">
 
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+
     <application
         android:allowBackup="true"
         android:fullBackupContent="true"
