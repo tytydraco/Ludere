@@ -184,11 +184,8 @@ class GameActivity : AppCompatActivity() {
             .getGLRetroEvents()
             .takeUntil { retroViewReadyLatch.count == 0L }
             .subscribe {
-                if (it == GLRetroView.GLRetroEvents.FrameRendered) {
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        retroViewReadyLatch.countDown()
-                    }, 100)
-                }
+                if (it == GLRetroView.GLRetroEvents.FrameRendered)
+                    retroViewReadyLatch.countDown()
             }
         compositeDisposable.add(renderDisposable)
 
