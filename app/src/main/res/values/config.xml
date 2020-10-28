@@ -45,6 +45,4 @@
     <bool name="config_gamepad_analog_right">false</bool>
     <bool name="config_gamepad_save_state">false</bool>
     <bool name="config_gamepad_load_state">false</bool>
-    <bool name="config_gamepad_mute">false</bool>
-    <bool name="config_gamepad_fast_forward">false</bool>
 </resources>

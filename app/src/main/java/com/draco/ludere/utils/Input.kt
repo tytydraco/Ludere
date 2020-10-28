@@ -11,8 +11,6 @@ class Input(private val context: Context) {
         /* Custom keycodes */
         const val KEYCODE_LOAD_STATE = -1
         const val KEYCODE_SAVE_STATE = -2
-        const val KEYCODE_MUTE = -3
-        const val KEYCODE_FAST_FORWARD = -4
 
         /* List of valid keycodes that can be piped */
         val validKeyCodes = listOf(
