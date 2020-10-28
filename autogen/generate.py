@@ -12,15 +12,16 @@ shutil.copy('../app/src/main/res/values/config.xml', 'config.tmp.txt')
 for file in os.listdir('input'):
     if not os.path.isfile(f'input/{file}'):
         continue
-
     if file == '.gitignore':
-        continue 
+        continue
+    if file == 'config.xml':
+        continue
 
     romname = os.path.splitext(file)[0]
     romext = os.path.splitext(file)[1]
     romid = re.sub(r'[^A-Za-z0-9]+', '', romname)
 
-    tree = ET.parse('../app/src/main/res/values/config.xml')
+    tree = ET.parse('input/config.xml')
     root = tree.getroot()
 
     shutil.copy(f'input/{file}', '../system/rom')
