@@ -57,28 +57,26 @@ class Input(private val context: Context) {
         /* Controller numbers are [1, inf), we need [0, inf) */
         val port = ((event.device?.controllerNumber ?: 1) - 1).coerceAtLeast(0)
 
-        /* Catch modifier actions */
-        when (keyCode) {
-            KeyEvent.KEYCODE_BUTTON_L1 -> {
-                if (event.action == KeyEvent.ACTION_DOWN && context.resources.getBoolean(R.bool.config_modifier_keys)) {
+        /* Handler modifier keys */
+        if (event.action == KeyEvent.ACTION_DOWN && context.resources.getBoolean(R.bool.config_modifier_keys)) {
+            when (keyCode) {
+                KeyEvent.KEYCODE_BUTTON_L1 -> {
                     if (selectButtonDown) RetroViewUtils.loadState(retroView, privateData)
                     if (startButtonDown) retroView.audioEnabled = !retroView.audioEnabled
                 }
-            }
-            KeyEvent.KEYCODE_BUTTON_R1 -> {
-                if (event.action == KeyEvent.ACTION_DOWN && context.resources.getBoolean(R.bool.config_modifier_keys)) {
+                KeyEvent.KEYCODE_BUTTON_R1 -> {
                     if (selectButtonDown) RetroViewUtils.saveState(retroView, privateData)
                     if (startButtonDown) retroView.fastForwardEnabled = !retroView.fastForwardEnabled
                 }
             }
-
-            /* Pipe events to the GLRetroView */
-            else -> retroView.sendKeyEvent(
-                event.action,
-                keyCode,
-                port
-            )
         }
+
+        /* Pipe events to the GLRetroView */
+        retroView.sendKeyEvent(
+            event.action,
+            keyCode,
+            port
+        )
 
         return true
     }
