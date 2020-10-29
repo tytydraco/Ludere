@@ -62,11 +62,11 @@ class Input(private val context: Context) {
             when (keyCode) {
                 KeyEvent.KEYCODE_BUTTON_L1 -> {
                     if (selectButtonDown) RetroViewUtils.loadState(retroView, privateData)
-                    if (startButtonDown) retroView.audioEnabled = !retroView.audioEnabled
+                    if (startButtonDown) RetroViewUtils.toggleMute(retroView)
                 }
                 KeyEvent.KEYCODE_BUTTON_R1 -> {
                     if (selectButtonDown) RetroViewUtils.saveState(retroView, privateData)
-                    if (startButtonDown) retroView.fastForwardEnabled = !retroView.fastForwardEnabled
+                    if (startButtonDown) RetroViewUtils.toggleFastForward(retroView)
                 }
             }
         }

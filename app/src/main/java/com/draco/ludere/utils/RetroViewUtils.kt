@@ -41,5 +41,13 @@ class RetroViewUtils {
             while (!retroView.unserializeState(stateBytes) && remainingTries-- > 0)
                 Thread.sleep(50)
         }
+
+        fun toggleMute(retroView: GLRetroView) {
+            retroView.audioEnabled = !retroView.audioEnabled
+        }
+
+        fun toggleFastForward(retroView: GLRetroView) {
+            retroView.fastForwardEnabled = !retroView.fastForwardEnabled
+        }
     }
 }
