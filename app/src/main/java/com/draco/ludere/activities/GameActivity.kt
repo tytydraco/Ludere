@@ -320,14 +320,6 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-
-        /* Android is about to kill the activity; save a temporary state snapshot */
-        if (retroViewReadyLatch.count == 0L)
-            RetroViewUtils.saveTempState(retroView!!, privateData)
-    }
-
     private fun initAssets() {
         /* Bail if we are missing our assets */
         if (!assets.list("")!!.contains("system.bin"))
@@ -406,21 +398,6 @@ class GameActivity : AppCompatActivity() {
         return super.onGenericMotionEvent(event)
     }
 
-    override fun onStop() {
-        /* Save emulator settings for next launch */
-        saveSettings()
-
-        /* Save SRAM to the disk only if the emulator was able to render a frame */
-        if (retroViewReadyLatch.count == 0L) {
-            with(privateData.save.outputStream()) {
-                write(retroView!!.serializeSRAM())
-                close()
-            }
-        }
-
-        super.onStop()
-    }
-
     override fun onDestroy() {
         leftGamePad?.unsubscribe()
         rightGamePad?.unsubscribe()
@@ -430,5 +407,24 @@ class GameActivity : AppCompatActivity() {
 
         compositeDisposable.dispose()
         super.onDestroy()
+    }
+
+    override fun onPause() {
+        /* This method is unkillable, save essential variables now */
+        if (retroViewReadyLatch.count == 0L) {
+            /* Save emulator settings for next launch */
+            saveSettings()
+
+            /* Save a temporary state */
+            RetroViewUtils.saveTempState(retroView!!, privateData)
+
+            /* Save SRAM to disk */
+            with(privateData.save.outputStream()) {
+                write(retroView!!.serializeSRAM())
+                close()
+            }
+        }
+
+        super.onPause()
     }
 }
