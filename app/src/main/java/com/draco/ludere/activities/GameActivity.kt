@@ -1,6 +1,5 @@
 package com.draco.ludere.activities
 
-import android.app.AlertDialog
 import android.app.Service
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
@@ -14,10 +13,12 @@ import android.os.Looper
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.ProgressBar
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.draco.ludere.R
 import com.draco.ludere.utils.*
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.libretrodroid.GLRetroViewData
 import com.swordfish.libretrodroid.Variable
@@ -98,7 +99,7 @@ class GameActivity : AppCompatActivity() {
             privateData.tempState.delete()
 
         /* Prepare skeleton of dialogs */
-        panicDialog = AlertDialog.Builder(this)
+        panicDialog = MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.panic_title))
             .setCancelable(false)
             .setPositiveButton(getString(R.string.button_exit)) { _, _ -> finishAffinity() }
