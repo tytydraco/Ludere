@@ -23,7 +23,7 @@ for subdir in [x[0] for x in os.walk(f'{cwdabspath}/input')]:
             continue
         if file == 'config.xml':
             continue
-    buildsize += 1
+        buildsize += 1
 
 for subdir in [x[0] for x in os.walk(f'{cwdabspath}/input')]:
     if not os.path.isfile(f'{subdir}/config.xml'):
