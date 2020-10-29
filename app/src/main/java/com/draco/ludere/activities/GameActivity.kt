@@ -19,6 +19,7 @@ import androidx.preference.PreferenceManager
 import com.draco.ludere.R
 import com.draco.ludere.utils.*
 import com.swordfish.libretrodroid.GLRetroView
+import com.swordfish.libretrodroid.GLRetroViewData
 import com.swordfish.libretrodroid.Variable
 import io.reactivex.disposables.CompositeDisposable
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
@@ -156,15 +157,17 @@ class GameActivity : AppCompatActivity() {
             saveInputStream.close()
         }
 
-        /* Create the GLRetroView */
-        retroView = GLRetroView(
-            this,
-            "libcore.so",
-            privateData.rom.absolutePath,
-            saveRAMState = saveBytes,
-            shader = GLRetroView.SHADER_SHARP,
+        /* Setup configuration for the GLRetroView */
+        val retroViewData = GLRetroViewData(this).apply {
+            coreFilePath = "libcore.so"
+            gameFilePath = privateData.rom.absolutePath
+            saveRAMState = saveBytes
+            shader = GLRetroView.SHADER_SHARP
             variables = getCoreVariables()
-        )
+        }
+
+        /* Create the GLRetroView */
+        retroView = GLRetroView(this, retroViewData)
 
         /* Hook the GLRetroView to the fragment lifecycle */
         lifecycle.addObserver(retroView!!)
