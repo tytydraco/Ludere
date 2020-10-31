@@ -56,13 +56,15 @@ for subdir in [x[0] for x in os.walk(f'{cwdabspath}/input')]:
                 element.text = romid
             if 'config_name' in element.attrib.get('name'):
                 element.text = romname
+            if 'config_core' in element.attrib.get('name'):
+                romcore = element.text
         tree.write(f'{rootdir}/app/src/main/res/values/config.xml')
         
         os.chdir(rootdir)
         os.system(f'{rootdir}/gradlew assembleRelease')
         os.chdir(cwdabspath)
         
-        shutil.copy(f'{rootdir}/app/build/outputs/apk/release/app-release.apk', f'{cwdabspath}/output/{romid}.apk')
+        shutil.copy(f'{rootdir}/app/build/outputs/apk/release/app-release.apk', f'{cwdabspath}/output/{romcore}_{romid}.apk')
 
         buildsize -= 1
 shutil.move(f'{cwdabspath}/config.tmp.txt', f'{rootdir}/app/src/main/res/values/config.xml')
