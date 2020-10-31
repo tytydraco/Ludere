@@ -54,9 +54,7 @@ android {
 }
 
 task cleanAssets(type: Delete) {
-    def assets = file('src/main/assets/').listFiles()
-    if (assets != null)
-        delete assets
+    delete 'src/main/assets/system.bin'
 }
 
 task packageAssets(type: Tar) {
