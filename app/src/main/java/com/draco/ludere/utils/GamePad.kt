@@ -25,6 +25,8 @@ class GamePad(
         when (event.id) {
             Input.KEYCODE_SAVE_STATE -> RetroViewUtils.saveState(retroView, privateData)
             Input.KEYCODE_LOAD_STATE -> RetroViewUtils.loadState(retroView, privateData)
+            Input.KEYCODE_MUTE -> RetroViewUtils.toggleMute(retroView)
+            Input.KEYCODE_FAST_FORWARD -> RetroViewUtils.toggleFastForward(retroView)
 
             /* ID unrecognized, return false */
             else -> return false
