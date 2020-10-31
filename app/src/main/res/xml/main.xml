@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Actions">
+        <Preference
+            android:title="Choose ROM"
+            android:summary="Pick which ROM to launch from the internal storage"
+            android:key="choose_rom" />
+        <Preference
+            android:title="Start"
+            android:summary="Start the game"
+            android:key="start" />
+    </PreferenceCategory>
+</PreferenceScreen>

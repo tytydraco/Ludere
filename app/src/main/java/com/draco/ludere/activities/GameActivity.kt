@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.hardware.display.DisplayManager
 import android.hardware.input.InputManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -116,7 +117,11 @@ class GameActivity : AppCompatActivity() {
 
             /* Add the GLRetroView to the screen */
             runOnUiThread {
-                setupRetroView()
+                val romUri = Uri.parse(intent.getStringExtra("rom_uri")!!)
+                val romInputStream = contentResolver.openInputStream(romUri)
+                val romBytes = romInputStream?.readBytes()
+                romInputStream?.close()
+                setupRetroView(romBytes!!)
                 progress.visibility = View.GONE
             }
 
@@ -149,7 +154,7 @@ class GameActivity : AppCompatActivity() {
         }.start()
     }
 
-    private fun setupRetroView() {
+    private fun setupRetroView(bytes: ByteArray) {
         /* Prepare the SRAM bytes if the file exists */
         var saveBytes = byteArrayOf()
         if (privateData.save.exists()) {
@@ -161,7 +166,7 @@ class GameActivity : AppCompatActivity() {
         /* Setup configuration for the GLRetroView */
         val retroViewData = GLRetroViewData(this).apply {
             coreFilePath = "libcore.so"
-            gameFilePath = privateData.rom.absolutePath
+            gameFileBytes = bytes
             saveRAMState = saveBytes
             shader = GLRetroView.SHADER_SHARP
             variables = getCoreVariables()
