@@ -48,13 +48,8 @@ android {
         jvmTarget = '1.8'
     }
 
-    preBuild.dependsOn 'cleanAssets'
     preBuild.dependsOn 'packageAssets'
     preBuild.dependsOn 'prepareCore'
-}
-
-task cleanAssets(type: Delete) {
-    delete 'src/main/assets/system.bin'
 }
 
 task packageAssets(type: Tar) {
