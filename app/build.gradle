@@ -13,7 +13,7 @@ android {
     buildToolsVersion '30.0.2'
 
     defaultConfig {
-        applicationId "com.draco.ludere.${configValue('config_rom_id')}"
+        applicationId "com.draco.ludere.${configValue('config_id')}"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
