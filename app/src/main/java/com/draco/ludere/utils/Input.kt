@@ -69,10 +69,12 @@ class Input(private val context: Context) {
 
         /* Handler modifier keys */
         if (context.resources.getBoolean(R.bool.config_modifier_keys)) {
-            if (keyCombo(keyComboLoadState)) RetroViewUtils.loadState(retroView, privateData)
-            if (keyCombo(keyComboSaveState)) RetroViewUtils.saveState(retroView, privateData)
-            if (keyCombo(keyComboMute)) RetroViewUtils.toggleMute(retroView)
-            if (keyCombo(keyComboFastForward)) RetroViewUtils.toggleFastForward(retroView)
+            when {
+                keyCombo(keyComboLoadState) -> RetroViewUtils.loadState(retroView, privateData)
+                keyCombo(keyComboSaveState) -> RetroViewUtils.saveState(retroView, privateData)
+                keyCombo(keyComboMute) -> RetroViewUtils.toggleMute(retroView)
+                keyCombo(keyComboFastForward) -> RetroViewUtils.toggleFastForward(retroView)
+            }
         }
 
         /* Pipe events to the GLRetroView */
