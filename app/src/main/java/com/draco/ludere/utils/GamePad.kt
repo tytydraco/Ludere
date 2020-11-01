@@ -49,15 +49,9 @@ class GamePad(
             }
             is Event.Direction -> {
                 when (event.id) {
-                    GLRetroView.MOTION_SOURCE_DPAD -> {
-                        retroView.sendMotionEvent(GLRetroView.MOTION_SOURCE_DPAD, event.xAxis, event.yAxis)
-                    }
-                    GLRetroView.MOTION_SOURCE_ANALOG_LEFT -> {
-                        retroView.sendMotionEvent(GLRetroView.MOTION_SOURCE_ANALOG_LEFT, event.xAxis, event.yAxis)
-                    }
-                    GLRetroView.MOTION_SOURCE_ANALOG_RIGHT -> {
-                        retroView.sendMotionEvent(GLRetroView.MOTION_SOURCE_ANALOG_RIGHT, event.xAxis, event.yAxis)
-                    }
+                    GLRetroView.MOTION_SOURCE_DPAD -> retroView.sendMotionEvent(GLRetroView.MOTION_SOURCE_DPAD, event.xAxis, event.yAxis)
+                    GLRetroView.MOTION_SOURCE_ANALOG_LEFT -> retroView.sendMotionEvent(GLRetroView.MOTION_SOURCE_ANALOG_LEFT, event.xAxis, event.yAxis)
+                    GLRetroView.MOTION_SOURCE_ANALOG_RIGHT -> retroView.sendMotionEvent(GLRetroView.MOTION_SOURCE_ANALOG_RIGHT, event.xAxis, event.yAxis)
                 }
             }
         }
