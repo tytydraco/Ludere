@@ -52,7 +52,7 @@ for subdir in [x[0] for x in os.walk(f'{cwdabspath}/input')]:
 
         shutil.copy(f'{subdir}/{file}', f'{rootdir}/system/rom')
         for element in root.iter('string'):
-            if 'config_rom_id' in element.attrib.get('name'):
+            if 'config_id' in element.attrib.get('name'):
                 element.text = romid
             if 'config_name' in element.attrib.get('name'):
                 element.text = romname
