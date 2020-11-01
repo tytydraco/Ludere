@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- The full file name of the rom under the system directory -->
-    <string name="config_rom_file">rom</string>
-    <!-- A ROM identifier for the app (no spaces allowed) -->
-    <string name="config_rom_id">examplerom</string>
+    <!-- The relative file path to the rom under the system directory -->
+    <string name="config_rom_path">rom</string>
+    <!-- A unique identifier for the app (no spaces or special characters allowed) -->
+    <string name="config_id">examplerom</string>
     <!-- The pretty name for the app -->
     <string name="config_name">Example Rom</string>
     <!-- LibRetro core to fetch for this ROM (excluding _libretro_android.so) -->
