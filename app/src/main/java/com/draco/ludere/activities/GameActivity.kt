@@ -153,9 +153,9 @@ class GameActivity : AppCompatActivity() {
         /* Prepare the SRAM bytes if the file exists */
         var saveBytes = byteArrayOf()
         if (privateData.save.exists()) {
-            val saveInputStream = privateData.save.inputStream()
-            saveBytes = saveInputStream.readBytes()
-            saveInputStream.close()
+            privateData.save.inputStream().use {
+                saveBytes = it.readBytes()
+            }
         }
 
         /* Setup configuration for the GLRetroView */
@@ -325,31 +325,28 @@ class GameActivity : AppCompatActivity() {
         if (!assets.list("")!!.contains("system.bin"))
             return
 
-        /* Prepare to unzip our system zip from the assets folder */
-        val systemTarInputStream = assets.open("system.bin")
-
         /* Iterate over all tarred items */
-        val gzipCompressorInputStream = GzipCompressorInputStream(systemTarInputStream)
-        val tarInputStream = TarArchiveInputStream(gzipCompressorInputStream)
+        assets.open("system.bin").use { systemTarInputStream ->
+            GzipCompressorInputStream(systemTarInputStream).use { gzipCompressorInputStream ->
+                TarArchiveInputStream(gzipCompressorInputStream).use { tarArchiveInputStream ->
+                    while (true) {
+                        val tarEntry = tarArchiveInputStream.nextEntry ?: break
+                        val tarEntryOutFile = File(privateData.systemDirPath, tarEntry.name)
 
-        while (true) {
-            val tarEntry = tarInputStream.nextEntry ?: break
-            val tarEntryOutFile = File(privateData.systemDirPath, tarEntry.name)
+                        /* If this is a directory, prepare the file structure and skip */
+                        if (tarEntry.isDirectory) {
+                            tarEntryOutFile.mkdir()
+                            continue
+                        }
 
-            /* If this is a directory, prepare the file structure and skip */
-            if (tarEntry.isDirectory) {
-                tarEntryOutFile.mkdir()
-                continue
+                        /* Copy the file to the output location */
+                        tarEntryOutFile.outputStream().use {
+                            tarArchiveInputStream.copyTo(it)
+                        }
+                    }
+                }
             }
-
-            /* Copy the file to the output location */
-            val tarEntryOutFileOutputStream = tarEntryOutFile.outputStream()
-            tarInputStream.copyTo(tarEntryOutFileOutputStream)
-            tarEntryOutFileOutputStream.close()
         }
-        tarInputStream.close()
-        gzipCompressorInputStream.close()
-        systemTarInputStream.close()
     }
 
     private fun immersive() {
@@ -419,9 +416,8 @@ class GameActivity : AppCompatActivity() {
             RetroViewUtils.saveTempState(retroView!!, privateData)
 
             /* Save SRAM to disk */
-            with(privateData.save.outputStream()) {
-                write(retroView!!.serializeSRAM())
-                close()
+            privateData.save.outputStream().use {
+                it.write(retroView!!.serializeSRAM())
             }
         }
 
