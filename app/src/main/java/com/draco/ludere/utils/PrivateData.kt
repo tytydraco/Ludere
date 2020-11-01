@@ -5,8 +5,10 @@ import com.draco.ludere.R
 import java.io.File
 
 class PrivateData(context: Context) {
-    val systemDirPath = "${context.filesDir.absolutePath}/system"
-    val internalDirPath = "${context.filesDir.absolutePath}/internal"
+    /* Prefer external storage, fall back on internal storage */
+    private val storagePath = (context.getExternalFilesDir(null) ?: context.filesDir).absolutePath
+    val systemDirPath = "$storagePath/system"
+    val internalDirPath = "$storagePath/internal"
 
     init {
         File(systemDirPath).mkdirs()
