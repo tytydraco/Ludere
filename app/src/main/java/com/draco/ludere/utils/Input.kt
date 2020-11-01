@@ -1,12 +1,12 @@
 package com.draco.ludere.utils
 
-import android.content.Context
+import android.app.Activity
 import android.view.KeyEvent
 import android.view.MotionEvent
 import com.draco.ludere.R
 import com.swordfish.libretrodroid.GLRetroView
 
-class Input(private val context: Context) {
+class Input(private val activity: Activity) {
     companion object {
         /* Custom keycodes */
         const val KEYCODE_LOAD_STATE = -1
@@ -34,20 +34,38 @@ class Input(private val context: Context) {
             KeyEvent.KEYCODE_BUTTON_SELECT
         )
 
-        val keyComboLoadState = listOf(KeyEvent.KEYCODE_BUTTON_SELECT, KeyEvent.KEYCODE_BUTTON_L1)
-        val keyComboSaveState = listOf(KeyEvent.KEYCODE_BUTTON_SELECT, KeyEvent.KEYCODE_BUTTON_R1)
-        val keyComboMute = listOf(KeyEvent.KEYCODE_BUTTON_START, KeyEvent.KEYCODE_BUTTON_L1)
-        val keyComboFastForward = listOf(KeyEvent.KEYCODE_BUTTON_START, KeyEvent.KEYCODE_BUTTON_R1)
+        val keyComboExit = setOf(
+            KeyEvent.KEYCODE_BUTTON_START,
+            KeyEvent.KEYCODE_BUTTON_SELECT,
+            KeyEvent.KEYCODE_BUTTON_L1,
+            KeyEvent.KEYCODE_BUTTON_R1)
+        val keyComboLoadState = setOf(
+            KeyEvent.KEYCODE_BUTTON_SELECT,
+            KeyEvent.KEYCODE_BUTTON_L1
+        )
+        val keyComboSaveState = setOf(
+            KeyEvent.KEYCODE_BUTTON_SELECT,
+            KeyEvent.KEYCODE_BUTTON_R1
+        )
+        val keyComboMute = setOf(
+            KeyEvent.KEYCODE_BUTTON_START,
+            KeyEvent.KEYCODE_BUTTON_L1
+        )
+        val keyComboFastForward = setOf(
+            KeyEvent.KEYCODE_BUTTON_START,
+            KeyEvent.KEYCODE_BUTTON_R1
+        )
     }
 
     /* Access ROM specific files */
-    private val privateData = PrivateData(context)
+    private val privateData = PrivateData(activity)
 
     /* Keep track of all keys currently pressed down */
     private val pressedKeys = mutableSetOf<Int>()
 
-    private fun keyCombo(keyCodes: List<Int>): Boolean {
-        return pressedKeys.containsAll(keyCodes)
+    /* Check if there is a valid key combination */
+    private fun keyCombo(keyCodes: Set<Int>): Boolean {
+        return pressedKeys == keyCodes
     }
 
     fun handleKeyEvent(retroView: GLRetroView?, keyCode: Int, event: KeyEvent): Boolean {
@@ -68,8 +86,9 @@ class Input(private val context: Context) {
         val port = ((event.device?.controllerNumber ?: 1) - 1).coerceAtLeast(0)
 
         /* Handler modifier keys */
-        if (context.resources.getBoolean(R.bool.config_modifier_keys)) {
+        if (activity.resources.getBoolean(R.bool.config_modifier_keys)) {
             when {
+                keyCombo(keyComboExit) -> activity.finishAffinity()
                 keyCombo(keyComboLoadState) -> RetroViewUtils.loadState(retroView, privateData)
                 keyCombo(keyComboSaveState) -> RetroViewUtils.saveState(retroView, privateData)
                 keyCombo(keyComboMute) -> RetroViewUtils.toggleMute(retroView)
