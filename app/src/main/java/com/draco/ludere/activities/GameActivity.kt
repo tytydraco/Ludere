@@ -57,6 +57,7 @@ class GameActivity : AppCompatActivity() {
     /* Shared preference keys */
     private val fastForwardEnabledString = "fast_forward_enabled"
     private val audioEnabledString = "audio_enabled"
+    private val currentDiskString = "current_disk"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -266,12 +267,14 @@ class GameActivity : AppCompatActivity() {
     private fun restoreSettings() {
         retroView?.fastForwardEnabled = sharedPreferences.getBoolean(fastForwardEnabledString, false)
         retroView?.audioEnabled = sharedPreferences.getBoolean(audioEnabledString, true)
+        retroView?.changeDisk(sharedPreferences.getInt(currentDiskString, 0))
     }
 
     private fun saveSettings() {
         if (retroView != null) with (sharedPreferences.edit()) {
             putBoolean(fastForwardEnabledString, retroView!!.fastForwardEnabled)
             putBoolean(audioEnabledString, retroView!!.audioEnabled)
+            putInt(currentDiskString, retroView!!.getCurrentDisk())
             apply()
         }
     }
