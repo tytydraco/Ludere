@@ -24,8 +24,6 @@
     <color name="config_gamepad_pressed_color">#88263238</color>
     <!-- Should be load from where we left off on restart? -->
     <bool name="config_preserve_state">false</bool>
-    <!-- Should we react to Start+L1/R1 and Select+L1/R1 for emulator settings? -->
-    <bool name="config_modifier_keys">false</bool>
     <!-- Should we show a virtual GamePad? -->
     <bool name="config_gamepad_visible">true</bool>
     <!-- Should we vibrate on touch? -->
@@ -43,10 +41,5 @@
     <bool name="config_gamepad_r2">false</bool>
     <bool name="config_gamepad_analog_left">false</bool>
     <bool name="config_gamepad_analog_right">false</bool>
-    <bool name="config_gamepad_save_state">false</bool>
-    <bool name="config_gamepad_load_state">false</bool>
-    <!-- Mutually exclusive with config_gamepad_l2 -->
-    <bool name="config_gamepad_mute">false</bool>
-    <!-- Mutually exclusive with config_gamepad_r2 -->
-    <bool name="config_gamepad_fast_forward">false</bool>
+    <bool name="config_gamepad_menu">true</bool>
 </resources>

@@ -9,12 +9,11 @@ import com.swordfish.radialgamepad.library.event.Event
 import io.reactivex.disposables.CompositeDisposable
 
 class GamePad(
-    context: Context,
+    private val context: Context,
     padConfig: RadialGamePadConfig,
 ) {
     val pad: RadialGamePad = RadialGamePad(padConfig, 0f, context)
     private val compositeDisposable = CompositeDisposable()
-    private val privateData = PrivateData(context)
 
     private fun overrideButtonEvent(event: Event.Button, retroView: GLRetroView): Boolean {
         /* We only accept down key events */
@@ -23,10 +22,7 @@ class GamePad(
 
         /* If we recognize the event ID, handle it */
         when (event.id) {
-            Input.KEYCODE_SAVE_STATE -> RetroViewUtils.saveState(retroView, privateData)
-            Input.KEYCODE_LOAD_STATE -> RetroViewUtils.loadState(retroView, privateData)
-            Input.KEYCODE_MUTE -> RetroViewUtils.toggleMute(retroView)
-            Input.KEYCODE_FAST_FORWARD -> RetroViewUtils.toggleFastForward(retroView)
+            Input.KEYCODE_MENU -> Menu(context).show(retroView)
 
             /* ID unrecognized, return false */
             else -> return false

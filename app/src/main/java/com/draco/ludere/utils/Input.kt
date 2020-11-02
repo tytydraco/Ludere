@@ -3,16 +3,12 @@ package com.draco.ludere.utils
 import android.app.Activity
 import android.view.KeyEvent
 import android.view.MotionEvent
-import com.draco.ludere.R
 import com.swordfish.libretrodroid.GLRetroView
 
 class Input(private val activity: Activity) {
     companion object {
         /* Custom keycodes */
-        const val KEYCODE_LOAD_STATE = -1
-        const val KEYCODE_SAVE_STATE = -2
-        const val KEYCODE_MUTE = -3
-        const val KEYCODE_FAST_FORWARD = -4
+        const val KEYCODE_MENU = -1
 
         /* List of valid keycodes that can be piped */
         val validKeyCodes = listOf(
@@ -34,31 +30,13 @@ class Input(private val activity: Activity) {
             KeyEvent.KEYCODE_BUTTON_SELECT
         )
 
-        val keyComboExit = setOf(
+        val keyComboMenu = setOf(
             KeyEvent.KEYCODE_BUTTON_START,
             KeyEvent.KEYCODE_BUTTON_SELECT,
             KeyEvent.KEYCODE_BUTTON_L1,
-            KeyEvent.KEYCODE_BUTTON_R1)
-        val keyComboLoadState = setOf(
-            KeyEvent.KEYCODE_BUTTON_SELECT,
-            KeyEvent.KEYCODE_BUTTON_L1
-        )
-        val keyComboSaveState = setOf(
-            KeyEvent.KEYCODE_BUTTON_SELECT,
-            KeyEvent.KEYCODE_BUTTON_R1
-        )
-        val keyComboMute = setOf(
-            KeyEvent.KEYCODE_BUTTON_START,
-            KeyEvent.KEYCODE_BUTTON_L1
-        )
-        val keyComboFastForward = setOf(
-            KeyEvent.KEYCODE_BUTTON_START,
             KeyEvent.KEYCODE_BUTTON_R1
         )
     }
-
-    /* Access ROM specific files */
-    private val privateData = PrivateData(activity)
 
     /* Keep track of all keys currently pressed down */
     private val pressedKeys = mutableSetOf<Int>()
@@ -85,16 +63,9 @@ class Input(private val activity: Activity) {
         /* Controller numbers are [1, inf), we need [0, inf) */
         val port = ((event.device?.controllerNumber ?: 1) - 1).coerceAtLeast(0)
 
-        /* Handler modifier keys */
-        if (activity.resources.getBoolean(R.bool.config_modifier_keys)) {
-            when {
-                keyCombo(keyComboExit) -> activity.finishAffinity()
-                keyCombo(keyComboLoadState) -> RetroViewUtils.loadState(retroView, privateData)
-                keyCombo(keyComboSaveState) -> RetroViewUtils.saveState(retroView, privateData)
-                keyCombo(keyComboMute) -> RetroViewUtils.toggleMute(retroView)
-                keyCombo(keyComboFastForward) -> RetroViewUtils.toggleFastForward(retroView)
-            }
-        }
+        /* Handle menu key combination */
+        if (keyCombo(keyComboMenu))
+            Menu(activity).show(retroView)
 
         /* Pipe events to the GLRetroView */
         retroView.sendKeyEvent(
