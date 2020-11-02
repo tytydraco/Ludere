@@ -1,11 +1,11 @@
-package com.draco.libretrowrapper.utils
+package com.draco.ludere.utils
 
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.view.KeyEvent
 import androidx.core.content.ContextCompat
-import com.draco.libretrowrapper.R
+import com.draco.ludere.R
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.radialgamepad.library.config.*
 
@@ -16,22 +16,12 @@ class GamePadConfig(
     companion object {
         val BUTTON_START = ButtonConfig(
             id = KeyEvent.KEYCODE_BUTTON_START,
-            iconId = R.drawable.ic_baseline_play_arrow_24
+            label = "+"
         )
 
         val BUTTON_SELECT = ButtonConfig(
             id = KeyEvent.KEYCODE_BUTTON_SELECT,
-            iconId = R.drawable.ic_baseline_stop_24
-        )
-
-        val BUTTON_SAVE_STATE = ButtonConfig(
-            id = Input.KEYCODE_SAVE_STATE,
-            iconId = R.drawable.ic_baseline_save_24
-        )
-
-        val BUTTON_LOAD_STATE = ButtonConfig(
-            id = Input.KEYCODE_LOAD_STATE,
-            iconId = R.drawable.ic_baseline_get_app_24
+            label = "-"
         )
 
         val BUTTON_L1 = ButtonConfig(
@@ -91,7 +81,6 @@ class GamePadConfig(
             SecondaryDialConfig.SingleButton(2, 1, BUTTON_L2).takeIf { resources.getBoolean(R.bool.config_gamepad_l2) },
             SecondaryDialConfig.SingleButton(3, 1, BUTTON_L1).takeIf { resources.getBoolean(R.bool.config_gamepad_l1) },
             SecondaryDialConfig.SingleButton(4, 1, BUTTON_SELECT).takeIf { resources.getBoolean(R.bool.config_gamepad_select) },
-            SecondaryDialConfig.SingleButton(8, 1, BUTTON_SAVE_STATE).takeIf { resources.getBoolean(R.bool.config_gamepad_save_state) },
             SecondaryDialConfig.Stick(9, 2f, GLRetroView.MOTION_SOURCE_ANALOG_LEFT, KeyEvent.KEYCODE_BUTTON_THUMBL).takeIf { resources.getBoolean(R.bool.config_gamepad_analog_left) }
         )
     )
@@ -112,7 +101,6 @@ class GamePadConfig(
             SecondaryDialConfig.SingleButton(2, 1, BUTTON_START).takeIf { resources.getBoolean(R.bool.config_gamepad_start) },
             SecondaryDialConfig.SingleButton(3, 1, BUTTON_R1).takeIf { resources.getBoolean(R.bool.config_gamepad_r1) },
             SecondaryDialConfig.SingleButton(4, 1, BUTTON_R2).takeIf { resources.getBoolean(R.bool.config_gamepad_r2) },
-            SecondaryDialConfig.SingleButton(10, 1, BUTTON_LOAD_STATE).takeIf { resources.getBoolean(R.bool.config_gamepad_load_state) },
             SecondaryDialConfig.Stick(8, 2f, GLRetroView.MOTION_SOURCE_ANALOG_RIGHT, KeyEvent.KEYCODE_BUTTON_THUMBR).takeIf { resources.getBoolean(R.bool.config_gamepad_analog_right) }
         )
     )

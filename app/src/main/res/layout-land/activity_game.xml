@@ -15,9 +15,23 @@
             android:indeterminate="true"
             android:id="@+id/progress" />
     </FrameLayout>
-    <androidx.fragment.app.FragmentContainerView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:id="@+id/containers" />
+        android:layout_height="match_parent"
+        android:id="@+id/containers">
+        <FrameLayout
+            android:layout_width="@dimen/config_gamepad_size"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="@dimen/gamepad_padding_vertical"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:id="@+id/left_container" />
+        <FrameLayout
+            android:layout_width="@dimen/config_gamepad_size"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="@dimen/gamepad_padding_vertical"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:id="@+id/right_container" />
+    </RelativeLayout>
 </RelativeLayout>

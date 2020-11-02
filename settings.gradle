@@ -1,2 +1,2 @@
-include ':app', ':libretrodroid'
-rootProject.name = 'LibRetroWrapper'
+include ':app'
+rootProject.name = 'Ludere'

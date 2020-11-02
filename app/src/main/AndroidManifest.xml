@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.draco.libretrowrapper">
+    package="com.draco.ludere">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -11,7 +11,7 @@
         android:label="@string/config_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/Theme.Ludere">
         <activity android:name=".activities.GameActivity"
             android:launchMode="singleInstance">
             <intent-filter>
@@ -21,5 +21,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>
