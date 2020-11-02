@@ -17,7 +17,7 @@ class PrivateData(context: Context) {
 
     private val romFullName = context.getString(R.string.config_rom_path)
     val rom = File("$systemDirPath/$romFullName")
-    val save = File("$internalDirPath/$romFullName.sav")
+    val save = File("$internalDirPath/$romFullName.save")
     val state = File("$internalDirPath/$romFullName.state")
     val tempState = File("$internalDirPath/$romFullName.tempstate")
 }
