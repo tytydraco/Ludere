@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.DialogInterface
 import androidx.appcompat.app.AlertDialog
 import com.draco.ludere.R
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.swordfish.libretrodroid.GLRetroView
 
 class Menu(
@@ -37,7 +38,7 @@ class Menu(
     }
 
     fun show() {
-        AlertDialog.Builder(activity)
+        MaterialAlertDialogBuilder(activity)
             .setItems(menuOptions, MenuOnClickListener())
             .show()
     }
