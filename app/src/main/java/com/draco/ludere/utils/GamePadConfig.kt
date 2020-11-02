@@ -24,11 +24,6 @@ class GamePadConfig(
             label = "-"
         )
 
-        val BUTTON_MENU = ButtonConfig(
-            id = Input.KEYCODE_MENU,
-            iconId = R.drawable.ic_baseline_settings_24
-        )
-
         val BUTTON_L1 = ButtonConfig(
             id = KeyEvent.KEYCODE_BUTTON_L1,
             label = "L"
@@ -86,7 +81,6 @@ class GamePadConfig(
             SecondaryDialConfig.SingleButton(2, 1, BUTTON_L2).takeIf { resources.getBoolean(R.bool.config_gamepad_l2) },
             SecondaryDialConfig.SingleButton(3, 1, BUTTON_L1).takeIf { resources.getBoolean(R.bool.config_gamepad_l1) },
             SecondaryDialConfig.SingleButton(4, 1, BUTTON_SELECT).takeIf { resources.getBoolean(R.bool.config_gamepad_select) },
-            SecondaryDialConfig.SingleButton(8, 1, BUTTON_MENU).takeIf { resources.getBoolean(R.bool.config_gamepad_menu) },
             SecondaryDialConfig.Stick(9, 2f, GLRetroView.MOTION_SOURCE_ANALOG_LEFT, KeyEvent.KEYCODE_BUTTON_THUMBL).takeIf { resources.getBoolean(R.bool.config_gamepad_analog_left) }
         )
     )

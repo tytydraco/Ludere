@@ -7,9 +7,6 @@ import com.swordfish.libretrodroid.GLRetroView
 
 class Input(private val activity: Activity) {
     companion object {
-        /* Custom keycodes */
-        const val KEYCODE_MENU = -1
-
         /* List of valid keycodes that can be piped */
         val validKeyCodes = listOf(
             KeyEvent.KEYCODE_BUTTON_A,

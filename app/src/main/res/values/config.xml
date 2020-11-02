@@ -41,5 +41,4 @@
     <bool name="config_gamepad_r2">false</bool>
     <bool name="config_gamepad_analog_left">false</bool>
     <bool name="config_gamepad_analog_right">false</bool>
-    <bool name="config_gamepad_menu">true</bool>
 </resources>

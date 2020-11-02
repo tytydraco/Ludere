@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.draco.ludere.R
 import com.draco.ludere.utils.*
+import com.draco.ludere.utils.Menu
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.libretrodroid.GLRetroViewData
@@ -383,12 +384,17 @@ class GameActivity : AppCompatActivity() {
         immersive()
     }
 
+    override fun onBackPressed() {
+        if (retroView != null)
+            Menu(this, retroView!!).show()
+    }
+
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        return input.handleKeyEvent(retroView, keyCode, event)
+        return input.handleKeyEvent(retroView, keyCode, event) || super.onKeyDown(keyCode, event)
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
-        return input.handleKeyEvent(retroView, keyCode, event)
+        return input.handleKeyEvent(retroView, keyCode, event) || super.onKeyUp(keyCode, event)
     }
 
     override fun onGenericMotionEvent(event: MotionEvent): Boolean {
