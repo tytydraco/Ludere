@@ -4,6 +4,11 @@ import com.swordfish.libretrodroid.GLRetroView
 
 class RetroViewUtils {
     companion object {
+        fun reset(retroView: GLRetroView, privateData: PrivateData) {
+            saveSRAM(retroView, privateData)
+            retroView.reset()
+        }
+
         fun saveSRAM(retroView: GLRetroView, privateData: PrivateData) {
             privateData.save.outputStream().use {
                 it.write(retroView.serializeSRAM())
