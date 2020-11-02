@@ -56,9 +56,9 @@ class RetroViewUtils {
         }
 
         fun previousDisc(retroView: GLRetroView) {
-            val currentDisk = retroView.getCurrentDisk()
-            if (currentDisk > 0)
-                retroView.changeDisk(currentDisk - 1)
+            val currentDisc = retroView.getCurrentDisk()
+            if (currentDisc > 0)
+                retroView.changeDisk(currentDisc - 1)
         }
     }
 }
