@@ -65,7 +65,7 @@ class Input(private val activity: Activity) {
 
         /* Handle menu key combination */
         if (keyCombo(keyComboMenu))
-            Menu(activity).show(retroView)
+            Menu(activity, retroView).show()
 
         /* Pipe events to the GLRetroView */
         retroView.sendKeyEvent(

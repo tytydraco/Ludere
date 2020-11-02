@@ -22,7 +22,7 @@ class GamePad(
 
         /* If we recognize the event ID, handle it */
         when (event.id) {
-            Input.KEYCODE_MENU -> Menu(context).show(retroView)
+            Input.KEYCODE_MENU -> Menu(context, retroView).show()
 
             /* ID unrecognized, return false */
             else -> return false

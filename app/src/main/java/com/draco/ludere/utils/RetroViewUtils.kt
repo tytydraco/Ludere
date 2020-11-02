@@ -48,5 +48,17 @@ class RetroViewUtils {
         fun toggleFastForward(retroView: GLRetroView) {
             retroView.fastForwardEnabled = !retroView.fastForwardEnabled
         }
+
+        fun nextDisc(retroView: GLRetroView) {
+            val currentDisk = retroView.getCurrentDisk()
+            if (currentDisk < retroView.getAvailableDisks())
+                retroView.changeDisk(currentDisk + 1)
+        }
+
+        fun previousDisc(retroView: GLRetroView) {
+            val currentDisk = retroView.getCurrentDisk()
+            if (currentDisk > 0)
+                retroView.changeDisk(currentDisk - 1)
+        }
     }
 }
