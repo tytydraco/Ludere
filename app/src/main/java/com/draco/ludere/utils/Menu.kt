@@ -27,7 +27,10 @@ class Menu(
         override fun onClick(dialog: DialogInterface?, which: Int) {
             when (menuOptions[which]) {
                 activity.getString(R.string.menu_exit) -> activity.finishAffinity()
-                activity.getString(R.string.menu_reset) -> retroView.reset()
+                activity.getString(R.string.menu_reset) -> {
+                    RetroViewUtils.saveSRAM(retroView, privateData)
+                    retroView.reset()
+                }
                 activity.getString(R.string.menu_save_state) -> RetroViewUtils.saveState(retroView, privateData)
                 activity.getString(R.string.menu_load_state) -> RetroViewUtils.loadState(retroView, privateData)
                 activity.getString(R.string.menu_mute) -> RetroViewUtils.toggleMute(retroView)

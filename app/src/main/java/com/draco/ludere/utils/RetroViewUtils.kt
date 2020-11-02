@@ -4,15 +4,25 @@ import com.swordfish.libretrodroid.GLRetroView
 
 class RetroViewUtils {
     companion object {
+        fun saveSRAM(retroView: GLRetroView, privateData: PrivateData) {
+            privateData.save.outputStream().use {
+                it.write(retroView.serializeSRAM())
+            }
+        }
+
         fun saveState(retroView: GLRetroView, privateData: PrivateData) {
-            privateData.state.writeBytes(retroView.serializeState())
+            privateData.state.outputStream().use {
+                it.write(retroView.serializeState())
+            }
         }
 
         fun loadState(retroView: GLRetroView, privateData: PrivateData) {
             if (!privateData.state.exists())
                 return
 
-            val bytes = privateData.state.readBytes()
+            val bytes = privateData.state.inputStream().use {
+                it.readBytes()
+            }
             if (bytes.isNotEmpty())
                 retroView.unserializeState(bytes)
         }

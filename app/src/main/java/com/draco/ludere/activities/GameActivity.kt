@@ -425,9 +425,7 @@ class GameActivity : AppCompatActivity() {
             RetroViewUtils.saveTempState(retroView!!, privateData)
 
             /* Save SRAM to disk */
-            privateData.save.outputStream().use {
-                it.write(retroView!!.serializeSRAM())
-            }
+            RetroViewUtils.saveSRAM(retroView!!, privateData)
         }
 
         super.onPause()
