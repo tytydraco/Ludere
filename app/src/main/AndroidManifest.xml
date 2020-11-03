@@ -9,7 +9,7 @@
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
-        android:banner="@mipmap/ic_launcher"
+        android:banner="@drawable/banner"
         android:label="@string/config_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
