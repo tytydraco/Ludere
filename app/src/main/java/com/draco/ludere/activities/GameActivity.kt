@@ -28,6 +28,7 @@ import io.reactivex.disposables.CompositeDisposable
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
 import java.io.File
+import java.util.*
 import java.util.concurrent.CountDownLatch
 
 class GameActivity : AppCompatActivity() {
@@ -65,6 +66,9 @@ class GameActivity : AppCompatActivity() {
     private val audioEnabledString = "audio_enabled"
     private val currentDiskString = "current_disk"
 
+    /* Hash code from the contents of the ROM file (unique identifier) */
+    private var romHash = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
@@ -77,8 +81,6 @@ class GameActivity : AppCompatActivity() {
 
         /* Setup essential objects */
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        privateData = PrivateData(this)
-        input = Input(this)
 
         /* Set orientation based on config */
         val requestedOrientation = when (getString(R.string.config_orientation)) {
@@ -96,21 +98,29 @@ class GameActivity : AppCompatActivity() {
             return@setOnApplyWindowInsetsListener windowInsets
         }
 
-        /*
-         * If this is a fresh launch, make sure our temporary state is invalidated to prevent a
-         * state load from a previous launch.
-         *
-         * If we WANT to preserve the state, do not delete it. Instead, load it later on.
-         */
-        if (savedInstanceState == null && !resources.getBoolean(R.bool.config_preserve_state))
-            privateData.tempState.delete()
-
         /* Prepare skeleton of dialogs */
         panicDialog = MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.panic_title))
             .setCancelable(false)
             .setPositiveButton(getString(R.string.button_exit)) { _, _ -> finishAffinity() }
             .create()
+
+        /* Fetch the ROM bytes passed from a higher intent */
+        val romUri = Uri.parse(intent.getStringExtra(EXTRA_KEY_ROM_URI))
+        val romInputStream = contentResolver.openInputStream(romUri)
+        val romBytes = romInputStream?.readBytes()
+        romInputStream?.close()
+        romHash = Arrays.hashCode(romBytes)
+
+        /* We have an empty ROM! Panic! */
+        if (romBytes == null) {
+            panic(R.string.panic_message_load_game)
+            return
+        }
+
+        /* These classes needed the ROM hash to have been identified first */
+        privateData = PrivateData(this, romHash)
+        input = Input(this, privateData)
 
         /*
          * We have a progress spinner on the screen at this point until the GLRetroView
@@ -123,9 +133,18 @@ class GameActivity : AppCompatActivity() {
 
             /* Add the GLRetroView to the screen */
             runOnUiThread {
-                setupRetroView()
+                setupRetroView(romBytes)
                 progress.visibility = View.GONE
             }
+
+            /*
+             * If this is a fresh launch, make sure our temporary state is invalidated to prevent a
+             * state load from a previous launch.
+             *
+             * If we WANT to preserve the state, do not delete it. Instead, load it later on.
+             */
+            if (savedInstanceState == null && !resources.getBoolean(R.bool.config_preserve_state))
+                privateData.tempState.delete()
 
             /*
              * The GLRetroView will take a while to load up the ROM and core, so before we
@@ -156,13 +175,7 @@ class GameActivity : AppCompatActivity() {
         }.start()
     }
 
-    private fun setupRetroView() {
-        /* Fetch the ROM bytes passed from a higher intent */
-        val romUri = Uri.parse(intent.getStringExtra(EXTRA_KEY_ROM_URI))
-        val romInputStream = contentResolver.openInputStream(romUri)
-        val romBytes = romInputStream?.readBytes()
-        romInputStream?.close()
-
+    private fun setupRetroView(romBytes: ByteArray) {
         /* Prepare the SRAM bytes if the file exists */
         var saveBytes = byteArrayOf()
         if (privateData.save.exists()) {
@@ -397,7 +410,7 @@ class GameActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         if (retroView != null)
-            Menu(this, retroView!!).show()
+            Menu(this, privateData, retroView!!).show()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {

@@ -5,7 +5,10 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import com.swordfish.libretrodroid.GLRetroView
 
-class Input(private val activity: Activity) {
+class Input(
+    private val activity: Activity,
+    private val privateData: PrivateData
+) {
     companion object {
         /* List of valid keycodes that can be piped */
         val validKeyCodes = listOf(
@@ -62,7 +65,7 @@ class Input(private val activity: Activity) {
 
         /* Handle menu key combination */
         if (keyCombo(keyComboMenu))
-            Menu(activity, retroView).show()
+            Menu(activity, privateData, retroView).show()
 
         /* Pipe events to the GLRetroView */
         retroView.sendKeyEvent(

@@ -8,10 +8,9 @@ import com.swordfish.libretrodroid.GLRetroView
 
 class Menu(
     private val activity: Activity,
+    private val privateData: PrivateData,
     private val retroView: GLRetroView
 ) {
-    private val privateData = PrivateData(activity)
-
     private val menuOptions = listOfNotNull(
         activity.getString(R.string.menu_exit),
         activity.getString(R.string.menu_reset),
