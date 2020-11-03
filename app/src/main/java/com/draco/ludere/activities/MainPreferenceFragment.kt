@@ -3,7 +3,6 @@ package com.draco.ludere.activities
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.draco.ludere.R
@@ -37,8 +36,7 @@ class MainPreferenceFragment : PreferenceFragmentCompat() {
 
         if (resultCode == RESULT_OK && data?.data != null) {
             val path = data.data!!.toString()
-            Log.d("path", path)
-            gameActivityIntent.putExtra("rom_uri", path)
+            gameActivityIntent.putExtra(GameActivity.EXTRA_KEY_ROM_URI, path)
         }
     }
 

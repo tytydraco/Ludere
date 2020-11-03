@@ -31,6 +31,10 @@ import java.io.File
 import java.util.concurrent.CountDownLatch
 
 class GameActivity : AppCompatActivity() {
+    companion object {
+        const val EXTRA_KEY_ROM_URI = "rom_uri"
+    }
+
     /* UI components */
     private lateinit var progress: ProgressBar
     private lateinit var retroViewContainer: FrameLayout
@@ -119,11 +123,7 @@ class GameActivity : AppCompatActivity() {
 
             /* Add the GLRetroView to the screen */
             runOnUiThread {
-                val romUri = Uri.parse(intent.getStringExtra("rom_uri")!!)
-                val romInputStream = contentResolver.openInputStream(romUri)
-                val romBytes = romInputStream?.readBytes()
-                romInputStream?.close()
-                setupRetroView(romBytes!!)
+                setupRetroView()
                 progress.visibility = View.GONE
             }
 
@@ -156,7 +156,13 @@ class GameActivity : AppCompatActivity() {
         }.start()
     }
 
-    private fun setupRetroView(bytes: ByteArray) {
+    private fun setupRetroView() {
+        /* Fetch the ROM bytes passed from a higher intent */
+        val romUri = Uri.parse(intent.getStringExtra(EXTRA_KEY_ROM_URI))
+        val romInputStream = contentResolver.openInputStream(romUri)
+        val romBytes = romInputStream?.readBytes()
+        romInputStream?.close()
+
         /* Prepare the SRAM bytes if the file exists */
         var saveBytes = byteArrayOf()
         if (privateData.save.exists()) {
@@ -168,7 +174,7 @@ class GameActivity : AppCompatActivity() {
         /* Setup configuration for the GLRetroView */
         val retroViewData = GLRetroViewData(this).apply {
             coreFilePath = "libcore.so"
-            gameFileBytes = bytes
+            gameFileBytes = romBytes
             saveRAMState = saveBytes
             shader = GLRetroView.SHADER_SHARP
             variables = getCoreVariables()
