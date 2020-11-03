@@ -39,24 +39,8 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-
-    preBuild.dependsOn 'cleanAssets'
     preBuild.dependsOn 'packageAssets'
     preBuild.dependsOn 'prepareCore'
-}
-
-task cleanAssets(type: Delete) {
-    def assets = file('src/main/assets/').listFiles()
-    if (assets != null)
-        delete assets
 }
 
 task packageAssets(type: Tar) {

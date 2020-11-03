@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.draco.ludere.R
 import com.draco.ludere.utils.*
+import com.draco.ludere.utils.Menu
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.libretrodroid.GLRetroViewData
@@ -58,6 +59,7 @@ class GameActivity : AppCompatActivity() {
     /* Shared preference keys */
     private val fastForwardEnabledString = "fast_forward_enabled"
     private val audioEnabledString = "audio_enabled"
+    private val currentDiskString = "current_disk"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -158,9 +160,9 @@ class GameActivity : AppCompatActivity() {
         /* Prepare the SRAM bytes if the file exists */
         var saveBytes = byteArrayOf()
         if (privateData.save.exists()) {
-            val saveInputStream = privateData.save.inputStream()
-            saveBytes = saveInputStream.readBytes()
-            saveInputStream.close()
+            privateData.save.inputStream().use {
+                saveBytes = it.readBytes()
+            }
         }
 
         /* Setup configuration for the GLRetroView */
@@ -271,12 +273,14 @@ class GameActivity : AppCompatActivity() {
     private fun restoreSettings() {
         retroView?.fastForwardEnabled = sharedPreferences.getBoolean(fastForwardEnabledString, false)
         retroView?.audioEnabled = sharedPreferences.getBoolean(audioEnabledString, true)
+        retroView?.changeDisk(sharedPreferences.getInt(currentDiskString, 0))
     }
 
     private fun saveSettings() {
         if (retroView != null) with (sharedPreferences.edit()) {
             putBoolean(fastForwardEnabledString, retroView!!.fastForwardEnabled)
             putBoolean(audioEnabledString, retroView!!.audioEnabled)
+            putInt(currentDiskString, retroView!!.getCurrentDisk())
             apply()
         }
     }
@@ -330,31 +334,28 @@ class GameActivity : AppCompatActivity() {
         if (!assets.list("")!!.contains("system.bin"))
             return
 
-        /* Prepare to unzip our system zip from the assets folder */
-        val systemTarInputStream = assets.open("system.bin")
-
         /* Iterate over all tarred items */
-        val gzipCompressorInputStream = GzipCompressorInputStream(systemTarInputStream)
-        val tarInputStream = TarArchiveInputStream(gzipCompressorInputStream)
+        assets.open("system.bin").use { systemTarInputStream ->
+            GzipCompressorInputStream(systemTarInputStream).use { gzipCompressorInputStream ->
+                TarArchiveInputStream(gzipCompressorInputStream).use { tarArchiveInputStream ->
+                    while (true) {
+                        val tarEntry = tarArchiveInputStream.nextEntry ?: break
+                        val tarEntryOutFile = File(privateData.systemDirPath, tarEntry.name)
 
-        while (true) {
-            val tarEntry = tarInputStream.nextEntry ?: break
-            val tarEntryOutFile = File(privateData.systemDirPath, tarEntry.name)
+                        /* If this is a directory, prepare the file structure and skip */
+                        if (tarEntry.isDirectory) {
+                            tarEntryOutFile.mkdir()
+                            continue
+                        }
 
-            /* If this is a directory, prepare the file structure and skip */
-            if (tarEntry.isDirectory) {
-                tarEntryOutFile.mkdir()
-                continue
+                        /* Copy the file to the output location */
+                        tarEntryOutFile.outputStream().use {
+                            tarArchiveInputStream.copyTo(it)
+                        }
+                    }
+                }
             }
-
-            /* Copy the file to the output location */
-            val tarEntryOutFileOutputStream = tarEntryOutFile.outputStream()
-            tarInputStream.copyTo(tarEntryOutFileOutputStream)
-            tarEntryOutFileOutputStream.close()
         }
-        tarInputStream.close()
-        gzipCompressorInputStream.close()
-        systemTarInputStream.close()
     }
 
     private fun immersive() {
@@ -388,12 +389,17 @@ class GameActivity : AppCompatActivity() {
         immersive()
     }
 
+    override fun onBackPressed() {
+        if (retroView != null)
+            Menu(this, retroView!!).show()
+    }
+
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        return input.handleKeyEvent(retroView, keyCode, event)
+        return input.handleKeyEvent(retroView, keyCode, event) || super.onKeyDown(keyCode, event)
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
-        return input.handleKeyEvent(retroView, keyCode, event)
+        return input.handleKeyEvent(retroView, keyCode, event) || super.onKeyUp(keyCode, event)
     }
 
     override fun onGenericMotionEvent(event: MotionEvent): Boolean {
@@ -424,10 +430,7 @@ class GameActivity : AppCompatActivity() {
             RetroViewUtils.saveTempState(retroView!!, privateData)
 
             /* Save SRAM to disk */
-            with(privateData.save.outputStream()) {
-                write(retroView!!.serializeSRAM())
-                close()
-            }
+            RetroViewUtils.saveSRAM(retroView!!, privateData)
         }
 
         super.onPause()

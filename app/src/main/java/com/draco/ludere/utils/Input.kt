@@ -1,17 +1,12 @@
 package com.draco.ludere.utils
 
-import android.content.Context
+import android.app.Activity
 import android.view.KeyEvent
 import android.view.MotionEvent
-import com.draco.ludere.R
 import com.swordfish.libretrodroid.GLRetroView
 
-class Input(private val context: Context) {
+class Input(private val activity: Activity) {
     companion object {
-        /* Custom keycodes */
-        const val KEYCODE_LOAD_STATE = -1
-        const val KEYCODE_SAVE_STATE = -2
-
         /* List of valid keycodes that can be piped */
         val validKeyCodes = listOf(
             KeyEvent.KEYCODE_BUTTON_A,
@@ -31,14 +26,22 @@ class Input(private val context: Context) {
             KeyEvent.KEYCODE_BUTTON_START,
             KeyEvent.KEYCODE_BUTTON_SELECT
         )
+
+        val keyComboMenu = setOf(
+            KeyEvent.KEYCODE_BUTTON_START,
+            KeyEvent.KEYCODE_BUTTON_SELECT,
+            KeyEvent.KEYCODE_BUTTON_L1,
+            KeyEvent.KEYCODE_BUTTON_R1
+        )
     }
 
-    /* Access ROM specific files */
-    private val privateData = PrivateData(context)
+    /* Keep track of all keys currently pressed down */
+    private val pressedKeys = mutableSetOf<Int>()
 
-    /* Is the modifier buttons currently held down? */
-    private var selectButtonDown = false
-    private var startButtonDown = false
+    /* Check if there is a valid key combination */
+    private fun keyCombo(keyCodes: Set<Int>): Boolean {
+        return pressedKeys == keyCodes
+    }
 
     fun handleKeyEvent(retroView: GLRetroView?, keyCode: Int, event: KeyEvent): Boolean {
         if (retroView == null)
@@ -49,27 +52,17 @@ class Input(private val context: Context) {
             return false
 
         /* Keep track of the modifier button states */
-        if (keyCode == KeyEvent.KEYCODE_BUTTON_SELECT)
-            selectButtonDown = event.action == KeyEvent.ACTION_DOWN
-        if (keyCode == KeyEvent.KEYCODE_BUTTON_START)
-            startButtonDown = event.action == KeyEvent.ACTION_DOWN
+        when (event.action) {
+            KeyEvent.ACTION_DOWN -> pressedKeys.add(keyCode)
+            KeyEvent.ACTION_UP -> pressedKeys.remove(keyCode)
+        }
 
         /* Controller numbers are [1, inf), we need [0, inf) */
         val port = ((event.device?.controllerNumber ?: 1) - 1).coerceAtLeast(0)
 
-        /* Handler modifier keys */
-        if (event.action == KeyEvent.ACTION_DOWN && context.resources.getBoolean(R.bool.config_modifier_keys)) {
-            when (keyCode) {
-                KeyEvent.KEYCODE_BUTTON_L1 -> {
-                    if (selectButtonDown) RetroViewUtils.loadState(retroView, privateData)
-                    if (startButtonDown) RetroViewUtils.toggleMute(retroView)
-                }
-                KeyEvent.KEYCODE_BUTTON_R1 -> {
-                    if (selectButtonDown) RetroViewUtils.saveState(retroView, privateData)
-                    if (startButtonDown) RetroViewUtils.toggleFastForward(retroView)
-                }
-            }
-        }
+        /* Handle menu key combination */
+        if (keyCombo(keyComboMenu))
+            Menu(activity, retroView).show()
 
         /* Pipe events to the GLRetroView */
         retroView.sendKeyEvent(

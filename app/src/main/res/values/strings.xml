@@ -2,6 +2,15 @@
 <resources>
     <string name="app_name">Ludere</string>
 
+    <string name="menu_exit">Exit</string>
+    <string name="menu_reset">Reset</string>
+    <string name="menu_save_state">Save State</string>
+    <string name="menu_load_state">Load State</string>
+    <string name="menu_mute">Mute</string>
+    <string name="menu_fast_forward">Fast Forward</string>
+    <string name="menu_next_disk">Next Disk</string>
+    <string name="menu_previous_disk">Previous Disk</string>
+
     <string name="button_exit">Exit</string>
 
     <string name="panic_title">Panic</string>
