@@ -106,17 +106,19 @@ class GameActivity : AppCompatActivity() {
             .create()
 
         /* Fetch the ROM bytes passed from a higher intent */
-        val romUri = Uri.parse(intent.getStringExtra(EXTRA_KEY_ROM_URI))
-        val romInputStream = contentResolver.openInputStream(romUri)
-        val romBytes = romInputStream?.readBytes()
-        romInputStream?.close()
-        romHash = Arrays.hashCode(romBytes)
+        val romUriString = intent.getStringExtra(EXTRA_KEY_ROM_URI)
 
         /* We have an empty ROM! Panic! */
-        if (romBytes == null) {
+        if (romUriString == null) {
             panic(R.string.panic_message_load_game)
             return
         }
+
+        val romUri = Uri.parse(romUriString)
+        val romInputStream = contentResolver.openInputStream(romUri)
+        val romBytes = romInputStream?.readBytes()!!
+        romInputStream.close()
+        romHash = romBytes.contentHashCode()
 
         /* These classes needed the ROM hash to have been identified first */
         privateData = PrivateData(this, romHash)
