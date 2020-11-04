@@ -270,7 +270,10 @@ class GameActivity : AppCompatActivity() {
     private fun restoreSettings() {
         retroView?.fastForwardEnabled = sharedPreferences.getBoolean(fastForwardEnabledString, false)
         retroView?.audioEnabled = sharedPreferences.getBoolean(audioEnabledString, true)
-        retroView?.changeDisk(sharedPreferences.getInt(currentDiskString, 0))
+
+        val targetDisk = sharedPreferences.getInt(currentDiskString, 0)
+        if (retroView?.getCurrentDisk() != targetDisk)
+            retroView?.changeDisk(targetDisk)
     }
 
     private fun saveSettings() {
