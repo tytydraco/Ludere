@@ -164,6 +164,8 @@ class GameActivity : AppCompatActivity() {
         val retroViewData = GLRetroViewData(this).apply {
             coreFilePath = "libcore.so"
             gameFilePath = privateData.rom.absolutePath
+            systemDirectory = privateData.systemDirPath
+            savesDirectory = privateData.internalDirPath
             saveRAMState = saveBytes
             shader = GLRetroView.SHADER_SHARP
             variables = getCoreVariables()
