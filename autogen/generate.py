@@ -7,8 +7,8 @@ os.chdir(cwdabspath)
 
 rootdir = os.path.abspath('..')
 
-if not os.path.isdir(f'{rootdir}/app/src/main/res/raw'):
-    os.mkdir(f'{rootdir}/app/src/main/res/raw')
+if not os.path.isdir(f'{rootdir}/system'):
+    os.mkdir(f'{rootdir}/system')
 
 shutil.copy(f'{rootdir}/app/src/main/res/values/config.xml', f'{cwdabspath}/config.tmp.txt')
 
@@ -50,7 +50,7 @@ for subdir in [x[0] for x in os.walk(f'{cwdabspath}/input')]:
         tree = ET.parse(f'{subdir}/config.xml')
         root = tree.getroot()
 
-        shutil.copy(f'{subdir}/{file}', f'{rootdir}/app/src/main/res/raw/rom')
+        shutil.copy(f'{subdir}/{file}', f'{rootdir}/system/rom')
         for element in root.iter('string'):
             if 'config_id' in element.attrib.get('name'):
                 element.text = romid
