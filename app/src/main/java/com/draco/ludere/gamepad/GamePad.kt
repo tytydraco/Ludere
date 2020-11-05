@@ -1,4 +1,4 @@
-package com.draco.ludere.utils
+package com.draco.ludere.gamepad
 
 import android.content.Context
 import com.swordfish.libretrodroid.GLRetroView

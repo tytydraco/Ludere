@@ -1,8 +1,10 @@
-package com.draco.ludere.utils
+package com.draco.ludere.ui
 
 import android.app.Activity
 import android.content.DialogInterface
 import com.draco.ludere.R
+import com.draco.ludere.assets.PrivateData
+import com.draco.ludere.utils.RetroViewUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.swordfish.libretrodroid.GLRetroView
 
@@ -27,13 +29,26 @@ class Menu(
         override fun onClick(dialog: DialogInterface?, which: Int) {
             when (menuOptions[which]) {
                 activity.getString(R.string.menu_exit) -> activity.finishAffinity()
-                activity.getString(R.string.menu_reset) -> RetroViewUtils.reset(retroView, privateData)
-                activity.getString(R.string.menu_save_state) -> RetroViewUtils.saveState(retroView, privateData)
-                activity.getString(R.string.menu_load_state) -> RetroViewUtils.loadState(retroView, privateData)
+                activity.getString(R.string.menu_reset) -> RetroViewUtils.reset(
+                    retroView,
+                    privateData
+                )
+                activity.getString(R.string.menu_save_state) -> RetroViewUtils.saveState(
+                    retroView,
+                    privateData
+                )
+                activity.getString(R.string.menu_load_state) -> RetroViewUtils.loadState(
+                    retroView,
+                    privateData
+                )
                 activity.getString(R.string.menu_mute) -> RetroViewUtils.toggleMute(retroView)
-                activity.getString(R.string.menu_fast_forward) -> RetroViewUtils.toggleFastForward(retroView)
+                activity.getString(R.string.menu_fast_forward) -> RetroViewUtils.toggleFastForward(
+                    retroView
+                )
                 activity.getString(R.string.menu_next_disk) -> RetroViewUtils.nextDisk(retroView)
-                activity.getString(R.string.menu_previous_disk) -> RetroViewUtils.previousDisk(retroView)
+                activity.getString(R.string.menu_previous_disk) -> RetroViewUtils.previousDisk(
+                    retroView
+                )
             }
         }
     }

@@ -3,6 +3,7 @@ package com.draco.ludere.utils
 import android.app.Activity
 import android.view.KeyEvent
 import android.view.MotionEvent
+import com.draco.ludere.ui.Menu
 import com.swordfish.libretrodroid.GLRetroView
 
 class Input(private val activity: Activity) {

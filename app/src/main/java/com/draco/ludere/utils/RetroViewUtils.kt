@@ -1,5 +1,6 @@
 package com.draco.ludere.utils
 
+import com.draco.ludere.assets.PrivateData
 import com.swordfish.libretrodroid.GLRetroView
 
 class RetroViewUtils {

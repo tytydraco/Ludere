@@ -1,4 +1,4 @@
-package com.draco.ludere.activities
+package com.draco.ludere.ui
 
 import android.app.Service
 import android.content.SharedPreferences
@@ -15,8 +15,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.draco.ludere.R
+import com.draco.ludere.gamepad.GamePad
+import com.draco.ludere.gamepad.GamePadConfig
+import com.draco.ludere.assets.PrivateData
+import com.draco.ludere.assets.System
+import com.draco.ludere.utils.RetroViewUtils
 import com.draco.ludere.utils.*
-import com.draco.ludere.utils.Menu
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.libretrodroid.GLRetroViewData

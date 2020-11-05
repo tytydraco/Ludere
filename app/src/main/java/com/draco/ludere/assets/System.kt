@@ -1,4 +1,4 @@
-package com.draco.ludere.utils
+package com.draco.ludere.assets
 
 import android.content.Context
 import com.draco.ludere.R
