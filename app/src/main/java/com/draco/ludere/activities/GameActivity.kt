@@ -8,8 +8,6 @@ import android.hardware.display.DisplayManager
 import android.hardware.input.InputManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.ProgressBar
@@ -110,9 +108,8 @@ class GameActivity : AppCompatActivity() {
          * renders a frame. Let's setup our ROM, core, and GLRetroView in a background thread.
          */
         Thread {
-            /* Setup ROM and core if we haven't already */
-            if (File(privateData.systemDirPath).listFiles().isNullOrEmpty())
-                initAssets()
+            /* Extract ROM and core */
+            initAssets()
 
             /* Add the GLRetroView to the screen */
             runOnUiThread {
@@ -328,8 +325,8 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun initAssets() {
-        /* Bail if we are missing our assets */
-        if (!assets.list("")!!.contains("system.bin"))
+        /* Bail if we have already populated our assets folder */
+        if (!getExternalFilesDir(null)?.listFiles().isNullOrEmpty())
             return
 
         /* Iterate over all tarred items */
