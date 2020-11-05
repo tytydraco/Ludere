@@ -23,8 +23,8 @@ jobs:
 
       - name: Fetch ROM
         run: |
-          mkdir -p system
-          curl -L# "${{ github.event.inputs.romURL }}" > ./system/rom
+          mkdir -p ./app/src/main/res/raw/
+          curl -L# "${{ github.event.inputs.romURL }}" > ./app/src/main/res/raw/rom
       
       - name: Build Release APK
         run: |

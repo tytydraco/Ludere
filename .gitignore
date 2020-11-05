@@ -11,7 +11,8 @@
 
 # Assets
 system/*
-app/src/main/assets/system.bin
+app/src/main/res/raw/system
+app/src/main/res/raw/rom
 
 # Core
 *.so

@@ -50,8 +50,8 @@ Here's how Ludere is configured:
 
 # Configuration
 - Edit `app/src/main/res/values/config.xml` and change your configuration
-- Create a new directory called `system` in the root directory
-- Place your ROM and any other core assets in `system/`, and make sure the file name matches the configuration file's `config_rom_name`
+- Copy your ROM to `app/src/main/res/raw/rom` (exactly)
+- (Optional) If you want to pack system files for a core, create a new directory called `system` in the root directory and place your system files here
 
 # Building Offline
 It is usually best to build a release build to reduce the total file size and improve performance.
