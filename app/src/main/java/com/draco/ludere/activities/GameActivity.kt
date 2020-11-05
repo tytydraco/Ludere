@@ -85,9 +85,7 @@ class GameActivity : AppCompatActivity() {
 
         /* Make sure we reapply immersive mode on rotate */
         window.decorView.setOnApplyWindowInsetsListener { _, windowInsets ->
-            Handler(Looper.getMainLooper()).postDelayed({
-                immersive()
-            }, 200)
+            immersive()
             return@setOnApplyWindowInsetsListener windowInsets
         }
 
