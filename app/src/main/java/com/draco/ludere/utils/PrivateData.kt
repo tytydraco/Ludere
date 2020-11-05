@@ -7,17 +7,17 @@ import java.io.File
 class PrivateData(context: Context) {
     /* Prefer external storage, fall back on internal storage */
     private val storagePath = (context.getExternalFilesDir(null) ?: context.filesDir).absolutePath
-    val systemDirPath = "$storagePath/system"
-    val internalDirPath = "$storagePath/internal"
+    val systemDir = File("$storagePath/system")
+    val internalDir = File("$storagePath/internal")
 
-    init {
-        File(systemDirPath).mkdirs()
-        File(internalDirPath).mkdirs()
+    fun prepare() {
+        systemDir.mkdirs()
+        internalDir.mkdirs()
     }
 
     private val romFullName = context.getString(R.string.config_rom_path)
-    val rom = File("$systemDirPath/$romFullName")
-    val save = File("$internalDirPath/$romFullName.save")
-    val state = File("$internalDirPath/$romFullName.state")
-    val tempState = File("$internalDirPath/$romFullName.tempstate")
+    val rom = File("${systemDir.path}/$romFullName")
+    val save = File("${internalDir.path}/$romFullName.save")
+    val state = File("${internalDir.path}/$romFullName.state")
+    val tempState = File("${internalDir.path}/$romFullName.tempstate")
 }

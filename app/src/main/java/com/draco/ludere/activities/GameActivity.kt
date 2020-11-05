@@ -158,9 +158,9 @@ class GameActivity : AppCompatActivity() {
         /* Setup configuration for the GLRetroView */
         val retroViewData = GLRetroViewData(this).apply {
             coreFilePath = "libcore.so"
-            gameFilePath = privateData.rom.absolutePath
-            systemDirectory = privateData.systemDirPath
-            savesDirectory = privateData.internalDirPath
+            gameFilePath = privateData.rom.path
+            systemDirectory = privateData.systemDir.path
+            savesDirectory = privateData.internalDir.path
             saveRAMState = saveBytes
             shader = GLRetroView.SHADER_SHARP
             variables = getCoreVariables()
@@ -329,13 +329,16 @@ class GameActivity : AppCompatActivity() {
         if (!getExternalFilesDir(null)?.listFiles().isNullOrEmpty())
             return
 
+        /* Create subdirectories for system and internal files */
+        privateData.prepare()
+
         /* Iterate over all tarred items */
         assets.open("system.bin").use { systemTarInputStream ->
             GzipCompressorInputStream(systemTarInputStream).use { gzipCompressorInputStream ->
                 TarArchiveInputStream(gzipCompressorInputStream).use { tarArchiveInputStream ->
                     while (true) {
                         val tarEntry = tarArchiveInputStream.nextEntry ?: break
-                        val tarEntryOutFile = File(privateData.systemDirPath, tarEntry.name)
+                        val tarEntryOutFile = File(privateData.systemDir.path, tarEntry.name)
 
                         /* If this is a directory, prepare the file structure and skip */
                         if (tarEntry.isDirectory) {
