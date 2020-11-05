@@ -22,8 +22,6 @@ import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.libretrodroid.GLRetroViewData
 import com.swordfish.libretrodroid.Variable
 import io.reactivex.disposables.CompositeDisposable
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
-import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
 import java.io.File
 import java.util.concurrent.CountDownLatch
 
@@ -108,8 +106,11 @@ class GameActivity : AppCompatActivity() {
          * renders a frame. Let's setup our ROM, core, and GLRetroView in a background thread.
          */
         Thread {
-            /* Extract ROM and core */
-            initAssets()
+            // TODO: Obliterate this method once we can feed bytes directly
+            val romFile = File(privateData.storagePath, "rom")
+            if (!romFile.exists()) romFile.outputStream().use {
+                it.write(privateData.romBytes)
+            }
 
             /* Add the GLRetroView to the screen */
             runOnUiThread {
@@ -158,9 +159,10 @@ class GameActivity : AppCompatActivity() {
         /* Setup configuration for the GLRetroView */
         val retroViewData = GLRetroViewData(this).apply {
             coreFilePath = "libcore.so"
-            gameFilePath = privateData.rom.path
-            systemDirectory = privateData.systemDir.path
-            savesDirectory = privateData.internalDir.path
+            // TODO: Feed bytes directly once PR is merged
+            gameFilePath = privateData.storagePath + "/rom"
+            systemDirectory = privateData.storagePath
+            savesDirectory = privateData.storagePath
             saveRAMState = saveBytes
             shader = GLRetroView.SHADER_SHARP
             variables = getCoreVariables()
@@ -321,38 +323,6 @@ class GameActivity : AppCompatActivity() {
         else {
             val wm = getSystemService(WINDOW_SERVICE) as WindowManager
             wm.defaultDisplay.displayId
-        }
-    }
-
-    private fun initAssets() {
-        /* Bail if we have already populated our assets folder */
-        if (!getExternalFilesDir(null)?.listFiles().isNullOrEmpty())
-            return
-
-        /* Create subdirectories for system and internal files */
-        privateData.prepare()
-
-        /* Iterate over all tarred items */
-        assets.open("system.bin").use { systemTarInputStream ->
-            GzipCompressorInputStream(systemTarInputStream).use { gzipCompressorInputStream ->
-                TarArchiveInputStream(gzipCompressorInputStream).use { tarArchiveInputStream ->
-                    while (true) {
-                        val tarEntry = tarArchiveInputStream.nextEntry ?: break
-                        val tarEntryOutFile = File(privateData.systemDir.path, tarEntry.name)
-
-                        /* If this is a directory, prepare the file structure and skip */
-                        if (tarEntry.isDirectory) {
-                            tarEntryOutFile.mkdir()
-                            continue
-                        }
-
-                        /* Copy the file to the output location */
-                        tarEntryOutFile.outputStream().use {
-                            tarArchiveInputStream.copyTo(it)
-                        }
-                    }
-                }
-            }
         }
     }
 

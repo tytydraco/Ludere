@@ -39,16 +39,7 @@ android {
         }
     }
 
-    preBuild.dependsOn 'packageAssets'
     preBuild.dependsOn 'prepareCore'
-}
-
-task packageAssets(type: Tar) {
-    from "${rootProject.projectDir}/system/"
-    include '**'
-    archiveName 'system.bin'
-    compression(Compression.GZIP)
-    destinationDir(file('src/main/assets/'))
 }
 
 task prepareCore {
@@ -79,7 +70,6 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.preference:preference-ktx:1.1.1'
     implementation 'com.google.android.material:material:1.2.1'
-    implementation 'org.apache.commons:commons-compress:1.20'
     implementation 'com.github.swordfish90:radialgamepad:0.1.1'
     implementation 'com.github.swordfish90:libretrodroid:0.5.0'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
