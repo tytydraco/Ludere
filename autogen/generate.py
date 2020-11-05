@@ -50,7 +50,7 @@ for subdir in [x[0] for x in os.walk(f'{cwdabspath}/input')]:
         tree = ET.parse(f'{subdir}/config.xml')
         root = tree.getroot()
 
-        shutil.copy(f'{subdir}/{file}', f'{rootdir}/system/rom')
+        shutil.copy(f'{subdir}/{file}', f'{rootdir}/app/src/main/res/raw/rom')
         for element in root.iter('string'):
             if 'config_id' in element.attrib.get('name'):
                 element.text = romid
