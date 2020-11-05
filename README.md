@@ -11,7 +11,10 @@ Here's a diagram of how most Android emulators are configured:
 
 ```
 └── Generic Emulator App
-    ├── Roms
+    ├── Cores (externally added)
+    │   ├── libnestopia.so
+    │   └── libmgba.so
+    ├── Roms (externally added)
     │   ├── rom1.gba
     │   ├── rom2.gba
     │   └── rom3.gba
@@ -29,14 +32,15 @@ Here's how Ludere is configured:
 
 ```
 └── Ludere
-    ├── rom
+    ├── libcore.so (built-in)
+    ├── rom (built-in)
     ├── save
     ├── state
-    └── *other system files*
+    └── tempstate
 ```
 
 # Features
-- LibRetro core is fetched once on the first launch
+- Extremely tiny resulting APK
 - ROM is packaged inside the APK, no external importing required
 - Save state support (single slot)
 - SRAM is saved when the application loses focus
@@ -50,8 +54,8 @@ Here's how Ludere is configured:
 
 # Configuration
 - Edit `app/src/main/res/values/config.xml` and change your configuration
-- Create a new directory called `system` in the root directory
-- Place your ROM and any other core assets in `system/`, and make sure the file name matches the configuration file's `config_rom_name`
+- Create a new directory named `app/src/main/res/raw/`
+- Place your ROM here (exact name): `app/src/main/res/raw/rom`
 
 # Building Offline
 It is usually best to build a release build to reduce the total file size and improve performance.

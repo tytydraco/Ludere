@@ -22,9 +22,7 @@ jobs:
         run: curl -L# "${{ github.event.inputs.configURL }}" > ./app/src/main/res/values/config.xml
 
       - name: Fetch ROM
-        run: |
-          mkdir -p system
-          curl -L# "${{ github.event.inputs.romURL }}" > ./system/rom
+        run: curl -L# "${{ github.event.inputs.romURL }}" > ./app/src/main/res/raw/rom
       
       - name: Build Release APK
         run: |
