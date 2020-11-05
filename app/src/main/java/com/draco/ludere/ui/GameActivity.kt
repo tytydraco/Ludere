@@ -248,6 +248,10 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun panic(errorResId: Int) {
+        /* Invalidate GLRetroView */
+        retroView = null
+
+        /* Show the error to the user */
         with (panicDialog) {
             setMessage(getString(errorResId))
             show()
