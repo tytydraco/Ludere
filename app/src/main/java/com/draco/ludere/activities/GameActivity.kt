@@ -36,6 +36,7 @@ class GameActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var privateData: PrivateData
     private lateinit var input: Input
+    private lateinit var system: System
 
     /* Emulator objects */
     private var retroView: GLRetroView? = null
@@ -70,6 +71,7 @@ class GameActivity : AppCompatActivity() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         privateData = PrivateData(this)
         input = Input(this)
+        system = System(this)
 
         /* Set orientation based on config */
         val requestedOrientation = when (getString(R.string.config_orientation)) {
@@ -111,6 +113,9 @@ class GameActivity : AppCompatActivity() {
             if (!romFile.exists()) romFile.outputStream().use {
                 it.write(privateData.romBytes)
             }
+
+            /* Extract all essential assets here */
+            system.extractToFilesDir()
 
             /* Add the GLRetroView to the screen */
             runOnUiThread {
@@ -161,8 +166,6 @@ class GameActivity : AppCompatActivity() {
             coreFilePath = "libcore.so"
             // TODO: Feed bytes directly once PR is merged
             gameFilePath = privateData.storagePath + "/rom"
-            systemDirectory = privateData.storagePath
-            savesDirectory = privateData.storagePath
             saveRAMState = saveBytes
             shader = GLRetroView.SHADER_SHARP
             variables = getCoreVariables()
