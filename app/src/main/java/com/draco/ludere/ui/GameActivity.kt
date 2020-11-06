@@ -8,6 +8,8 @@ import android.hardware.display.DisplayManager
 import android.hardware.input.InputManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.ProgressBar
@@ -86,8 +88,8 @@ class GameActivity : AppCompatActivity() {
         setRequestedOrientation(requestedOrientation)
 
         /* Make sure we reapply immersive mode on rotate */
-        window.decorView.setOnApplyWindowInsetsListener { _, windowInsets ->
-            immersive()
+        window.decorView.setOnApplyWindowInsetsListener { view, windowInsets ->
+            view.post { immersive() }
             return@setOnApplyWindowInsetsListener windowInsets
         }
 
@@ -356,16 +358,6 @@ class GameActivity : AppCompatActivity() {
                 View.SYSTEM_UI_FLAG_FULLSCREEN
             )
         }
-    }
-
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-
-        if (!hasFocus)
-            return
-
-        /* Reapply our immersive mode again */
-        immersive()
     }
 
     override fun onBackPressed() {
