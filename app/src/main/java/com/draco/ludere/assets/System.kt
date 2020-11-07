@@ -12,9 +12,11 @@ class System(private val context: Context) {
         if (!context.filesDir.listFiles().isNullOrEmpty())
             return
 
-        try {
-            /* Iterate over all tarred items */
-            context.resources.openRawResource(R.raw.system).use { systemTarInputStream ->
+        /* Iterate over all tarred items */
+        context.resources.openRawResource(R.raw.system).use { systemTarInputStream ->
+            if (systemTarInputStream.readBytes().isEmpty())
+                return
+            try {
                 GzipCompressorInputStream(systemTarInputStream).use { gzipCompressorInputStream ->
                     TarArchiveInputStream(gzipCompressorInputStream).use { tarArchiveInputStream ->
                         while (true) {
@@ -34,7 +36,7 @@ class System(private val context: Context) {
                         }
                     }
                 }
-            }
-        } catch (_: Exception) {}
+            } catch (_: Exception) { }
+        }
     }
 }
