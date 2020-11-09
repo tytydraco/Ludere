@@ -9,7 +9,7 @@
     <!-- Core variables (key=value separated by commas) -->
     <string name="config_variables"></string>
     <!-- Can be landscape, portrait, or auto -->
-    <string name="config_orientation">landscape</string>
+    <string name="config_orientation">auto</string>
     <!-- Icon foreground color -->
     <color name="config_foreground_color">#fffb00</color>
     <!-- Icon background color -->
@@ -19,7 +19,7 @@
     <!-- Color of the GamePad buttons -->
     <color name="config_gamepad_button_color">#88424242</color>
     <!-- Color of the GamePad buttons when pressed -->
-    <color name="config_gamepad_pressed_color">#88263238</color>
+    <color name="config_gamepad_pressed_color">#88212121</color>
     <!-- Should be load from where we left off on restart? -->
     <bool name="config_preserve_state">false</bool>
     <!-- Should we show a virtual GamePad? -->
