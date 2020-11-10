@@ -90,15 +90,6 @@ class GameActivity : AppCompatActivity() {
             return@setOnApplyWindowInsetsListener windowInsets
         }
 
-        /*
-         * If this is a fresh launch, make sure our temporary state is invalidated to prevent a
-         * state load from a previous launch.
-         *
-         * If we WANT to preserve the state, do not delete it. Instead, load it later on.
-         */
-        if (savedInstanceState == null && !resources.getBoolean(R.bool.config_preserve_state))
-            privateData.tempState.delete()
-
         /* Prepare skeleton of dialogs */
         panicDialog = MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.panic_title))
@@ -136,7 +127,8 @@ class GameActivity : AppCompatActivity() {
              * null, making it impossible to differentiate a cold start from a warm start. Handle
              * the configurations in the parent activity.
              */
-            RetroViewUtils.restoreTempState(retroView!!, privateData)
+            if (savedInstanceState != null || resources.getBoolean(R.bool.config_preserve_state))
+                RetroViewUtils.restoreTempState(retroView!!, privateData)
 
             /* Initialize the GamePads if they are enabled in the config */
             if (resources.getBoolean(R.bool.config_gamepad_visible)) {
