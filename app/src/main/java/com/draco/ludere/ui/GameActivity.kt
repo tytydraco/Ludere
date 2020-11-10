@@ -8,8 +8,6 @@ import android.hardware.display.DisplayManager
 import android.hardware.input.InputManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.ProgressBar
@@ -17,18 +15,17 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.draco.ludere.R
-import com.draco.ludere.gamepad.GamePad
-import com.draco.ludere.gamepad.GamePadConfig
 import com.draco.ludere.assets.PrivateData
 import com.draco.ludere.assets.System
+import com.draco.ludere.gamepad.GamePad
+import com.draco.ludere.gamepad.GamePadConfig
+import com.draco.ludere.utils.Input
 import com.draco.ludere.utils.RetroViewUtils
-import com.draco.ludere.utils.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.libretrodroid.GLRetroViewData
 import com.swordfish.libretrodroid.Variable
 import io.reactivex.disposables.CompositeDisposable
-import java.io.File
 import java.util.concurrent.CountDownLatch
 
 class GameActivity : AppCompatActivity() {
@@ -59,7 +56,7 @@ class GameActivity : AppCompatActivity() {
     private val compositeDisposable = CompositeDisposable()
 
     /* Shared preference keys */
-    private val fastForwardEnabledString = "fast_forward_enabled"
+    private val frameSpeedString = "frame_speed"
     private val audioEnabledString = "audio_enabled"
     private val currentDiskString = "current_disk"
 
@@ -114,12 +111,6 @@ class GameActivity : AppCompatActivity() {
          * renders a frame. Let's setup our ROM, core, and GLRetroView in a background thread.
          */
         Thread {
-            // TODO: Obliterate this method once we can feed bytes directly
-            val romFile = File(privateData.storagePath, "rom")
-            if (!romFile.exists()) romFile.outputStream().use {
-                it.write(privateData.romBytes)
-            }
-
             /* Extract all essential assets here */
             system.extractToFilesDir()
 
@@ -170,8 +161,7 @@ class GameActivity : AppCompatActivity() {
         /* Setup configuration for the GLRetroView */
         val retroViewData = GLRetroViewData(this).apply {
             coreFilePath = "libcore.so"
-            // TODO: Feed bytes directly once PR is merged
-            gameFilePath = privateData.storagePath + "/rom"
+            gameFileBytes = privateData.romBytes
             saveRAMState = saveBytes
             shader = GLRetroView.SHADER_SHARP
             variables = getCoreVariables()
@@ -278,7 +268,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun restoreSettings() {
-        retroView?.fastForwardEnabled = sharedPreferences.getBoolean(fastForwardEnabledString, false)
+        retroView?.frameSpeed = sharedPreferences.getInt(frameSpeedString, 1)
         retroView?.audioEnabled = sharedPreferences.getBoolean(audioEnabledString, true)
 
         val targetDisk = sharedPreferences.getInt(currentDiskString, 0)
@@ -288,7 +278,7 @@ class GameActivity : AppCompatActivity() {
 
     private fun saveSettings() {
         if (retroView != null) with (sharedPreferences.edit()) {
-            putBoolean(fastForwardEnabledString, retroView!!.fastForwardEnabled)
+            putInt(frameSpeedString, retroView!!.frameSpeed)
             putBoolean(audioEnabledString, retroView!!.audioEnabled)
             putInt(currentDiskString, retroView!!.getCurrentDisk())
             apply()

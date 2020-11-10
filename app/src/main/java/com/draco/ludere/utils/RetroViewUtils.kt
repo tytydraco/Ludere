@@ -5,6 +5,8 @@ import com.swordfish.libretrodroid.GLRetroView
 
 class RetroViewUtils {
     companion object {
+        const val FAST_FORWARD_SPEED = 2
+
         fun reset(retroView: GLRetroView, privateData: PrivateData) {
             saveSRAM(retroView, privateData)
             retroView.reset()
@@ -62,7 +64,10 @@ class RetroViewUtils {
         }
 
         fun toggleFastForward(retroView: GLRetroView) {
-            retroView.fastForwardEnabled = !retroView.fastForwardEnabled
+            retroView.frameSpeed = if (retroView.frameSpeed == 1)
+                FAST_FORWARD_SPEED
+            else
+                1
         }
 
         fun nextDisk(retroView: GLRetroView) {
