@@ -38,5 +38,4 @@
             android:layout_marginBottom="@dimen/gamepad_padding_vertical"
             android:id="@+id/right_container" />
     </LinearLayout>
-
 </RelativeLayout>
