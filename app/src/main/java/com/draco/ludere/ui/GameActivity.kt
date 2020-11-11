@@ -142,21 +142,18 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun setupRetroView() {
-        /* Prepare the SRAM bytes if the file exists */
-        var saveBytes = byteArrayOf()
-        if (privateData.save.exists()) {
-            privateData.save.inputStream().use {
-                saveBytes = it.readBytes()
-            }
-        }
-
         /* Setup configuration for the GLRetroView */
         val retroViewData = GLRetroViewData(this).apply {
             coreFilePath = "libcore.so"
             gameFileBytes = privateData.romBytes
-            saveRAMState = saveBytes
             shader = GLRetroView.SHADER_SHARP
             variables = getCoreVariables()
+
+            if (privateData.save.exists()) {
+                privateData.save.inputStream().use {
+                    saveRAMState = it.readBytes()
+                }
+            }
         }
 
         /* Create the GLRetroView */
