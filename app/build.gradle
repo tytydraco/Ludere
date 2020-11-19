@@ -38,9 +38,6 @@ android {
             signingConfig signingConfigs.release
         }
     }
-
-    preBuild.dependsOn 'packageAssets'
-    preBuild.dependsOn 'prepareCore'
 }
 
 task packageAssets(type: Tar) {
