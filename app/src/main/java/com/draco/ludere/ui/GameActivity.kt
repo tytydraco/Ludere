@@ -81,6 +81,10 @@ class GameActivity: AppCompatActivity() {
             .setTitle(getString(R.string.panic_title))
             .setCancelable(false)
             .setPositiveButton(getString(R.string.button_exit)) { _, _ -> finishAffinity() }
+            .setNegativeButton(getString(R.string.button_settings)) { _, _ ->
+                val settingsIntent = Intent(this, SettingsActivity::class.java)
+                startActivityForResult(settingsIntent, SettingsActivity.ACTIVITY_REQUEST_CODE)
+            }
             .create()
 
         /*
@@ -116,6 +120,7 @@ class GameActivity: AppCompatActivity() {
             if (savedInstanceState != null || sharedPreferences.getBoolean(getString(R.string.settings_preserve_state_key), true))
                 restoreTempState(retroView!!, privateData)
 
+            /* Setup the onscreen controls */
             runOnUiThread {
                 setupGamePads()
                 leftGamePad!!.subscribe(retroView!!)

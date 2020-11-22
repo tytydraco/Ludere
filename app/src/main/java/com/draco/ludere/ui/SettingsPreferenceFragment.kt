@@ -1,12 +1,12 @@
 package com.draco.ludere.ui
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.draco.ludere.R
 
 class SettingsPreferenceFragment: PreferenceFragmentCompat() {
+    /* Calling activity must set a work callback */
     lateinit var resultCallback: (Int) -> Unit
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -16,9 +16,7 @@ class SettingsPreferenceFragment: PreferenceFragmentCompat() {
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         when (preference.key) {
             getString(R.string.settings_restart_key) -> {
-                val intent = activity?.baseContext!!.packageManager.getLaunchIntentForPackage(activity?.baseContext!!.packageName)!!.apply {
-                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                }
+                val intent = activity?.baseContext!!.packageManager.getLaunchIntentForPackage(activity?.baseContext!!.packageName)!!
                 activity?.startActivity(intent)
                 activity?.finishAfterTransition()
             }
@@ -31,6 +29,7 @@ class SettingsPreferenceFragment: PreferenceFragmentCompat() {
     }
 
     private fun returnResult(result: Int) {
+        /* Finish the settings page and give the calling activity work */
         resultCallback(result)
         activity?.finish()
     }
