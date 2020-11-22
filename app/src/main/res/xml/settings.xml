@@ -7,6 +7,11 @@
             android:summary="@string/settings_restart_summary"
             android:key="@string/settings_restart_key"
             android:icon="@drawable/ic_baseline_refresh_24" />
+        <Preference
+            android:title="@string/settings_resume_title"
+            android:summary="@string/settings_resume_summary"
+            android:key="@string/settings_resume_key"
+            android:icon="@drawable/ic_baseline_keyboard_return_24" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/settings_title_emulator_settings">
         <SeekBarPreference

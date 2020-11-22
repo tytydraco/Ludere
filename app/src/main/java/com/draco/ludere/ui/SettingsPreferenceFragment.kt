@@ -20,6 +20,7 @@ class SettingsPreferenceFragment: PreferenceFragmentCompat() {
                 activity?.startActivity(intent)
                 activity?.finishAfterTransition()
             }
+            getString(R.string.settings_resume_key) -> activity?.finish()
             getString(R.string.settings_save_state_key) -> returnResult(SettingsActivity.RESULT_CODE_SAVE_STATE)
             getString(R.string.settings_load_state_key) -> returnResult(SettingsActivity.RESULT_CODE_LOAD_STATE)
             else -> return true

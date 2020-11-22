@@ -17,6 +17,10 @@
     <string name="settings_restart_summary">Restart the emulator to apply settings</string>
     <string name="settings_restart_key">restart</string>
 
+    <string name="settings_resume_title">Resume</string>
+    <string name="settings_resume_summary">Resume the current emulator instance. Changed settings will not be applied.</string>
+    <string name="settings_resume_key">resume</string>
+
     <string name="settings_disk_title">Current disk</string>
     <string name="settings_disk_summary">Change the current disk</string>
     <string name="settings_disk_key">disk</string>
