@@ -1,5 +1,9 @@
 package com.draco.ludere.utils
 
+import android.app.Activity
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
+import com.draco.ludere.R
 import com.draco.ludere.assets.PrivateData
 import com.swordfish.libretrodroid.GLRetroView
 
@@ -68,6 +72,16 @@ class RetroViewUtils {
                 FAST_FORWARD_SPEED
             else
                 1
+        }
+
+        fun toggleRotationLock(activity: Activity) {
+            /* If we are already unlocked, lock to the current orientation */
+            activity.requestedOrientation = if (activity.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
+                when (activity.resources.configuration.orientation) {
+                    Configuration.ORIENTATION_LANDSCAPE -> ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE
+                    else -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                }
+            } else ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
 
         fun nextDisk(retroView: GLRetroView) {

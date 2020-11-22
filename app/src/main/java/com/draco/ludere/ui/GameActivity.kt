@@ -59,6 +59,7 @@ class GameActivity : AppCompatActivity() {
     private val frameSpeedString = "frame_speed"
     private val audioEnabledString = "audio_enabled"
     private val currentDiskString = "current_disk"
+    private val orientationString = "orientation"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,14 +76,6 @@ class GameActivity : AppCompatActivity() {
         privateData = PrivateData(this)
         input = Input(this)
         system = System(this)
-
-        /* Set orientation based on config */
-        val requestedOrientation = when (getString(R.string.config_orientation)) {
-            "portrait" -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-            "landscape" -> ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE
-            else -> ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-        }
-        setRequestedOrientation(requestedOrientation)
 
         /* Make sure we reapply immersive mode on rotate */
         window.decorView.setOnApplyWindowInsetsListener { view, windowInsets ->
@@ -263,6 +256,8 @@ class GameActivity : AppCompatActivity() {
         val targetDisk = sharedPreferences.getInt(currentDiskString, 0)
         if (retroView?.getCurrentDisk() != targetDisk)
             retroView?.changeDisk(targetDisk)
+
+        requestedOrientation = sharedPreferences.getInt(orientationString, ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
     }
 
     private fun saveSettings() {
@@ -270,6 +265,7 @@ class GameActivity : AppCompatActivity() {
             putInt(frameSpeedString, retroView!!.frameSpeed)
             putBoolean(audioEnabledString, retroView!!.audioEnabled)
             putInt(currentDiskString, retroView!!.getCurrentDisk())
+            putInt(orientationString, requestedOrientation)
             apply()
         }
     }
