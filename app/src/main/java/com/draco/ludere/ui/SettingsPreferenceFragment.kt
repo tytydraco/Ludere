@@ -37,7 +37,9 @@ class SettingsPreferenceFragment: PreferenceFragmentCompat() {
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         when (preference.key) {
             getString(R.string.settings_restart_key) -> {
-                val intent = activity?.baseContext!!.packageManager.getLaunchIntentForPackage(activity?.baseContext!!.packageName)!!
+                val intent = activity?.baseContext!!.packageManager.getLaunchIntentForPackage(activity?.baseContext!!.packageName)!!.apply {
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                }
                 activity?.startActivity(intent)
                 activity?.finishAfterTransition()
             }
