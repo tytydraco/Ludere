@@ -15,7 +15,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.draco.ludere.R
-import com.draco.ludere.assets.PrivateData
 import com.draco.ludere.assets.System
 import com.draco.ludere.gamepad.GamePad
 import com.draco.ludere.gamepad.GamePadConfig
@@ -25,6 +24,7 @@ import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.libretrodroid.GLRetroViewData
 import com.swordfish.libretrodroid.Variable
 import io.reactivex.disposables.CompositeDisposable
+import java.io.File
 import java.util.concurrent.CountDownLatch
 
 class GameActivity: AppCompatActivity() {
@@ -36,9 +36,15 @@ class GameActivity: AppCompatActivity() {
 
     /* Essential objects */
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var privateData: PrivateData
     private lateinit var input: Input
     private lateinit var system: System
+
+    /* Internal data */
+    lateinit var storagePath: String
+    lateinit var romBytes: ByteArray
+    lateinit var save: File
+    lateinit var tempState: File
+    private fun stateForSlot(slot: Int) = File("$storagePath/state-$slot")
 
     /* Emulator objects */
     private var retroView: GLRetroView? = null
@@ -66,9 +72,14 @@ class GameActivity: AppCompatActivity() {
 
         /* Setup essential objects */
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        privateData = PrivateData(this)
         input = Input(this)
         system = System(this)
+
+        /* Initialize internal data */
+        storagePath = (getExternalFilesDir(null) ?: filesDir).path
+        romBytes = resources.openRawResource(R.raw.rom).use { it.readBytes() }
+        save = File("$storagePath/sram")
+        tempState = File("$storagePath/tempstate")
 
         /* Make sure we reapply immersive mode on rotate */
         window.decorView.setOnApplyWindowInsetsListener { view, windowInsets ->
@@ -123,9 +134,9 @@ class GameActivity: AppCompatActivity() {
              */
             if (savedInstanceState != null ||
                 sharedPreferences.getBoolean(getString(R.string.settings_preserve_state_key), true) &&
-                privateData.tempState.exists()) {
+                tempState.exists()) {
                 /* Fetch the state bytes */
-                val stateBytes = privateData.tempState.inputStream().use {
+                val stateBytes = tempState.inputStream().use {
                     it.readBytes()
                 }
 
@@ -148,12 +159,12 @@ class GameActivity: AppCompatActivity() {
         /* Setup configuration for the GLRetroView */
         val retroViewData = GLRetroViewData(this).apply {
             coreFilePath = "libcore.so"
-            gameFileBytes = privateData.romBytes
+            gameFileBytes = romBytes
             shader = GLRetroView.SHADER_SHARP
             variables = getCoreVariables()
 
-            if (privateData.save.exists()) {
-                privateData.save.inputStream().use {
+            if (save.exists()) {
+                save.inputStream().use {
                     saveRAMState = it.readBytes()
                 }
             }
@@ -340,15 +351,15 @@ class GameActivity: AppCompatActivity() {
         if (requestCode == SettingsActivity.ACTIVITY_REQUEST_CODE && retroViewReadyLatch.count == 0L) {
             when (resultCode) {
                 SettingsActivity.RESULT_CODE_SAVE_STATE -> if (retroView != null) {
-                    privateData.stateForSlot(stateSlot).outputStream().use {
+                    stateForSlot(stateSlot).outputStream().use {
                         it.write(retroView!!.serializeState())
                     }
                 }
                 SettingsActivity.RESULT_CODE_LOAD_STATE -> if (retroView != null) {
-                    if (!privateData.stateForSlot(stateSlot).exists())
+                    if (!stateForSlot(stateSlot).exists())
                         return
 
-                    val bytes = privateData.stateForSlot(stateSlot).inputStream().use {
+                    val bytes = stateForSlot(stateSlot).inputStream().use {
                         it.readBytes()
                     }
                     if (bytes.isNotEmpty())
@@ -389,12 +400,12 @@ class GameActivity: AppCompatActivity() {
         if (retroViewReadyLatch.count == 0L) {
             /* Save a temporary state */
             val savedInstanceStateBytes = retroView!!.serializeState()
-            privateData.tempState.outputStream().use {
+            tempState.outputStream().use {
                 it.write(savedInstanceStateBytes)
             }
 
             /* Save SRAM to disk */
-            privateData.save.outputStream().use {
+            save.outputStream().use {
                 it.write(retroView!!.serializeSRAM())
             }
         }
