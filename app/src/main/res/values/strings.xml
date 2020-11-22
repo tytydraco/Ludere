@@ -21,4 +21,65 @@
     <string name="panic_message_load_core">The core failed to load. Ensure the core configuration is correct, or try clearing the application\'s data.</string>
     <string name="panic_message_load_game">The ROM failed to load. Ensure the ROM configuration is correct, or try clearing the application\'s data.</string>
     <string name="panic_message_gles">This version of OpenGLES is unsupported.</string>
+
+    <string name="settings_title_actions">Actions</string>
+    <string name="settings_title_emulator_settings">Emulator</string>
+    <string name="settings_title_gamepad_settings">Gamepad</string>
+    <string name="settings_title_saves">Saves</string>
+
+    <string name="settings_restart_title">Restart</string>
+    <string name="settings_restart_summary">Restart the emulator to apply settings</string>
+    <string name="settings_restart_key">restart</string>
+
+    <string name="settings_disk_title">Current disk</string>
+    <string name="settings_disk_summary">Change the current disk</string>
+    <string name="settings_disk_key">disk</string>
+
+    <string name="settings_variables_title">Core variables</string>
+    <string name="settings_variables_summary">Change the variables for the emulator core</string>
+    <string name="settings_variables_key">variables</string>
+
+    <string name="settings_mute_title">Mute audio</string>
+    <string name="settings_mute_summary">Disable audio from the emulator</string>
+    <string name="settings_mute_key">mute</string>
+
+    <string name="settings_speed_title">Speed</string>
+    <string name="settings_speed_summary">Apply a speed multiplier to the emulator</string>
+    <string name="settings_speed_key">speed</string>
+
+    <string name="settings_gamepad_visible_title">Visible</string>
+    <string name="settings_gamepad_visible_summary">Show or hide the virtual gamepad</string>
+    <string name="settings_gamepad_visible_key">gamepad_visible</string>
+
+    <string name="settings_gamepad_vibrate_title">Vibration</string>
+    <string name="settings_gamepad_vibrate_summary">Haptic vibration when pressing the virtual gamepad</string>
+    <string name="settings_gamepad_vibrate_key">gamepad_vibrate</string>
+
+    <string name="settings_button_color_title">Button color</string>
+    <string name="settings_button_color_summary">Set the color of the virtual gamepad buttons</string>
+    <string name="settings_button_color_key">button_color</string>
+
+    <string name="settings_pressed_button_color_title">Pressed button color</string>
+    <string name="settings_pressed_button_color_summary">Set the color of the virtual gamepad buttons when pressed down</string>
+    <string name="settings_pressed_button_color_key">pressed_button_color</string>
+
+    <string name="settings_button_icon_color_title">Button icon color</string>
+    <string name="settings_button_icon_color_summary">Set the color of the virtual gamepad button icons</string>
+    <string name="settings_button_icon_color_key">button_icon_color</string>
+
+    <string name="settings_save_state_slot_title">Save state slot</string>
+    <string name="settings_save_state_slot_summary">Choose which state slot to save and load from</string>
+    <string name="settings_save_state_slot_key">save_state_slot</string>
+
+    <string name="settings_preserve_state_title">Preserve state</string>
+    <string name="settings_preserve_state_summary">Preserve RAM state when exiting the application automatically</string>
+    <string name="settings_preserve_state_key">preserve_state</string>
+
+    <string name="settings_save_state_title">Save state</string>
+    <string name="settings_save_state_summary">Save the current RAM state to a slot</string>
+    <string name="settings_save_state_key">save_state</string>
+
+    <string name="settings_load_state_title">Load state</string>
+    <string name="settings_load_state_summary">Load the RAM state from a slot</string>
+    <string name="settings_load_state_key">load_state</string>
 </resources>

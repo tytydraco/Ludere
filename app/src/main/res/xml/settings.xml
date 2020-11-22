@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory android:title="@string/settings_title_actions">
+        <Preference
+            android:title="@string/settings_restart_title"
+            android:summary="@string/settings_restart_summary"
+            android:key="@string/settings_restart_key"
+            android:icon="@drawable/ic_baseline_refresh_24" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/settings_title_emulator_settings">
+        <SeekBarPreference
+            android:title="@string/settings_disk_title"
+            android:summary="@string/settings_disk_summary"
+            android:key="@string/settings_disk_key"
+            android:max="4"
+            android:icon="@drawable/ic_baseline_360_24" />
+        <SeekBarPreference
+            android:title="@string/settings_speed_title"
+            android:summary="@string/settings_speed_summary"
+            android:key="@string/settings_speed_key"
+            android:max="2"
+            android:icon="@drawable/ic_baseline_fast_forward_24" />
+        <EditTextPreference
+            android:title="@string/settings_variables_title"
+            android:summary="@string/settings_variables_summary"
+            android:key="@string/settings_variables_key"
+            android:icon="@drawable/ic_baseline_edit_24" />
+        <SwitchPreference
+            android:title="@string/settings_mute_title"
+            android:summary="@string/settings_mute_summary"
+            android:key="@string/settings_mute_key"
+            android:icon="@drawable/ic_baseline_volume_off_24" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/settings_title_gamepad_settings">
+        <SwitchPreference
+            android:title="@string/settings_gamepad_visible_title"
+            android:summary="@string/settings_gamepad_visible_summary"
+            android:key="@string/settings_gamepad_visible_key"
+            android:icon="@drawable/ic_baseline_visibility_24"
+            android:defaultValue="true" />
+        <SwitchPreference
+            android:title="@string/settings_gamepad_vibrate_title"
+            android:summary="@string/settings_gamepad_vibrate_summary"
+            android:key="@string/settings_gamepad_vibrate_key"
+            android:icon="@drawable/ic_baseline_vibration_24"
+            android:defaultValue="true" />
+        <EditTextPreference
+            app:title="@string/settings_button_color_title"
+            app:summary="@string/settings_button_color_summary"
+            app:key="@string/settings_button_color_key"
+            android:icon="@drawable/ic_baseline_color_lens_24"
+            android:defaultValue="#88424242" />
+        <EditTextPreference
+            app:title="@string/settings_pressed_button_color_title"
+            app:summary="@string/settings_pressed_button_color_summary"
+            app:key="@string/settings_pressed_button_color_key"
+            android:icon="@drawable/ic_baseline_color_lens_24"
+            android:defaultValue="#88212121" />
+        <EditTextPreference
+            app:title="@string/settings_button_icon_color_title"
+            app:summary="@string/settings_button_icon_color_summary"
+            app:key="@string/settings_button_icon_color_key"
+            android:icon="@drawable/ic_baseline_color_lens_24"
+            android:defaultValue="#88ffffff" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/settings_title_saves">
+        <SeekBarPreference
+            android:title="@string/settings_save_state_slot_title"
+            android:summary="@string/settings_save_state_slot_summary"
+            android:key="@string/settings_save_state_slot_key"
+            android:max="4"
+            android:icon="@drawable/ic_baseline_storage_24" />
+        <SwitchPreference
+            android:title="@string/settings_preserve_state_title"
+            android:summary="@string/settings_preserve_state_summary"
+            android:key="@string/settings_preserve_state_key"
+            android:icon="@drawable/ic_baseline_lock_24"
+            android:defaultValue="true" />
+        <Preference
+            android:title="@string/settings_save_state_title"
+            android:summary="@string/settings_save_state_summary"
+            android:key="@string/settings_save_state_key"
+            android:icon="@drawable/ic_baseline_archive_24" />
+        <Preference
+            android:title="@string/settings_load_state_title"
+            android:summary="@string/settings_load_state_summary"
+            android:key="@string/settings_load_state_key"
+            android:icon="@drawable/ic_baseline_unarchive_24" />
+    </PreferenceCategory>
+</PreferenceScreen>

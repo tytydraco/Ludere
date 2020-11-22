@@ -1,9 +1,10 @@
 package com.draco.ludere.utils
 
 import android.app.Activity
+import android.content.Intent
 import android.view.KeyEvent
 import android.view.MotionEvent
-import com.draco.ludere.ui.Menu
+import com.draco.ludere.ui.SettingsActivity
 import com.swordfish.libretrodroid.GLRetroView
 
 class Input(private val activity: Activity) {
@@ -62,8 +63,10 @@ class Input(private val activity: Activity) {
         val port = ((event.device?.controllerNumber ?: 1) - 1).coerceAtLeast(0)
 
         /* Handle menu key combination */
-        if (keyCombo(keyComboMenu))
-            Menu(activity, retroView).show()
+        if (keyCombo(keyComboMenu)) {
+            val settingsIntent = Intent(activity, SettingsActivity::class.java)
+            activity.startActivityForResult(settingsIntent, SettingsActivity.ACTIVITY_REQUEST_CODE)
+        }
 
         /* Pipe events to the GLRetroView */
         retroView.sendKeyEvent(

@@ -1,8 +1,8 @@
 package com.draco.ludere.ui
 
 import android.app.Service
+import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.hardware.display.DisplayManager
 import android.hardware.input.InputManager
@@ -20,7 +20,6 @@ import com.draco.ludere.assets.System
 import com.draco.ludere.gamepad.GamePad
 import com.draco.ludere.gamepad.GamePadConfig
 import com.draco.ludere.utils.Input
-import com.draco.ludere.utils.RetroViewUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.libretrodroid.GLRetroViewData
@@ -28,7 +27,7 @@ import com.swordfish.libretrodroid.Variable
 import io.reactivex.disposables.CompositeDisposable
 import java.util.concurrent.CountDownLatch
 
-class GameActivity : AppCompatActivity() {
+class GameActivity: AppCompatActivity() {
     /* UI components */
     private lateinit var progress: ProgressBar
     private lateinit var retroViewContainer: FrameLayout
@@ -114,16 +113,13 @@ class GameActivity : AppCompatActivity() {
              * null, making it impossible to differentiate a cold start from a warm start. Handle
              * the configurations in the parent activity.
              */
-            if (savedInstanceState != null || resources.getBoolean(R.bool.config_preserve_state))
-                RetroViewUtils.restoreTempState(retroView!!, privateData)
+            if (savedInstanceState != null || sharedPreferences.getBoolean(getString(R.string.settings_preserve_state_key), true))
+                restoreTempState(retroView!!, privateData)
 
-            /* Initialize the GamePads if they are enabled in the config */
-            if (resources.getBoolean(R.bool.config_gamepad_visible)) {
-                runOnUiThread {
-                    setupGamePads()
-                    leftGamePad!!.subscribe(retroView!!)
-                    rightGamePad!!.subscribe(retroView!!)
-                }
+            runOnUiThread {
+                setupGamePads()
+                leftGamePad!!.subscribe(retroView!!)
+                rightGamePad!!.subscribe(retroView!!)
             }
         }.start()
     }
@@ -229,7 +225,7 @@ class GameActivity : AppCompatActivity() {
     private fun getCoreVariables(): Array<Variable> {
         /* Parse the variables string into a Variable array */
         val variables = arrayListOf<Variable>()
-        val rawVariablesString = getString(R.string.config_variables)
+        val rawVariablesString = sharedPreferences.getString(getString(R.string.settings_variables_key), "")!!
         val rawVariables = rawVariablesString.split(",")
 
         for (rawVariable in rawVariables) {
@@ -244,22 +240,20 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun restoreSettings() {
-        retroView?.frameSpeed = sharedPreferences.getInt(getString(R.string.pref_frame_speed), 1)
-        retroView?.audioEnabled = sharedPreferences.getBoolean(getString(R.string.pref_audio_enabled), true)
-
-        val targetDisk = sharedPreferences.getInt(getString(R.string.pref_current_disk), 0)
+        val targetDisk = sharedPreferences.getInt(getString(R.string.settings_disk_key), 0)
         if (retroView?.getCurrentDisk() != targetDisk)
             retroView?.changeDisk(targetDisk)
 
-        requestedOrientation = sharedPreferences.getInt(getString(R.string.pref_rotation_lock), ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+        retroView?.frameSpeed = sharedPreferences.getInt(getString(R.string.settings_speed_key), 0) + 1
+        retroView?.audioEnabled = !sharedPreferences.getBoolean(getString(R.string.settings_mute_key), false)
     }
 
     private fun saveSettings() {
+        return
         if (retroView != null) with (sharedPreferences.edit()) {
             putInt(getString(R.string.pref_frame_speed), retroView!!.frameSpeed)
             putBoolean(getString(R.string.pref_audio_enabled), retroView!!.audioEnabled)
             putInt(getString(R.string.pref_current_disk), retroView!!.getCurrentDisk())
-            putInt(getString(R.string.pref_rotation_lock), requestedOrientation)
             apply()
         }
     }
@@ -277,6 +271,9 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun shouldShowGamePads(): Boolean {
+        if (!sharedPreferences.getBoolean(getString(R.string.settings_gamepad_visible_key), true))
+            return false
+
         /* Do not show if the device lacks a touch screen */
         val hasTouchScreen = packageManager?.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)
         if (hasTouchScreen == null || hasTouchScreen == false)
@@ -330,8 +327,22 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (retroView != null)
-            Menu(this, retroView!!).show()
+        val settingsIntent = Intent(this, SettingsActivity::class.java)
+        startActivityForResult(settingsIntent, SettingsActivity.ACTIVITY_REQUEST_CODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        /* Handle actions from settings page */
+        val stateSlot = sharedPreferences.getInt(getString(R.string.settings_save_state_slot_key), 0)
+        if (requestCode == SettingsActivity.ACTIVITY_REQUEST_CODE) {
+            when (resultCode) {
+                SettingsActivity.RESULT_CODE_SAVE_STATE -> if (retroView != null) saveState(retroView!!, stateSlot, privateData)
+                SettingsActivity.RESULT_CODE_LOAD_STATE -> if (retroView != null) loadState(retroView!!, stateSlot, privateData)
+            }
+            restoreSettings()
+        }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
@@ -367,12 +378,59 @@ class GameActivity : AppCompatActivity() {
             saveSettings()
 
             /* Save a temporary state */
-            RetroViewUtils.saveTempState(retroView!!, privateData)
+            saveTempState(retroView!!, privateData)
 
             /* Save SRAM to disk */
-            RetroViewUtils.saveSRAM(retroView!!, privateData)
+            saveSRAM(retroView!!, privateData)
         }
 
         super.onPause()
+    }
+
+    fun saveSRAM(retroView: GLRetroView, privateData: PrivateData) {
+        privateData.save.outputStream().use {
+            it.write(retroView.serializeSRAM())
+        }
+    }
+
+    fun saveState(retroView: GLRetroView, slot: Int, privateData: PrivateData) {
+        privateData.stateForSlot(slot).outputStream().use {
+            it.write(retroView.serializeState())
+        }
+    }
+
+    fun loadState(retroView: GLRetroView, slot: Int, privateData: PrivateData) {
+        if (!privateData.stateForSlot(slot).exists())
+            return
+
+        val bytes = privateData.stateForSlot(slot).inputStream().use {
+            it.readBytes()
+        }
+        if (bytes.isNotEmpty())
+            retroView.unserializeState(bytes)
+    }
+
+    fun saveTempState(retroView: GLRetroView, privateData: PrivateData) {
+        /* Save a temporary state since Android killed the activity */
+        val savedInstanceStateBytes = retroView.serializeState()
+        privateData.tempState.outputStream().use {
+            it.write(savedInstanceStateBytes)
+        }
+    }
+
+    fun restoreTempState(retroView: GLRetroView, privateData: PrivateData) {
+        /* Don't bother restoring a temporary state if it doesn't exist */
+        if (!privateData.tempState.exists())
+            return
+
+        /* Fetch the state bytes */
+        val stateBytes = privateData.tempState.inputStream().use {
+            it.readBytes()
+        }
+
+        /* Restore the temporary state */
+        var remainingTries = 10
+        while (!retroView.unserializeState(stateBytes) && remainingTries-- > 0)
+            Thread.sleep(50)
     }
 }

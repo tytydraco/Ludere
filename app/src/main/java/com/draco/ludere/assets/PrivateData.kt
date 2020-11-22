@@ -9,6 +9,6 @@ class PrivateData(context: Context) {
     val storagePath: String = (context.getExternalFilesDir(null) ?: context.filesDir).path
     val romBytes = context.resources.openRawResource(R.raw.rom).use { it.readBytes() }
     val save = File("$storagePath/sram")
-    val state = File("$storagePath/state")
+    fun stateForSlot(slot: Int) = File("$storagePath/state-$slot")
     val tempState = File("$storagePath/tempstate")
 }
