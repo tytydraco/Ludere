@@ -7,6 +7,7 @@ import com.draco.ludere.R
 class SettingsActivity : AppCompatActivity() {
     companion object {
         const val PREFERENCE_KEY_ROM_URI = "rom_uri"
+        const val PREFERENCE_KEY_CORE_URI = "core_uri"
 
         const val ACTIVITY_REQUEST_CODE = 1
 

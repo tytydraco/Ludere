@@ -26,6 +26,7 @@ import com.swordfish.libretrodroid.GLRetroViewData
 import com.swordfish.libretrodroid.Variable
 import io.reactivex.disposables.CompositeDisposable
 import java.io.File
+import java.lang.Exception
 import java.security.MessageDigest
 import java.util.concurrent.CountDownLatch
 
@@ -44,8 +45,10 @@ class GameActivity: AppCompatActivity() {
     /* Internal data */
     lateinit var storagePath: String
     lateinit var romBytes: ByteArray
+    lateinit var coreBytes: ByteArray
     lateinit var save: File
     lateinit var tempState: File
+    lateinit var coreFile: File
     private fun stateForSlot(slot: Int) = File("$storagePath/state-$slot")
 
     /* Emulator objects */
@@ -75,7 +78,6 @@ class GameActivity: AppCompatActivity() {
         /* Setup essential objects */
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         input = Input(this)
-        system = System(this)
 
         /* Make sure we reapply immersive mode on rotate */
         window.decorView.setOnApplyWindowInsetsListener { view, windowInsets ->
@@ -97,20 +99,39 @@ class GameActivity: AppCompatActivity() {
         /* Initialize internal data */
         //TODO: Deglobalize
         val romUriString = sharedPreferences.getString(SettingsActivity.PREFERENCE_KEY_ROM_URI, "")!!
-        if (romUriString.isNotEmpty()) {
+        val coreUriString = sharedPreferences.getString(SettingsActivity.PREFERENCE_KEY_CORE_URI, "")!!
+
+        try {
             val romUri = Uri.parse(romUriString)
             val romInputStream = contentResolver.openInputStream(romUri)
             romBytes = romInputStream?.readBytes()!!
             romInputStream.close()
-        } else {
+        } catch (_: Exception) {
             panic(R.string.panic_message_no_selected_rom)
             return
         }
+
+        try {
+            val coreUri = Uri.parse(coreUriString)
+            val coreInputStream = contentResolver.openInputStream(coreUri)
+            coreBytes = coreInputStream?.readBytes()!!
+            coreInputStream.close()
+        } catch (_: Exception) {
+            panic(R.string.panic_message_no_selected_core)
+            return
+        }
+
+        val filesPath = (getExternalFilesDir(null) ?: filesDir).path
+        coreFile = File("${filesDir.path}/core")
+        coreFile.outputStream().use {
+            it.write(coreBytes)
+        }
+
         val md5Hex = MessageDigest
             .getInstance("MD5")
             .digest(romBytes)
             .joinToString("") { "%02x".format(it) }
-        storagePath = "${(getExternalFilesDir(null) ?: filesDir).path}/$md5Hex"
+        storagePath = "$filesPath/$md5Hex"
         File(storagePath).mkdirs()
         save = File("$storagePath/sram")
         tempState = File("$storagePath/tempstate")
@@ -120,9 +141,6 @@ class GameActivity: AppCompatActivity() {
          * renders a frame. Let's setup our ROM, core, and GLRetroView in a background thread.
          */
         Thread {
-            /* Extract all essential assets here */
-            system.extractToFilesDir()
-
             /* Add the GLRetroView to the screen */
             runOnUiThread {
                 setupRetroView()
@@ -175,7 +193,7 @@ class GameActivity: AppCompatActivity() {
     private fun setupRetroView() {
         /* Setup configuration for the GLRetroView */
         val retroViewData = GLRetroViewData(this).apply {
-            coreFilePath = "libcore.so"
+            coreFilePath = coreFile.path
             gameFileBytes = romBytes
             shader = GLRetroView.SHADER_SHARP
             variables = getCoreVariables()

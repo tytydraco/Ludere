@@ -13,6 +13,7 @@ import com.draco.ludere.R
 class SettingsPreferenceFragment: PreferenceFragmentCompat() {
     companion object {
         const val REQUEST_CODE_CHOOSE_ROM = 1
+        const val REQUEST_CODE_CHOOSE_CORE = 2
     }
 
     lateinit var sharedPreferences: SharedPreferences
@@ -20,7 +21,7 @@ class SettingsPreferenceFragment: PreferenceFragmentCompat() {
     /* Calling activity must set a work callback */
     lateinit var resultCallback: (Int) -> Unit
 
-    private val chooseROMIntent = Intent()
+    private val chooseFileIntent = Intent()
         .setType("*/*")
         .setAction(Intent.ACTION_OPEN_DOCUMENT)
 
@@ -42,7 +43,10 @@ class SettingsPreferenceFragment: PreferenceFragmentCompat() {
             }
             getString(R.string.settings_resume_key) -> activity?.finish()
             getString(R.string.settings_select_rom_key) -> {
-                startActivityForResult(Intent.createChooser(chooseROMIntent, null), REQUEST_CODE_CHOOSE_ROM)
+                startActivityForResult(Intent.createChooser(chooseFileIntent, null), REQUEST_CODE_CHOOSE_ROM)
+            }
+            getString(R.string.settings_select_core_key) -> {
+                startActivityForResult(Intent.createChooser(chooseFileIntent, null), REQUEST_CODE_CHOOSE_CORE)
             }
             getString(R.string.settings_manage_gamepad_key) -> {
                 val intent = Intent(activity, GamepadActivity::class.java)
@@ -59,11 +63,16 @@ class SettingsPreferenceFragment: PreferenceFragmentCompat() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        /* Store this URI */
         if (resultCode == Activity.RESULT_OK && data?.data != null) {
+            val key = when (requestCode) {
+                REQUEST_CODE_CHOOSE_ROM -> SettingsActivity.PREFERENCE_KEY_ROM_URI
+                REQUEST_CODE_CHOOSE_CORE -> SettingsActivity.PREFERENCE_KEY_CORE_URI
+                else -> return
+            }
+
             val path = data.data!!.toString()
             sharedPreferences.edit().apply {
-                putString(SettingsActivity.PREFERENCE_KEY_ROM_URI, path)
+                putString(key, path)
                 apply()
             }
         }

@@ -17,6 +17,11 @@
             android:summary="@string/settings_select_rom_summary"
             android:key="@string/settings_select_rom_key"
             android:icon="@drawable/ic_baseline_open_in_browser_24" />
+        <Preference
+            android:title="@string/settings_select_core_title"
+            android:summary="@string/settings_select_core_summary"
+            android:key="@string/settings_select_core_key"
+            android:icon="@drawable/ic_baseline_open_in_browser_24" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/settings_title_emulator_settings">
         <SeekBarPreference
