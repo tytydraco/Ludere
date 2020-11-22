@@ -8,8 +8,6 @@
     <string name="config_core">nestopia</string>
     <!-- Core variables (key=value separated by commas) -->
     <string name="config_variables"></string>
-    <!-- Can be landscape, portrait, or auto -->
-    <string name="config_rotation_lock">auto</string>
     <!-- Icon foreground color -->
     <color name="config_foreground_color">#ffffff</color>
     <!-- Icon background color -->
