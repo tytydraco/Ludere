@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Ludere</string>
+
     <string name="button_exit">Exit</string>
     <string name="button_settings">Settings</string>
 
