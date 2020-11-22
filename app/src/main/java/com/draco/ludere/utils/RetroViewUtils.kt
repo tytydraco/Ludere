@@ -3,13 +3,12 @@ package com.draco.ludere.utils
 import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
-import com.draco.ludere.R
 import com.draco.ludere.assets.PrivateData
 import com.swordfish.libretrodroid.GLRetroView
 
 class RetroViewUtils {
     companion object {
-        const val FAST_FORWARD_SPEED = 2
+        private const val FAST_FORWARD_SPEED = 2
 
         fun reset(retroView: GLRetroView, privateData: PrivateData) {
             saveSRAM(retroView, privateData)

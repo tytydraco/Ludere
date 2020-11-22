@@ -251,7 +251,7 @@ class GameActivity : AppCompatActivity() {
         if (retroView?.getCurrentDisk() != targetDisk)
             retroView?.changeDisk(targetDisk)
 
-        requestedOrientation = sharedPreferences.getInt(getString(R.string.config_rotation_lock), ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+        requestedOrientation = sharedPreferences.getInt(getString(R.string.pref_rotation_lock), ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
     }
 
     private fun saveSettings() {
