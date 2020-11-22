@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.draco.ludere.R
 
-class SettingsActivity(): AppCompatActivity() {
+class SettingsActivity : AppCompatActivity() {
     companion object {
         const val ACTIVITY_REQUEST_CODE = 1
 

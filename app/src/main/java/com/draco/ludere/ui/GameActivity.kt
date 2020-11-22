@@ -108,7 +108,11 @@ class GameActivity: AppCompatActivity() {
             retroViewReadyLatch.await()
 
             /* Restore emulator settings from last launch */
-            restoreSettings()
+            val targetDisk = sharedPreferences.getInt(getString(R.string.settings_disk_key), 0)
+            if (retroView?.getCurrentDisk() != targetDisk)
+                retroView?.changeDisk(targetDisk)
+            retroView?.frameSpeed = sharedPreferences.getInt(getString(R.string.settings_speed_key), 0) + 1
+            retroView?.audioEnabled = !sharedPreferences.getBoolean(getString(R.string.settings_mute_key), false)
 
             /*
              * If we started this activity after a configuration change, restore the temp state.
@@ -117,8 +121,19 @@ class GameActivity: AppCompatActivity() {
              * null, making it impossible to differentiate a cold start from a warm start. Handle
              * the configurations in the parent activity.
              */
-            if (savedInstanceState != null || sharedPreferences.getBoolean(getString(R.string.settings_preserve_state_key), true))
-                restoreTempState(retroView!!, privateData)
+            if (savedInstanceState != null ||
+                sharedPreferences.getBoolean(getString(R.string.settings_preserve_state_key), true) &&
+                privateData.tempState.exists()) {
+                /* Fetch the state bytes */
+                val stateBytes = privateData.tempState.inputStream().use {
+                    it.readBytes()
+                }
+
+                /* Restore the temporary state */
+                var remainingTries = 10
+                while (!retroView!!.unserializeState(stateBytes) && remainingTries-- > 0)
+                    Thread.sleep(50)
+            }
 
             /* Setup the onscreen controls */
             runOnUiThread {
@@ -244,25 +259,6 @@ class GameActivity: AppCompatActivity() {
         return variables.toTypedArray()
     }
 
-    private fun restoreSettings() {
-        val targetDisk = sharedPreferences.getInt(getString(R.string.settings_disk_key), 0)
-        if (retroView?.getCurrentDisk() != targetDisk)
-            retroView?.changeDisk(targetDisk)
-
-        retroView?.frameSpeed = sharedPreferences.getInt(getString(R.string.settings_speed_key), 0) + 1
-        retroView?.audioEnabled = !sharedPreferences.getBoolean(getString(R.string.settings_mute_key), false)
-    }
-
-    private fun saveSettings() {
-        return
-        if (retroView != null) with (sharedPreferences.edit()) {
-            putInt(getString(R.string.pref_frame_speed), retroView!!.frameSpeed)
-            putBoolean(getString(R.string.pref_audio_enabled), retroView!!.audioEnabled)
-            putInt(getString(R.string.pref_current_disk), retroView!!.getCurrentDisk())
-            apply()
-        }
-    }
-
     private fun updateVisibility() {
         /* Check if we should show or hide controls */
         val visibility = if (shouldShowGamePads())
@@ -341,12 +337,24 @@ class GameActivity: AppCompatActivity() {
 
         /* Handle actions from settings page */
         val stateSlot = sharedPreferences.getInt(getString(R.string.settings_save_state_slot_key), 0)
-        if (requestCode == SettingsActivity.ACTIVITY_REQUEST_CODE) {
+        if (requestCode == SettingsActivity.ACTIVITY_REQUEST_CODE && retroViewReadyLatch.count == 0L) {
             when (resultCode) {
-                SettingsActivity.RESULT_CODE_SAVE_STATE -> if (retroView != null) saveState(retroView!!, stateSlot, privateData)
-                SettingsActivity.RESULT_CODE_LOAD_STATE -> if (retroView != null) loadState(retroView!!, stateSlot, privateData)
+                SettingsActivity.RESULT_CODE_SAVE_STATE -> if (retroView != null) {
+                    privateData.stateForSlot(stateSlot).outputStream().use {
+                        it.write(retroView!!.serializeState())
+                    }
+                }
+                SettingsActivity.RESULT_CODE_LOAD_STATE -> if (retroView != null) {
+                    if (!privateData.stateForSlot(stateSlot).exists())
+                        return
+
+                    val bytes = privateData.stateForSlot(stateSlot).inputStream().use {
+                        it.readBytes()
+                    }
+                    if (bytes.isNotEmpty())
+                        retroView!!.unserializeState(bytes)
+                }
             }
-            restoreSettings()
         }
     }
 
@@ -379,63 +387,18 @@ class GameActivity: AppCompatActivity() {
     override fun onPause() {
         /* This method is unkillable, save essential variables now */
         if (retroViewReadyLatch.count == 0L) {
-            /* Save emulator settings for next launch */
-            saveSettings()
-
             /* Save a temporary state */
-            saveTempState(retroView!!, privateData)
+            val savedInstanceStateBytes = retroView!!.serializeState()
+            privateData.tempState.outputStream().use {
+                it.write(savedInstanceStateBytes)
+            }
 
             /* Save SRAM to disk */
-            saveSRAM(retroView!!, privateData)
+            privateData.save.outputStream().use {
+                it.write(retroView!!.serializeSRAM())
+            }
         }
 
         super.onPause()
-    }
-
-    fun saveSRAM(retroView: GLRetroView, privateData: PrivateData) {
-        privateData.save.outputStream().use {
-            it.write(retroView.serializeSRAM())
-        }
-    }
-
-    fun saveState(retroView: GLRetroView, slot: Int, privateData: PrivateData) {
-        privateData.stateForSlot(slot).outputStream().use {
-            it.write(retroView.serializeState())
-        }
-    }
-
-    fun loadState(retroView: GLRetroView, slot: Int, privateData: PrivateData) {
-        if (!privateData.stateForSlot(slot).exists())
-            return
-
-        val bytes = privateData.stateForSlot(slot).inputStream().use {
-            it.readBytes()
-        }
-        if (bytes.isNotEmpty())
-            retroView.unserializeState(bytes)
-    }
-
-    fun saveTempState(retroView: GLRetroView, privateData: PrivateData) {
-        /* Save a temporary state since Android killed the activity */
-        val savedInstanceStateBytes = retroView.serializeState()
-        privateData.tempState.outputStream().use {
-            it.write(savedInstanceStateBytes)
-        }
-    }
-
-    fun restoreTempState(retroView: GLRetroView, privateData: PrivateData) {
-        /* Don't bother restoring a temporary state if it doesn't exist */
-        if (!privateData.tempState.exists())
-            return
-
-        /* Fetch the state bytes */
-        val stateBytes = privateData.tempState.inputStream().use {
-            it.readBytes()
-        }
-
-        /* Restore the temporary state */
-        var remainingTries = 10
-        while (!retroView.unserializeState(stateBytes) && remainingTries-- > 0)
-            Thread.sleep(50)
     }
 }

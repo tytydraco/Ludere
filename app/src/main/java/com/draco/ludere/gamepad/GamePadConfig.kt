@@ -4,12 +4,10 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.view.KeyEvent
-import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.draco.ludere.R
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.radialgamepad.library.config.*
-import java.lang.Exception
 
 class GamePadConfig(
     context: Context,

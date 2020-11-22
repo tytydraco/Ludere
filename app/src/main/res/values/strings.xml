@@ -1,20 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="pref_frame_speed">frame_speed</string>
-    <string name="pref_audio_enabled">audio_enabled</string>
-    <string name="pref_current_disk">current_disk</string>
-    <string name="pref_rotation_lock">rotation_lock</string>
-
-    <string name="menu_exit">Exit</string>
-    <string name="menu_reset">Reset</string>
-    <string name="menu_save_state">Save State</string>
-    <string name="menu_load_state">Load State</string>
-    <string name="menu_mute">Mute</string>
-    <string name="menu_fast_forward">Fast Forward</string>
-    <string name="menu_rotation_lock">Rotation Lock</string>
-    <string name="menu_next_disk">Next Disk</string>
-    <string name="menu_previous_disk">Previous Disk</string>
-
     <string name="button_exit">Exit</string>
     <string name="button_settings">Settings</string>
 
