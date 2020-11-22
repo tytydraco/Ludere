@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.hardware.display.DisplayManager
 import android.hardware.input.InputManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.*
@@ -25,6 +26,7 @@ import com.swordfish.libretrodroid.GLRetroViewData
 import com.swordfish.libretrodroid.Variable
 import io.reactivex.disposables.CompositeDisposable
 import java.io.File
+import java.security.MessageDigest
 import java.util.concurrent.CountDownLatch
 
 class GameActivity: AppCompatActivity() {
@@ -75,12 +77,6 @@ class GameActivity: AppCompatActivity() {
         input = Input(this)
         system = System(this)
 
-        /* Initialize internal data */
-        storagePath = (getExternalFilesDir(null) ?: filesDir).path
-        romBytes = resources.openRawResource(R.raw.rom).use { it.readBytes() }
-        save = File("$storagePath/sram")
-        tempState = File("$storagePath/tempstate")
-
         /* Make sure we reapply immersive mode on rotate */
         window.decorView.setOnApplyWindowInsetsListener { view, windowInsets ->
             view.post { immersive() }
@@ -97,6 +93,27 @@ class GameActivity: AppCompatActivity() {
                 startActivityForResult(settingsIntent, SettingsActivity.ACTIVITY_REQUEST_CODE)
             }
             .create()
+
+        /* Initialize internal data */
+        //TODO: Deglobalize
+        val romUriString = sharedPreferences.getString(SettingsActivity.PREFERENCE_KEY_ROM_URI, "")!!
+        if (romUriString.isNotEmpty()) {
+            val romUri = Uri.parse(romUriString)
+            val romInputStream = contentResolver.openInputStream(romUri)
+            romBytes = romInputStream?.readBytes()!!
+            romInputStream.close()
+        } else {
+            panic(R.string.panic_message_no_selected_rom)
+            return
+        }
+        val md5Hex = MessageDigest
+            .getInstance("MD5")
+            .digest(romBytes)
+            .joinToString("") { "%02x".format(it) }
+        storagePath = "${(getExternalFilesDir(null) ?: filesDir).path}/$md5Hex"
+        File(storagePath).mkdirs()
+        save = File("$storagePath/sram")
+        tempState = File("$storagePath/tempstate")
 
         /*
          * We have a progress spinner on the screen at this point until the GLRetroView
