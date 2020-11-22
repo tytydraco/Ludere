@@ -8,11 +8,3 @@
 /captures
 .externalNativeBuild
 .cxx
-
-# Assets
-system/*
-app/src/main/res/raw/system
-app/src/main/res/raw/rom
-
-# Core
-*.so
