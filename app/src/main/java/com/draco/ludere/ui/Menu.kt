@@ -21,7 +21,7 @@ class Menu(
         activity.getString(R.string.menu_load_state),
         activity.getString(R.string.menu_mute),
         activity.getString(R.string.menu_fast_forward),
-        activity.getString(R.string.menu_lock_rotation),
+        activity.getString(R.string.menu_rotation_lock),
         activity.getString(R.string.menu_next_disk).takeIf { retroView.getAvailableDisks() > 0 },
         activity.getString(R.string.menu_previous_disk).takeIf { retroView.getAvailableDisks() > 0 }
     ).toTypedArray()
@@ -35,7 +35,7 @@ class Menu(
                 activity.getString(R.string.menu_load_state) -> RetroViewUtils.loadState(retroView, privateData)
                 activity.getString(R.string.menu_mute) -> RetroViewUtils.toggleMute(retroView)
                 activity.getString(R.string.menu_fast_forward) -> RetroViewUtils.toggleFastForward(retroView)
-                activity.getString(R.string.menu_lock_rotation) -> RetroViewUtils.toggleRotationLock(activity)
+                activity.getString(R.string.menu_rotation_lock) -> RetroViewUtils.toggleRotationLock(activity)
                 activity.getString(R.string.menu_next_disk) -> RetroViewUtils.nextDisk(retroView)
                 activity.getString(R.string.menu_previous_disk) -> RetroViewUtils.previousDisk(retroView)
             }

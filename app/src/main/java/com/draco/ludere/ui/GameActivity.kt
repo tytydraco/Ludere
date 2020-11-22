@@ -55,12 +55,6 @@ class GameActivity : AppCompatActivity() {
     /* Store all observable subscriptions */
     private val compositeDisposable = CompositeDisposable()
 
-    /* Shared preference keys */
-    private val frameSpeedString = "frame_speed"
-    private val audioEnabledString = "audio_enabled"
-    private val currentDiskString = "current_disk"
-    private val orientationString = "orientation"
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
@@ -250,22 +244,22 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun restoreSettings() {
-        retroView?.frameSpeed = sharedPreferences.getInt(frameSpeedString, 1)
-        retroView?.audioEnabled = sharedPreferences.getBoolean(audioEnabledString, true)
+        retroView?.frameSpeed = sharedPreferences.getInt(getString(R.string.pref_frame_speed), 1)
+        retroView?.audioEnabled = sharedPreferences.getBoolean(getString(R.string.pref_audio_enabled), true)
 
-        val targetDisk = sharedPreferences.getInt(currentDiskString, 0)
+        val targetDisk = sharedPreferences.getInt(getString(R.string.pref_current_disk), 0)
         if (retroView?.getCurrentDisk() != targetDisk)
             retroView?.changeDisk(targetDisk)
 
-        requestedOrientation = sharedPreferences.getInt(orientationString, ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+        requestedOrientation = sharedPreferences.getInt(getString(R.string.config_rotation_lock), ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
     }
 
     private fun saveSettings() {
         if (retroView != null) with (sharedPreferences.edit()) {
-            putInt(frameSpeedString, retroView!!.frameSpeed)
-            putBoolean(audioEnabledString, retroView!!.audioEnabled)
-            putInt(currentDiskString, retroView!!.getCurrentDisk())
-            putInt(orientationString, requestedOrientation)
+            putInt(getString(R.string.pref_frame_speed), retroView!!.frameSpeed)
+            putBoolean(getString(R.string.pref_audio_enabled), retroView!!.audioEnabled)
+            putInt(getString(R.string.pref_current_disk), retroView!!.getCurrentDisk())
+            putInt(getString(R.string.pref_rotation_lock), requestedOrientation)
             apply()
         }
     }
