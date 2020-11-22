@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- A unique identifier for the app (no spaces or special characters allowed) -->
-    <string name="config_id">examplerom</string>
-    <!-- The pretty name for the app -->
-    <string name="config_name">Example Rom</string>
     <!-- LibRetro core to fetch for this ROM (excluding _libretro_android.so) -->
     <string name="config_core">nestopia</string>
-    <!-- Icon foreground color -->
-    <color name="config_foreground_color">#ffffff</color>
-    <!-- Icon background color -->
-    <color name="config_background_color">#000000</color>
 </resources>
