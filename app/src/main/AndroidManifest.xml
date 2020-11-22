@@ -22,5 +22,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.SettingsActivity" />
+        <activity android:name=".ui.GamepadActivity" />
     </application>
 </manifest>

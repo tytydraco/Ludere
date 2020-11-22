@@ -1,5 +1,6 @@
 package com.draco.ludere.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -21,6 +22,10 @@ class SettingsPreferenceFragment: PreferenceFragmentCompat() {
                 activity?.finishAfterTransition()
             }
             getString(R.string.settings_resume_key) -> activity?.finish()
+            getString(R.string.settings_manage_gamepad_key) -> {
+                val intent = Intent(activity, GamepadActivity::class.java)
+                activity?.startActivity(intent)
+            }
             getString(R.string.settings_save_state_key) -> returnResult(SettingsActivity.RESULT_CODE_SAVE_STATE)
             getString(R.string.settings_load_state_key) -> returnResult(SettingsActivity.RESULT_CODE_LOAD_STATE)
             else -> return true

@@ -38,6 +38,11 @@
             android:icon="@drawable/ic_baseline_volume_off_24" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/settings_title_gamepad_settings">
+        <Preference
+            android:title="@string/settings_manage_gamepad_title"
+            android:summary="@string/settings_manage_gamepad_summary"
+            android:key="@string/settings_manage_gamepad_key"
+            android:icon="@drawable/ic_baseline_gamepad_24" />
         <SwitchPreference
             android:title="@string/settings_gamepad_visible_title"
             android:summary="@string/settings_gamepad_visible_summary"

@@ -25,17 +25,21 @@
     <string name="settings_disk_summary">Change the current disk</string>
     <string name="settings_disk_key">disk</string>
 
+    <string name="settings_speed_title">Speed</string>
+    <string name="settings_speed_summary">Apply a speed multiplier to the emulator</string>
+    <string name="settings_speed_key">speed</string>
+
     <string name="settings_variables_title">Core variables</string>
-    <string name="settings_variables_summary">Change the variables for the emulator core</string>
+    <string name="settings_variables_summary">Change the variables for the emulator core. The format should follow key1=value1,key2=value2,…</string>
     <string name="settings_variables_key">variables</string>
 
     <string name="settings_mute_title">Mute audio</string>
     <string name="settings_mute_summary">Disable audio from the emulator</string>
     <string name="settings_mute_key">mute</string>
 
-    <string name="settings_speed_title">Speed</string>
-    <string name="settings_speed_summary">Apply a speed multiplier to the emulator</string>
-    <string name="settings_speed_key">speed</string>
+    <string name="settings_manage_gamepad_title">Manage gamepad buttons</string>
+    <string name="settings_manage_gamepad_summary">Show or hide individual buttons</string>
+    <string name="settings_manage_gamepad_key">manage_gamepad</string>
 
     <string name="settings_gamepad_visible_title">Visible</string>
     <string name="settings_gamepad_visible_summary">Show or hide the virtual gamepad</string>
@@ -72,4 +76,40 @@
     <string name="settings_load_state_title">Load state</string>
     <string name="settings_load_state_summary">Load the RAM state from a slot</string>
     <string name="settings_load_state_key">load_state</string>
+
+    <string name="gamepad_a_title">A</string>
+    <string name="gamepad_a_key">a</string>
+
+    <string name="gamepad_b_title">B</string>
+    <string name="gamepad_b_key">b</string>
+
+    <string name="gamepad_x_title">X</string>
+    <string name="gamepad_x_key">x</string>
+
+    <string name="gamepad_y_title">Y</string>
+    <string name="gamepad_y_key">y</string>
+
+    <string name="gamepad_start_title">Start</string>
+    <string name="gamepad_start_key">start</string>
+
+    <string name="gamepad_select_title">Select</string>
+    <string name="gamepad_select_key">select</string>
+
+    <string name="gamepad_l1_title">L1</string>
+    <string name="gamepad_l1_key">l1</string>
+
+    <string name="gamepad_l2_title">L2</string>
+    <string name="gamepad_l2_key">l2</string>
+
+    <string name="gamepad_r1_title">R1</string>
+    <string name="gamepad_r1_key">r1</string>
+
+    <string name="gamepad_r2_title">R2</string>
+    <string name="gamepad_r2_key">r2</string>
+
+    <string name="gamepad_left_analog_title">Left analog stick</string>
+    <string name="gamepad_left_analog_key">left_analog</string>
+
+    <string name="gamepad_right_analog_title">Right analog stick</string>
+    <string name="gamepad_right_analog_key">right_analog</string>
 </resources>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/settings_manage_gamepad_title">
+        <SwitchPreference
+            android:title="@string/gamepad_a_title"
+            android:key="@string/gamepad_a_key"
+            android:defaultValue="true" />
+        <SwitchPreference
+            android:title="@string/gamepad_b_title"
+            android:key="@string/gamepad_b_key"
+            android:defaultValue="true" />
+        <SwitchPreference
+            android:title="@string/gamepad_x_title"
+            android:key="@string/gamepad_x_key" />
+        <SwitchPreference
+            android:title="@string/gamepad_y_title"
+            android:key="@string/gamepad_y_key" />
+        <SwitchPreference
+            android:title="@string/gamepad_start_title"
+            android:key="@string/gamepad_start_key"
+            android:defaultValue="true" />
+        <SwitchPreference
+            android:title="@string/gamepad_select_title"
+            android:key="@string/gamepad_select_key"
+            android:defaultValue="true" />
+        <SwitchPreference
+            android:title="@string/gamepad_l1_title"
+            android:key="@string/gamepad_l1_key" />
+        <SwitchPreference
+            android:title="@string/gamepad_l2_title"
+            android:key="@string/gamepad_l2_key" />
+        <SwitchPreference
+            android:title="@string/gamepad_r1_title"
+            android:key="@string/gamepad_r1_key" />
+        <SwitchPreference
+            android:title="@string/gamepad_r2_title"
+            android:key="@string/gamepad_r2_key" />
+        <SwitchPreference
+            android:title="@string/gamepad_left_analog_title"
+            android:key="@string/gamepad_left_analog_key" />
+        <SwitchPreference
+            android:title="@string/gamepad_right_analog_title"
+            android:key="@string/gamepad_right_analog_key" />
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -4,23 +4,12 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.draco.ludere.R
 
-class SettingsActivity : AppCompatActivity() {
-    companion object {
-        const val ACTIVITY_REQUEST_CODE = 1
-
-        /* Work for the calling activity to do */
-        const val RESULT_CODE_SAVE_STATE = 0
-        const val RESULT_CODE_LOAD_STATE = 1
-    }
-
+class GamepadActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preference_fragment)
 
-        val preferenceFragment = SettingsPreferenceFragment().apply {
-            /* Pipe the result code to the calling activity */
-            resultCallback = { setResult(it) }
-        }
+        val preferenceFragment = GamepadPreferenceFragment()
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.settings_container, preferenceFragment)
