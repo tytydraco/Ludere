@@ -11,7 +11,7 @@
     <!-- Can be landscape, portrait, or auto -->
     <string name="config_orientation">auto</string>
     <!-- Icon foreground color -->
-    <color name="config_foreground_color">#fffb00</color>
+    <color name="config_foreground_color">#ffffff</color>
     <!-- Icon background color -->
     <color name="config_background_color">#000000</color>
     <!-- Color of the GamePad icons -->
