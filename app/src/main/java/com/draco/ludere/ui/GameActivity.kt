@@ -105,11 +105,8 @@ class GameActivity : AppCompatActivity() {
              */
             retroViewReadyLatch.await()
 
-            /* Restore emulator settings from last launch */
-            restoreSettings()
-
-            /* Pick up where the user left off */
-            retroViewUtils.restoreTempState()
+            /* Restore emulator instance from last launch */
+            restoreEmulatorState()
 
             /* Initialize the GamePads if they are enabled in the config */
             if (resources.getBoolean(R.bool.config_gamepad_visible)) {
@@ -240,7 +237,7 @@ class GameActivity : AppCompatActivity() {
         return variables.toTypedArray()
     }
 
-    private fun restoreSettings() {
+    private fun restoreEmulatorState() {
         retroView?.frameSpeed = sharedPreferences.getInt(getString(R.string.pref_frame_speed), 1)
         retroView?.audioEnabled = sharedPreferences.getBoolean(getString(R.string.pref_audio_enabled), true)
 
@@ -249,9 +246,11 @@ class GameActivity : AppCompatActivity() {
             retroView?.changeDisk(targetDisk)
 
         requestedOrientation = sharedPreferences.getInt(getString(R.string.pref_rotation_lock), ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+
+        retroViewUtils.restoreTempState()
     }
 
-    private fun saveSettings() {
+    private fun preserveEmulatorState() {
         if (retroView != null) with (sharedPreferences.edit()) {
             putInt(getString(R.string.pref_frame_speed), retroView!!.frameSpeed)
             putBoolean(getString(R.string.pref_audio_enabled), retroView!!.audioEnabled)
@@ -361,7 +360,7 @@ class GameActivity : AppCompatActivity() {
         /* This method is unkillable, save essential variables now */
         if (retroViewReadyLatch.count == 0L) {
             /* Save emulator settings for next launch */
-            saveSettings()
+            preserveEmulatorState()
 
             /* Save a temporary state */
             retroViewUtils.saveTempState()
