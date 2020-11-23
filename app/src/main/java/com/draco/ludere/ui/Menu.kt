@@ -17,7 +17,6 @@ class Menu(
     private val privateData = PrivateData(activity)
 
     private val menuOptions = listOfNotNull(
-        activity.getString(R.string.menu_exit),
         activity.getString(R.string.menu_reset),
         activity.getString(R.string.menu_save_state),
         activity.getString(R.string.menu_load_state),
@@ -33,7 +32,6 @@ class Menu(
     private inner class MenuOnClickListener : DialogInterface.OnClickListener {
         override fun onClick(dialog: DialogInterface?, which: Int) {
             when (menuOptions[which]) {
-                activity.getString(R.string.menu_exit) -> activity.finishAffinity()
                 activity.getString(R.string.menu_reset) -> retroView.reset()
                 activity.getString(R.string.menu_save_state) -> retroViewUtils.saveState()
                 activity.getString(R.string.menu_load_state) -> retroViewUtils.loadState()

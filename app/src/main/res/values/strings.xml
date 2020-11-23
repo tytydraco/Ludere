@@ -5,7 +5,6 @@
     <string name="pref_current_disk">current_disk</string>
     <string name="pref_rotation_lock">rotation_lock</string>
 
-    <string name="menu_exit">Exit</string>
     <string name="menu_reset">Reset</string>
     <string name="menu_save_state">Save State</string>
     <string name="menu_load_state">Load State</string>
