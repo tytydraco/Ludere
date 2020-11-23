@@ -9,6 +9,7 @@
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:largeHeap="true"
+        android:isGame="true"
         android:icon="@mipmap/ic_launcher"
         android:banner="@drawable/banner"
         android:label="@string/config_name"
