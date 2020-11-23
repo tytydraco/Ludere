@@ -96,12 +96,6 @@
             android:key="@string/settings_save_state_slot_key"
             android:max="4"
             android:icon="@drawable/ic_baseline_storage_24" />
-        <SwitchPreference
-            android:title="@string/settings_preserve_state_title"
-            android:summary="@string/settings_preserve_state_summary"
-            android:key="@string/settings_preserve_state_key"
-            android:icon="@drawable/ic_baseline_lock_24"
-            android:defaultValue="true" />
         <Preference
             android:title="@string/settings_save_state_title"
             android:summary="@string/settings_save_state_summary"

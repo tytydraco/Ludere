@@ -177,16 +177,8 @@ class GameActivity: AppCompatActivity() {
             retroView?.frameSpeed = sharedPreferences.getInt(getString(R.string.settings_speed_key), 0) + 1
             retroView?.audioEnabled = !sharedPreferences.getBoolean(getString(R.string.settings_mute_key), false)
 
-            /*
-             * If we started this activity after a configuration change, restore the temp state.
-             * It is not reliable to handle this in the fragment since the fragment is recreated
-             * on a configuration change, meaning that the savedInstanceState will always report
-             * null, making it impossible to differentiate a cold start from a warm start. Handle
-             * the configurations in the parent activity.
-             */
-            if (savedInstanceState != null ||
-                sharedPreferences.getBoolean(getString(R.string.settings_preserve_state_key), true) &&
-                tempState.exists()) {
+            /* Pick up where the user left off */
+            if (tempState.exists()) {
                 /* Fetch the state bytes */
                 val stateBytes = tempState.inputStream().use {
                     it.readBytes()

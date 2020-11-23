@@ -81,10 +81,6 @@
     <string name="settings_save_state_slot_summary">Choose which state slot to save and load from</string>
     <string name="settings_save_state_slot_key">save_state_slot</string>
 
-    <string name="settings_preserve_state_title">Preserve state</string>
-    <string name="settings_preserve_state_summary">Preserve RAM state when exiting the application automatically</string>
-    <string name="settings_preserve_state_key">preserve_state</string>
-
     <string name="settings_save_state_title">Save state</string>
     <string name="settings_save_state_summary">Save the current RAM state to a slot</string>
     <string name="settings_save_state_key">save_state</string>
