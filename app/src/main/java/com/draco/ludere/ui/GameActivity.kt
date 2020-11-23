@@ -42,13 +42,12 @@ class GameActivity: AppCompatActivity() {
     private lateinit var system: System
 
     /* Internal data */
-    lateinit var storagePath: String
+    lateinit var romStoragePath: String
     lateinit var romBytes: ByteArray
-    lateinit var coreBytes: ByteArray
     lateinit var save: File
     lateinit var tempState: File
     lateinit var coreFile: File
-    private fun stateForSlot(slot: Int) = File("$storagePath/state-$slot")
+    private fun stateForSlot(slot: Int) = File("$romStoragePath/state-$slot")
 
     /* Emulator objects */
     private var retroView: GLRetroView? = null
@@ -96,10 +95,10 @@ class GameActivity: AppCompatActivity() {
             .create()
 
         /* Initialize internal data */
-        //TODO: Deglobalize
         val romUriString = sharedPreferences.getString(SettingsActivity.PREFERENCE_KEY_ROM_URI, "")!!
         val coreUriString = sharedPreferences.getString(SettingsActivity.PREFERENCE_KEY_CORE_URI, "")!!
 
+        /* Open ROM from Uri */
         try {
             val romUri = Uri.parse(romUriString)
             val romInputStream = contentResolver.openInputStream(romUri)
@@ -110,30 +109,42 @@ class GameActivity: AppCompatActivity() {
             return
         }
 
+        /* Update our internal copy of the core */
+        coreFile = File("${filesDir.path}/core")
         try {
             val coreUri = Uri.parse(coreUriString)
             val coreInputStream = contentResolver.openInputStream(coreUri)
-            coreBytes = coreInputStream?.readBytes()!!
+            val coreBytes = coreInputStream?.readBytes()!!
+            coreFile.outputStream().use {
+                it.write(coreBytes)
+            }
             coreInputStream.close()
         } catch (_: Exception) {
-            panic(R.string.panic_message_no_selected_core)
-            return
+            /* Only panic if we don't have an internal copy of the core available */
+            if (!coreFile.exists()) {
+                panic(R.string.panic_message_no_selected_core)
+                return
+            }
         }
 
+        /* Specify a safe storage path for our internal and external data */
         val filesPath = (getExternalFilesDir(null) ?: filesDir).path
-        coreFile = File("${filesDir.path}/core")
-        coreFile.outputStream().use {
-            it.write(coreBytes)
-        }
 
+        /* Generate an MD5 of the ROM */
         val md5Hex = MessageDigest
             .getInstance("MD5")
             .digest(romBytes)
             .joinToString("") { "%02x".format(it) }
-        storagePath = "$filesPath/$md5Hex"
-        File(storagePath).mkdirs()
-        save = File("$storagePath/sram")
-        tempState = File("$storagePath/tempstate")
+
+        /* Store ROM data in its own special folder */
+        romStoragePath = "$filesPath/$md5Hex"
+
+        /* Initialize the directory if it does not yet exist */
+        File(romStoragePath).mkdirs()
+
+        /* Initialize ROM file handles via ROM storage */
+        save = File("$romStoragePath/sram")
+        tempState = File("$romStoragePath/tempstate")
 
         /*
          * We have a progress spinner on the screen at this point until the GLRetroView
