@@ -15,21 +15,11 @@ android {
         resConfigs 'en'
     }
 
-    signingConfigs {
-        release {
-            storeFile file("${rootProject.projectDir}/ludere.jks")
-            storePassword 'ludere'
-            keyAlias 'key0'
-            keyPassword 'ludere'
-        }
-    }
-
     buildTypes {
         release {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
         }
     }
 
@@ -37,6 +27,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    
     kotlinOptions {
         jvmTarget = '1.8'
     }
