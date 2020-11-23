@@ -384,6 +384,7 @@ class GameActivity: AppCompatActivity() {
 
     override fun onBackPressed() {
         val settingsIntent = Intent(this, SettingsActivity::class.java)
+        settingsIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         startActivityForResult(settingsIntent, SettingsActivity.ACTIVITY_REQUEST_CODE)
     }
 

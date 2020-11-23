@@ -21,7 +21,7 @@
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.SettingsActivity" android:theme="@style/Theme.Ludere" />
-        <activity android:name=".ui.GamepadActivity" android:theme="@style/Theme.Ludere" />
+        <activity android:name=".ui.SettingsActivity" android:theme="@style/Theme.Ludere.Settings" />
+        <activity android:name=".ui.GamepadActivity" android:theme="@style/Theme.Ludere.Settings" />
     </application>
 </manifest>
