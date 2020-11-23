@@ -49,17 +49,6 @@ android {
     }
 }
 
-task packageAssets(type: Tar) {
-    /* Truncate but do not delete; we need a dummy file so that R.raw.system exists */
-    file('src/main/res/raw/system').text = ''
-
-    from "${rootProject.projectDir}/system/"
-    include '**'
-    archiveName 'system'
-    compression(Compression.GZIP)
-    destinationDir(file('src/main/res/raw/'))
-}
-
 task prepareCore {
     delete "${rootProject.projectDir}/app/src/main/jniLibs"
     for (abi in ['x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a']) {
