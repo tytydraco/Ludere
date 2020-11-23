@@ -399,6 +399,7 @@ class GameActivity: AppCompatActivity() {
                     if (bytes.isNotEmpty())
                         retroView!!.unserializeState(bytes)
                 }
+                SettingsActivity.RESULT_CODE_RESET -> retroView?.reset()
             }
         }
     }

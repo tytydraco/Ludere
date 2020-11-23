@@ -6,12 +6,17 @@
             android:title="@string/settings_restart_title"
             android:summary="@string/settings_restart_summary"
             android:key="@string/settings_restart_key"
-            android:icon="@drawable/ic_baseline_refresh_24" />
+            android:icon="@drawable/ic_baseline_exit_to_app_24" />
         <Preference
             android:title="@string/settings_resume_title"
             android:summary="@string/settings_resume_summary"
             android:key="@string/settings_resume_key"
             android:icon="@drawable/ic_baseline_keyboard_return_24" />
+        <Preference
+            android:title="@string/settings_reset_title"
+            android:summary="@string/settings_reset_summary"
+            android:key="@string/settings_reset_key"
+            android:icon="@drawable/ic_baseline_refresh_24" />
         <Preference
             android:title="@string/settings_select_rom_title"
             android:summary="@string/settings_select_rom_summary"

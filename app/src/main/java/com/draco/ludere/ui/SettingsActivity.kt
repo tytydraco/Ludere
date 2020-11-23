@@ -14,6 +14,7 @@ class SettingsActivity : AppCompatActivity() {
         /* Work for the calling activity to do */
         const val RESULT_CODE_SAVE_STATE = 0
         const val RESULT_CODE_LOAD_STATE = 1
+        const val RESULT_CODE_RESET = 2
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

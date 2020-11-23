@@ -18,12 +18,16 @@
     <string name="settings_title_saves">Saves</string>
 
     <string name="settings_restart_title">Restart</string>
-    <string name="settings_restart_summary">Restart the emulator to apply settings</string>
+    <string name="settings_restart_summary">Restart the entire application and apply settings</string>
     <string name="settings_restart_key">restart</string>
 
     <string name="settings_resume_title">Resume</string>
     <string name="settings_resume_summary">Resume the current emulator instance; changed settings will not be applied</string>
     <string name="settings_resume_key">resume</string>
+
+    <string name="settings_reset_title">Reset</string>
+    <string name="settings_reset_summary">Reset the ROM state; changes settings will not be applied</string>
+    <string name="settings_reset_key">reset</string>
 
     <string name="settings_select_rom_title">Select ROM</string>
     <string name="settings_select_rom_summary">Select a ROM to load</string>

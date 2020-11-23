@@ -44,6 +44,7 @@ class SettingsPreferenceFragment: PreferenceFragmentCompat() {
                 activity?.finishAfterTransition()
             }
             getString(R.string.settings_resume_key) -> activity?.finish()
+            getString(R.string.settings_reset_key) -> returnResult(SettingsActivity.RESULT_CODE_RESET)
             getString(R.string.settings_select_rom_key) -> {
                 startActivityForResult(Intent.createChooser(chooseFileIntent, null), REQUEST_CODE_CHOOSE_ROM)
             }
