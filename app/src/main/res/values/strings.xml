@@ -17,7 +17,5 @@
     <string name="button_exit">Exit</string>
 
     <string name="panic_title">Panic</string>
-    <string name="panic_message_load_core">The core failed to load. Ensure the core configuration is correct, or try clearing the application\'s data.</string>
-    <string name="panic_message_load_game">The ROM failed to load. Ensure the ROM configuration is correct, or try clearing the application\'s data.</string>
-    <string name="panic_message_gles">This version of OpenGLES is unsupported.</string>
+    <string name="panic_message">An internal crash occurred. Check your configuration.</string>
 </resources>

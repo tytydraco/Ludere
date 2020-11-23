@@ -81,6 +81,7 @@ class GameActivity : AppCompatActivity() {
         /* Prepare skeleton of dialogs */
         panicDialog = MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.panic_title))
+            .setMessage(getString(R.string.panic_message))
             .setCancelable(false)
             .setPositiveButton(getString(R.string.button_exit)) { _, _ -> finishAffinity() }
             .create()
@@ -166,18 +167,7 @@ class GameActivity : AppCompatActivity() {
         /* Also start tracking any errors we come across */
         val errorDisposable = retroView!!
             .getGLRetroErrors()
-            .subscribe {
-                val errorMessage = when (it) {
-                    GLRetroView.ERROR_LOAD_LIBRARY -> R.string.panic_message_load_core
-                    GLRetroView.ERROR_LOAD_GAME -> R.string.panic_message_load_game
-                    GLRetroView.ERROR_GL_NOT_COMPATIBLE -> R.string.panic_message_gles
-                    else -> null
-                }
-
-                /* Fatal error, panic accordingly */
-                if (errorMessage != null)
-                    runOnUiThread { panic(errorMessage) }
-            }
+            .subscribe { runOnUiThread { panic() } }
         compositeDisposable.add(errorDisposable)
     }
 
@@ -203,15 +193,12 @@ class GameActivity : AppCompatActivity() {
         rightGamePadContainer.addView(rightGamePad!!.pad)
     }
 
-    private fun panic(errorResId: Int) {
+    private fun panic() {
         /* Invalidate GLRetroView */
         retroView = null
 
         /* Show the error to the user */
-        with (panicDialog) {
-            setMessage(getString(errorResId))
-            show()
-        }
+        panicDialog.show()
     }
 
     private fun getCoreVariables(): Array<Variable> {
