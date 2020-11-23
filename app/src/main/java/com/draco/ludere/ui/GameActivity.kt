@@ -127,8 +127,8 @@ class GameActivity : AppCompatActivity() {
             shader = GLRetroView.SHADER_SHARP
             variables = getCoreVariables()
 
-            if (privateData.save.exists()) {
-                privateData.save.inputStream().use {
+            if (privateData.sram.exists()) {
+                privateData.sram.inputStream().use {
                     saveRAMState = it.readBytes()
                 }
             }
@@ -366,7 +366,7 @@ class GameActivity : AppCompatActivity() {
             retroViewUtils.saveStateTo(privateData.tempState)
 
             /* Save SRAM to disk */
-            retroViewUtils.saveSRAMTo(privateData.save)
+            retroViewUtils.saveSRAMTo(privateData.sram)
         }
 
         super.onPause()

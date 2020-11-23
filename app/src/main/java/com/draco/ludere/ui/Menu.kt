@@ -54,7 +54,7 @@ class Menu(
 
     fun show() {
         /* Save SRAM and tempstate as a precaution; treat it as a pause */
-        retroViewUtils.saveSRAMTo(privateData.save)
+        retroViewUtils.saveSRAMTo(privateData.sram)
         retroViewUtils.saveStateTo(privateData.tempState)
 
         /* Show menu */
