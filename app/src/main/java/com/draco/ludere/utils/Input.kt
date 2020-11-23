@@ -83,7 +83,7 @@ class Input(private val activity: Activity) {
         val port = ((event.device?.controllerNumber ?: 1) - 1).coerceAtLeast(0)
 
         /* Handle analog input events */
-        with(retroView) {
+        retroView.apply {
             sendMotionEvent(
                 GLRetroView.MOTION_SOURCE_DPAD,
                 event.getAxisValue(MotionEvent.AXIS_HAT_X),
@@ -102,7 +102,7 @@ class Input(private val activity: Activity) {
                 event.getAxisValue(MotionEvent.AXIS_RZ),
                 port
             )
-            return true
         }
+        return true
     }
 }
