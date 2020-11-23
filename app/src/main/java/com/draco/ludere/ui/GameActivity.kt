@@ -187,12 +187,6 @@ class GameActivity : AppCompatActivity() {
         leftGamePad = GamePad(this, gamePadConfig.left)
         rightGamePad = GamePad(this, gamePadConfig.right)
 
-        /* Configure GamePad size and position */
-        val density = resources.displayMetrics.density
-        val gamePadSize = resources.getDimension(R.dimen.config_gamepad_size) / density
-        leftGamePad!!.pad.primaryDialMaxSizeDp = gamePadSize
-        rightGamePad!!.pad.primaryDialMaxSizeDp = gamePadSize
-
         /* Detect when controllers are added so we can disable or enable the GamePads */
         val inputManager = getSystemService(Service.INPUT_SERVICE) as InputManager
         inputManager.registerInputDeviceListener(object : InputManager.InputDeviceListener {
