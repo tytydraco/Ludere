@@ -34,7 +34,7 @@ class Menu(
         override fun onClick(dialog: DialogInterface?, which: Int) {
             when (menuOptions[which]) {
                 activity.getString(R.string.menu_exit) -> activity.finishAffinity()
-                activity.getString(R.string.menu_reset) -> retroViewUtils.reset()
+                activity.getString(R.string.menu_reset) -> retroView.reset()
                 activity.getString(R.string.menu_save_state) -> retroViewUtils.saveState()
                 activity.getString(R.string.menu_load_state) -> retroViewUtils.loadState()
                 activity.getString(R.string.menu_mute) -> retroViewUtils.toggleMute()
@@ -55,6 +55,11 @@ class Menu(
     }
 
     fun show() {
+        /* Save SRAM and tempstate as a precaution; treat it as a pause */
+        retroViewUtils.saveSRAM()
+        retroViewUtils.saveTempState()
+
+        /* Show menu */
         MaterialAlertDialogBuilder(activity)
             .setItems(menuOptions, MenuOnClickListener())
             .show()

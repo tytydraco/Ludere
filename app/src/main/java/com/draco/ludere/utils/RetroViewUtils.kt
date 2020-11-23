@@ -11,11 +11,6 @@ class RetroViewUtils(
         const val FAST_FORWARD_SPEED = 2
     }
 
-    fun reset() {
-        saveSRAM()
-        retroView.reset()
-    }
-
     fun saveSRAM() {
         privateData.save.outputStream().use {
             it.write(retroView.serializeSRAM())
