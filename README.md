@@ -46,7 +46,7 @@ Here's how Ludere is configured:
 # Libraries
 - [LibretroDroid](https://github.com/Swordfish90/LibretroDroid): Our LibRetro frontend that interacts with RetroArch cores
 - [RadialGamePad](https://github.com/Swordfish90/RadialGamePad): Intuitive touchscreen controls
-- [RetroArch](http://buildbot.libretro.com/nightly/): LibRetro emulator cores for Android
+- [LibRetro](http://buildbot.libretro.com/nightly/): Emulator cores for Android
 
 # Configuration
 - Edit `app/src/main/res/values/config.xml` and change your configuration
