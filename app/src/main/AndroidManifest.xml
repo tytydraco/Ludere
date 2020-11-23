@@ -13,7 +13,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Ludere">
+        android:theme="@style/Theme.Ludere.Game">
         <activity android:name=".ui.GameActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,7 +21,7 @@
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.SettingsActivity" />
-        <activity android:name=".ui.GamepadActivity" />
+        <activity android:name=".ui.SettingsActivity" android:theme="@style/Theme.Ludere" />
+        <activity android:name=".ui.GamepadActivity" android:theme="@style/Theme.Ludere" />
     </application>
 </manifest>
