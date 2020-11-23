@@ -247,7 +247,7 @@ class GameActivity : AppCompatActivity() {
 
         requestedOrientation = sharedPreferences.getInt(getString(R.string.pref_rotation_lock), ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
 
-        retroViewUtils.restoreTempState()
+        retroViewUtils.loadTempState()
     }
 
     private fun preserveEmulatorState() {

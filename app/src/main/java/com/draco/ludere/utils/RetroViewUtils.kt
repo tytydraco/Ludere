@@ -42,7 +42,7 @@ class RetroViewUtils(
         }
     }
 
-    fun restoreTempState() {
+    fun loadTempState() {
         /* Don't bother restoring a temporary state if it doesn't exist */
         if (!privateData.tempState.exists())
             return
