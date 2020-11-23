@@ -101,7 +101,7 @@ class GameActivity: AppCompatActivity() {
         val filesPath = (getExternalFilesDir(null) ?: filesDir).path
 
         /* Update our internal copy of the ROM */
-        romFile = File("${cacheDir.path}/rom")
+        romFile = File("${filesDir.path}/rom")
         var romBytes = byteArrayOf()
         try {
             val romUri = Uri.parse(romUriString)
@@ -120,7 +120,7 @@ class GameActivity: AppCompatActivity() {
         }
 
         /* Update our internal copy of the core */
-        coreFile = File("${cacheDir.path}/core")
+        coreFile = File("${filesDir.path}/core")
         try {
             val coreUri = Uri.parse(coreUriString)
             val coreInputStream = contentResolver.openInputStream(coreUri)
