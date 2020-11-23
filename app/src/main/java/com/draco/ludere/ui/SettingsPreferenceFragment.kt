@@ -16,7 +16,7 @@ class SettingsPreferenceFragment: PreferenceFragmentCompat() {
         const val REQUEST_CODE_CHOOSE_CORE = 2
     }
 
-    lateinit var sharedPreferences: SharedPreferences
+    private lateinit var sharedPreferences: SharedPreferences
 
     /* Calling activity must set a work callback */
     lateinit var resultCallback: (Int) -> Unit

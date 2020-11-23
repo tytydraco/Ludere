@@ -39,14 +39,13 @@ class GameActivity: AppCompatActivity() {
     /* Essential objects */
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var input: Input
-    private lateinit var system: System
 
     /* Internal data */
-    lateinit var romStoragePath: String
-    lateinit var romBytes: ByteArray
-    lateinit var save: File
-    lateinit var tempState: File
-    lateinit var coreFile: File
+    private lateinit var romStoragePath: String
+    private lateinit var romBytes: ByteArray
+    private lateinit var save: File
+    private lateinit var tempState: File
+    private lateinit var coreFile: File
     private fun stateForSlot(slot: Int) = File("$romStoragePath/state-$slot")
 
     /* Emulator objects */
