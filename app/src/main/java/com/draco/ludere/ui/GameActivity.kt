@@ -138,7 +138,7 @@ class GameActivity : AppCompatActivity() {
         retroView = GLRetroView(this, retroViewData)
 
         /* Register RetroViewUtils class */
-        retroViewUtils = RetroViewUtils(privateData, retroView!!)
+        retroViewUtils = RetroViewUtils(retroView!!)
 
         /* Hook the GLRetroView to the fragment lifecycle */
         lifecycle.addObserver(retroView!!)
@@ -247,7 +247,7 @@ class GameActivity : AppCompatActivity() {
 
         requestedOrientation = sharedPreferences.getInt(getString(R.string.pref_rotation_lock), ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
 
-        retroViewUtils.loadTempState()
+        retroViewUtils.loadStateFrom(privateData.tempState)
     }
 
     private fun preserveEmulatorState() {
@@ -363,10 +363,10 @@ class GameActivity : AppCompatActivity() {
             preserveEmulatorState()
 
             /* Save a temporary state */
-            retroViewUtils.saveTempState()
+            retroViewUtils.saveStateTo(privateData.tempState)
 
             /* Save SRAM to disk */
-            retroViewUtils.saveSRAM()
+            retroViewUtils.saveSRAMTo(privateData.save)
         }
 
         super.onPause()

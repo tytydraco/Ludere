@@ -27,14 +27,14 @@ class Menu(
         activity.getString(R.string.menu_previous_disk).takeIf { retroView.getAvailableDisks() > 0 }
     ).toTypedArray()
 
-    private val retroViewUtils = RetroViewUtils(privateData, retroView)
+    private val retroViewUtils = RetroViewUtils(retroView)
 
     private inner class MenuOnClickListener : DialogInterface.OnClickListener {
         override fun onClick(dialog: DialogInterface?, which: Int) {
             when (menuOptions[which]) {
                 activity.getString(R.string.menu_reset) -> retroView.reset()
-                activity.getString(R.string.menu_save_state) -> retroViewUtils.saveState()
-                activity.getString(R.string.menu_load_state) -> retroViewUtils.loadState()
+                activity.getString(R.string.menu_save_state) -> retroViewUtils.saveStateTo(privateData.state)
+                activity.getString(R.string.menu_load_state) -> retroViewUtils.loadStateFrom(privateData.state)
                 activity.getString(R.string.menu_mute) -> retroViewUtils.toggleMute()
                 activity.getString(R.string.menu_fast_forward) -> retroViewUtils.toggleFastForward()
                 activity.getString(R.string.menu_rotation_lock) -> {
@@ -54,8 +54,8 @@ class Menu(
 
     fun show() {
         /* Save SRAM and tempstate as a precaution; treat it as a pause */
-        retroViewUtils.saveSRAM()
-        retroViewUtils.saveTempState()
+        retroViewUtils.saveSRAMTo(privateData.save)
+        retroViewUtils.saveStateTo(privateData.tempState)
 
         /* Show menu */
         MaterialAlertDialogBuilder(activity)

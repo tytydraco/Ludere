@@ -1,61 +1,45 @@
 package com.draco.ludere.utils
 
-import com.draco.ludere.assets.PrivateData
 import com.swordfish.libretrodroid.GLRetroView
+import java.io.File
 
-class RetroViewUtils(
-    private val privateData: PrivateData,
-    private val retroView: GLRetroView
-) {
+class RetroViewUtils(private val retroView: GLRetroView) {
     companion object {
         const val FAST_FORWARD_SPEED = 2
+        const val RESTORE_STATE_ATTEMPTS = 10
+        const val RESTORE_STATE_FAIL_DELAY_MS = 50L
     }
 
-    fun saveSRAM() {
-        privateData.save.outputStream().use {
+    fun saveSRAMTo(file: File) {
+        file.outputStream().use {
             it.write(retroView.serializeSRAM())
         }
     }
 
-    fun saveState() {
-        privateData.state.outputStream().use {
-            it.write(retroView.serializeState())
-        }
-    }
-
-    fun loadState() {
-        if (!privateData.state.exists())
-            return
-
-        val bytes = privateData.state.inputStream().use {
-            it.readBytes()
-        }
-        if (bytes.isNotEmpty())
-            retroView.unserializeState(bytes)
-    }
-
-    fun saveTempState() {
-        /* Save a temporary state since Android killed the activity */
-        val savedInstanceStateBytes = retroView.serializeState()
-        privateData.tempState.outputStream().use {
-            it.write(savedInstanceStateBytes)
-        }
-    }
-
-    fun loadTempState() {
-        /* Don't bother restoring a temporary state if it doesn't exist */
-        if (!privateData.tempState.exists())
+    fun loadStateFrom(file: File) {
+        /* Don't bother loading a state if it doesn't exist */
+        if (!file.exists())
             return
 
         /* Fetch the state bytes */
-        val stateBytes = privateData.tempState.inputStream().use {
+        val stateBytes = file.inputStream().use {
             it.readBytes()
         }
 
-        /* Restore the temporary state */
-        var remainingTries = 10
+        /* Don't bother if there's nothing to restore */
+        if (stateBytes.isEmpty())
+            return
+
+        /* Load the state */
+        var remainingTries = RESTORE_STATE_ATTEMPTS
         while (!retroView.unserializeState(stateBytes) && remainingTries-- > 0)
-            Thread.sleep(50)
+            Thread.sleep(RESTORE_STATE_FAIL_DELAY_MS)
+    }
+
+    fun saveStateTo(file: File) {
+        file.outputStream().use {
+            it.write(retroView.serializeState())
+        }
     }
 
     fun toggleMute() {
