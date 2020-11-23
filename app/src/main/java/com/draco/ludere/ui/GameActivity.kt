@@ -108,15 +108,8 @@ class GameActivity : AppCompatActivity() {
             /* Restore emulator settings from last launch */
             restoreSettings()
 
-            /*
-             * If we started this activity after a configuration change, restore the temp state.
-             * It is not reliable to handle this in the fragment since the fragment is recreated
-             * on a configuration change, meaning that the savedInstanceState will always report
-             * null, making it impossible to differentiate a cold start from a warm start. Handle
-             * the configurations in the parent activity.
-             */
-            if (savedInstanceState != null || resources.getBoolean(R.bool.config_preserve_state))
-                retroViewUtils.restoreTempState()
+            /* Pick up where the user left off */
+            retroViewUtils.restoreTempState()
 
             /* Initialize the GamePads if they are enabled in the config */
             if (resources.getBoolean(R.bool.config_gamepad_visible)) {

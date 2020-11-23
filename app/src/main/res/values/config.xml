@@ -18,8 +18,6 @@
     <color name="config_gamepad_button_color">#88424242</color>
     <!-- Color of the GamePad buttons when pressed -->
     <color name="config_gamepad_pressed_color">#88212121</color>
-    <!-- Should be load from where we left off on restart? -->
-    <bool name="config_preserve_state">true</bool>
     <!-- Should we show a virtual GamePad? -->
     <bool name="config_gamepad_visible">true</bool>
     <!-- Should we vibrate on touch? -->
