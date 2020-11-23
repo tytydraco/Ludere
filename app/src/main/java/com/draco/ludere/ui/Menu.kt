@@ -2,6 +2,8 @@ package com.draco.ludere.ui
 
 import android.app.Activity
 import android.content.DialogInterface
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import com.draco.ludere.R
 import com.draco.ludere.assets.PrivateData
 import com.draco.ludere.utils.RetroViewUtils
@@ -26,18 +28,28 @@ class Menu(
         activity.getString(R.string.menu_previous_disk).takeIf { retroView.getAvailableDisks() > 0 }
     ).toTypedArray()
 
+    private val retroViewUtils = RetroViewUtils(privateData, retroView)
+
     private inner class MenuOnClickListener : DialogInterface.OnClickListener {
         override fun onClick(dialog: DialogInterface?, which: Int) {
             when (menuOptions[which]) {
                 activity.getString(R.string.menu_exit) -> activity.finishAffinity()
-                activity.getString(R.string.menu_reset) -> RetroViewUtils.reset(retroView, privateData)
-                activity.getString(R.string.menu_save_state) -> RetroViewUtils.saveState(retroView, privateData)
-                activity.getString(R.string.menu_load_state) -> RetroViewUtils.loadState(retroView, privateData)
-                activity.getString(R.string.menu_mute) -> RetroViewUtils.toggleMute(retroView)
-                activity.getString(R.string.menu_fast_forward) -> RetroViewUtils.toggleFastForward(retroView)
-                activity.getString(R.string.menu_rotation_lock) -> RetroViewUtils.toggleRotationLock(activity)
-                activity.getString(R.string.menu_next_disk) -> RetroViewUtils.nextDisk(retroView)
-                activity.getString(R.string.menu_previous_disk) -> RetroViewUtils.previousDisk(retroView)
+                activity.getString(R.string.menu_reset) -> retroViewUtils.reset()
+                activity.getString(R.string.menu_save_state) -> retroViewUtils.saveState()
+                activity.getString(R.string.menu_load_state) -> retroViewUtils.loadState()
+                activity.getString(R.string.menu_mute) -> retroViewUtils.toggleMute()
+                activity.getString(R.string.menu_fast_forward) -> retroViewUtils.toggleFastForward()
+                activity.getString(R.string.menu_rotation_lock) -> {
+                    /* If we are already unlocked, lock to the current orientation */
+                    activity.requestedOrientation = if (activity.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
+                        when (activity.resources.configuration.orientation) {
+                            Configuration.ORIENTATION_LANDSCAPE -> ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE
+                            else -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                        }
+                    } else ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                }
+                activity.getString(R.string.menu_next_disk) -> retroViewUtils.nextDisk()
+                activity.getString(R.string.menu_previous_disk) -> retroViewUtils.previousDisk()
             }
         }
     }

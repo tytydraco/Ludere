@@ -38,6 +38,7 @@ class GameActivity : AppCompatActivity() {
     /* Essential objects */
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var privateData: PrivateData
+    private lateinit var retroViewUtils: RetroViewUtils
     private lateinit var input: Input
     private lateinit var system: System
 
@@ -115,7 +116,7 @@ class GameActivity : AppCompatActivity() {
              * the configurations in the parent activity.
              */
             if (savedInstanceState != null || resources.getBoolean(R.bool.config_preserve_state))
-                RetroViewUtils.restoreTempState(retroView!!, privateData)
+                retroViewUtils.restoreTempState()
 
             /* Initialize the GamePads if they are enabled in the config */
             if (resources.getBoolean(R.bool.config_gamepad_visible)) {
@@ -145,6 +146,9 @@ class GameActivity : AppCompatActivity() {
 
         /* Create the GLRetroView */
         retroView = GLRetroView(this, retroViewData)
+
+        /* Register RetroViewUtils class */
+        retroViewUtils = RetroViewUtils(privateData, retroView!!)
 
         /* Hook the GLRetroView to the fragment lifecycle */
         lifecycle.addObserver(retroView!!)
@@ -367,10 +371,10 @@ class GameActivity : AppCompatActivity() {
             saveSettings()
 
             /* Save a temporary state */
-            RetroViewUtils.saveTempState(retroView!!, privateData)
+            retroViewUtils.saveTempState()
 
             /* Save SRAM to disk */
-            RetroViewUtils.saveSRAM(retroView!!, privateData)
+            retroViewUtils.saveSRAM()
         }
 
         super.onPause()
