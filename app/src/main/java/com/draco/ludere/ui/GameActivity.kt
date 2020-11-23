@@ -87,10 +87,7 @@ class GameActivity: AppCompatActivity() {
             .setTitle(getString(R.string.panic_title))
             .setCancelable(false)
             .setPositiveButton(getString(R.string.button_exit)) { _, _ -> finishAffinity() }
-            .setNegativeButton(getString(R.string.button_settings)) { _, _ ->
-                val settingsIntent = Intent(this, SettingsActivity::class.java)
-                startActivityForResult(settingsIntent, SettingsActivity.ACTIVITY_REQUEST_CODE)
-            }
+            .setNegativeButton(getString(R.string.button_settings)) { _, _ -> openSettings() }
             .create()
 
         /* Initialize internal data */
@@ -382,10 +379,13 @@ class GameActivity: AppCompatActivity() {
         }
     }
 
+    private fun openSettings() {
+        val intent = Intent(this, SettingsActivity::class.java)
+        startActivityForResult(intent, SettingsActivity.ACTIVITY_REQUEST_CODE)
+    }
+
     override fun onBackPressed() {
-        val settingsIntent = Intent(this, SettingsActivity::class.java)
-        settingsIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivityForResult(settingsIntent, SettingsActivity.ACTIVITY_REQUEST_CODE)
+        openSettings()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -395,12 +395,12 @@ class GameActivity: AppCompatActivity() {
         val stateSlot = sharedPreferences.getInt(getString(R.string.settings_save_state_slot_key), 0)
         if (requestCode == SettingsActivity.ACTIVITY_REQUEST_CODE && retroViewReadyLatch.count == 0L) {
             when (resultCode) {
-                SettingsActivity.RESULT_CODE_SAVE_STATE -> if (retroView != null) {
+                SettingsActivity.RESULT_CODE_SAVE_STATE -> {
                     stateForSlot(stateSlot).outputStream().use {
                         it.write(retroView!!.serializeState())
                     }
                 }
-                SettingsActivity.RESULT_CODE_LOAD_STATE -> if (retroView != null) {
+                SettingsActivity.RESULT_CODE_LOAD_STATE -> {
                     if (!stateForSlot(stateSlot).exists())
                         return
 
@@ -410,7 +410,7 @@ class GameActivity: AppCompatActivity() {
                     if (bytes.isNotEmpty())
                         retroView!!.unserializeState(bytes)
                 }
-                SettingsActivity.RESULT_CODE_RESET -> retroView?.reset()
+                SettingsActivity.RESULT_CODE_RESET -> retroView!!.reset()
             }
         }
     }

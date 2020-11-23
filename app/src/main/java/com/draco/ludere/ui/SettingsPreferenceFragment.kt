@@ -45,12 +45,8 @@ class SettingsPreferenceFragment: PreferenceFragmentCompat() {
             }
             getString(R.string.settings_resume_key) -> activity?.finish()
             getString(R.string.settings_reset_key) -> returnResult(SettingsActivity.RESULT_CODE_RESET)
-            getString(R.string.settings_select_rom_key) -> {
-                startActivityForResult(Intent.createChooser(chooseFileIntent, null), REQUEST_CODE_CHOOSE_ROM)
-            }
-            getString(R.string.settings_select_core_key) -> {
-                startActivityForResult(Intent.createChooser(chooseFileIntent, null), REQUEST_CODE_CHOOSE_CORE)
-            }
+            getString(R.string.settings_select_rom_key) -> startActivityForResult(Intent.createChooser(chooseFileIntent, null), REQUEST_CODE_CHOOSE_ROM)
+            getString(R.string.settings_select_core_key) -> startActivityForResult(Intent.createChooser(chooseFileIntent, null), REQUEST_CODE_CHOOSE_CORE)
             getString(R.string.settings_manage_gamepad_key) -> {
                 val intent = Intent(activity, GamepadActivity::class.java)
                 activity?.startActivity(intent)
