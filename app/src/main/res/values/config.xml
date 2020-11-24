@@ -17,7 +17,7 @@
     <!-- Color of the GamePad buttons -->
     <color name="config_gamepad_button_color">#88424242</color>
     <!-- Color of the GamePad buttons when pressed -->
-    <color name="config_gamepad_pressed_color">#88212121</color>
+    <color name="config_gamepad_pressed_color">#88848484</color>
     <!-- Should we show a virtual GamePad? -->
     <bool name="config_gamepad_visible">true</bool>
     <!-- Should we vibrate on touch? -->
