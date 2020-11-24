@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.draco.ludere.R
 import com.draco.ludere.assets.PrivateData
-import com.draco.ludere.assets.System
 import com.draco.ludere.gamepad.GamePad
 import com.draco.ludere.gamepad.GamePadConfig
 import com.draco.ludere.utils.Input
@@ -40,7 +39,6 @@ class GameActivity : AppCompatActivity() {
     private lateinit var privateData: PrivateData
     private lateinit var retroViewUtils: RetroViewUtils
     private lateinit var input: Input
-    private lateinit var system: System
 
     /* Emulator objects */
     private var retroView: GLRetroView? = null
@@ -70,7 +68,6 @@ class GameActivity : AppCompatActivity() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         privateData = PrivateData(this)
         input = Input(this)
-        system = System(this)
 
         /* Make sure we reapply immersive mode on rotate */
         window.decorView.setOnApplyWindowInsetsListener { view, windowInsets ->
@@ -91,9 +88,6 @@ class GameActivity : AppCompatActivity() {
          * renders a frame. Let's setup our ROM, core, and GLRetroView in a background thread.
          */
         Thread {
-            /* Extract all essential assets here */
-            system.extractToFilesDir()
-
             /* Add the GLRetroView to the screen */
             runOnUiThread {
                 setupRetroView()
