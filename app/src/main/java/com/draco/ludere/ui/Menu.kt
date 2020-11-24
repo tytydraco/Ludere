@@ -22,7 +22,6 @@ class Menu(
         activity.getString(R.string.menu_load_state),
         activity.getString(R.string.menu_mute),
         activity.getString(R.string.menu_fast_forward),
-        activity.getString(R.string.menu_rotation_lock),
         activity.getString(R.string.menu_next_disk).takeIf { retroView.getAvailableDisks() > 0 },
         activity.getString(R.string.menu_previous_disk).takeIf { retroView.getAvailableDisks() > 0 }
     ).toTypedArray()
@@ -37,15 +36,6 @@ class Menu(
                 activity.getString(R.string.menu_load_state) -> retroViewUtils.loadStateFrom(privateData.state)
                 activity.getString(R.string.menu_mute) -> retroViewUtils.toggleMute()
                 activity.getString(R.string.menu_fast_forward) -> retroViewUtils.toggleFastForward()
-                activity.getString(R.string.menu_rotation_lock) -> {
-                    /* If we are already unlocked, lock to the current orientation */
-                    activity.requestedOrientation = if (activity.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
-                        when (activity.resources.configuration.orientation) {
-                            Configuration.ORIENTATION_LANDSCAPE -> ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE
-                            else -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                        }
-                    } else ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-                }
                 activity.getString(R.string.menu_next_disk) -> retroViewUtils.nextDisk()
                 activity.getString(R.string.menu_previous_disk) -> retroViewUtils.previousDisk()
             }

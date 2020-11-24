@@ -220,8 +220,6 @@ class GameActivity : AppCompatActivity() {
         if (retroView?.getCurrentDisk() != targetDisk)
             retroView?.changeDisk(targetDisk)
 
-        requestedOrientation = sharedPreferences.getInt(getString(R.string.pref_rotation_lock), ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-
         retroViewUtils.loadStateFrom(privateData.tempState)
     }
 
@@ -230,7 +228,6 @@ class GameActivity : AppCompatActivity() {
             putInt(getString(R.string.pref_frame_speed), retroView!!.frameSpeed)
             putBoolean(getString(R.string.pref_audio_enabled), retroView!!.audioEnabled)
             putInt(getString(R.string.pref_current_disk), retroView!!.getCurrentDisk())
-            putInt(getString(R.string.pref_rotation_lock), requestedOrientation)
             apply()
         }
     }
