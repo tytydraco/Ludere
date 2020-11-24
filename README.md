@@ -50,7 +50,7 @@ Here's how Ludere is configured:
 
 # Configuration
 - Edit `app/src/main/res/values/config.xml` and change your configuration
-- Copy your ROM to `app/src/main/res/raw/rom` (exactly)
+- Copy your ROM to `app/src/main/res/raw/rom` (where `rom` is the ROM file)
 
 # Building Offline
 It is usually best to build a release build to reduce the total file size and improve performance.
