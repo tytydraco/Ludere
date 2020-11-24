@@ -78,7 +78,7 @@ class Input(private val activity: Activity) {
         /* Controller numbers are [1, inf), we need [0, inf) */
         val port = ((event.device?.controllerNumber ?: 1) - 1).coerceAtLeast(0)
 
-        /* Handle analog input events, and route the left analog stick to the left DPAD */
+        /* Handle analog input events */
         retroView.apply {
             sendMotionEvent(
                 GLRetroView.MOTION_SOURCE_DPAD,
@@ -87,9 +87,15 @@ class Input(private val activity: Activity) {
                 port
             )
             sendMotionEvent(
-                GLRetroView.MOTION_SOURCE_DPAD,
+                GLRetroView.MOTION_SOURCE_ANALOG_LEFT,
                 event.getAxisValue(MotionEvent.AXIS_X),
                 event.getAxisValue(MotionEvent.AXIS_Y),
+                port
+            )
+            sendMotionEvent(
+                GLRetroView.MOTION_SOURCE_ANALOG_RIGHT,
+                event.getAxisValue(MotionEvent.AXIS_Z),
+                event.getAxisValue(MotionEvent.AXIS_RZ),
                 port
             )
         }
