@@ -19,11 +19,7 @@ class Input(private val activity: Activity) {
             KeyEvent.KEYCODE_DPAD_DOWN,
             KeyEvent.KEYCODE_DPAD_RIGHT,
             KeyEvent.KEYCODE_BUTTON_L1,
-            KeyEvent.KEYCODE_BUTTON_L2,
             KeyEvent.KEYCODE_BUTTON_R1,
-            KeyEvent.KEYCODE_BUTTON_R2,
-            KeyEvent.KEYCODE_BUTTON_THUMBL,
-            KeyEvent.KEYCODE_BUTTON_THUMBR,
             KeyEvent.KEYCODE_BUTTON_START,
             KeyEvent.KEYCODE_BUTTON_SELECT
         )
@@ -82,7 +78,7 @@ class Input(private val activity: Activity) {
         /* Controller numbers are [1, inf), we need [0, inf) */
         val port = ((event.device?.controllerNumber ?: 1) - 1).coerceAtLeast(0)
 
-        /* Handle analog input events */
+        /* Handle analog input events, and route the left analog stick to the left DPAD */
         retroView.apply {
             sendMotionEvent(
                 GLRetroView.MOTION_SOURCE_DPAD,
@@ -91,15 +87,9 @@ class Input(private val activity: Activity) {
                 port
             )
             sendMotionEvent(
-                GLRetroView.MOTION_SOURCE_ANALOG_LEFT,
+                GLRetroView.MOTION_SOURCE_DPAD,
                 event.getAxisValue(MotionEvent.AXIS_X),
                 event.getAxisValue(MotionEvent.AXIS_Y),
-                port
-            )
-            sendMotionEvent(
-                GLRetroView.MOTION_SOURCE_ANALOG_RIGHT,
-                event.getAxisValue(MotionEvent.AXIS_Z),
-                event.getAxisValue(MotionEvent.AXIS_RZ),
                 port
             )
         }

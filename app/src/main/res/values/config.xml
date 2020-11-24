@@ -30,9 +30,5 @@
     <bool name="config_gamepad_start">true</bool>
     <bool name="config_gamepad_select">true</bool>
     <bool name="config_gamepad_l1">false</bool>
-    <bool name="config_gamepad_l2">false</bool>
     <bool name="config_gamepad_r1">false</bool>
-    <bool name="config_gamepad_r2">false</bool>
-    <bool name="config_gamepad_analog_left">false</bool>
-    <bool name="config_gamepad_analog_right">false</bool>
 </resources>

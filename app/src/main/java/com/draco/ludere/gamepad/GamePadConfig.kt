@@ -34,16 +34,6 @@ class GamePadConfig(
             label = "R"
         )
 
-        val BUTTON_L2 = ButtonConfig(
-            id = KeyEvent.KEYCODE_BUTTON_L2,
-            label = "L2"
-        )
-
-        val BUTTON_R2 = ButtonConfig(
-            id = KeyEvent.KEYCODE_BUTTON_R2,
-            label = "R2"
-        )
-
         val BUTTON_A = ButtonConfig(
             id = KeyEvent.KEYCODE_BUTTON_A,
             label = "A"
@@ -78,10 +68,8 @@ class GamePadConfig(
         sockets = 12,
         primaryDial = PrimaryDialConfig.Cross(GLRetroView.MOTION_SOURCE_DPAD),
         secondaryDials = listOfNotNull(
-            SecondaryDialConfig.SingleButton(3, 1, BUTTON_L2).takeIf { resources.getBoolean(R.bool.config_gamepad_l2) },
             SecondaryDialConfig.SingleButton(4, 1, BUTTON_L1).takeIf { resources.getBoolean(R.bool.config_gamepad_l1) },
-            SecondaryDialConfig.SingleButton(8, 1, BUTTON_SELECT).takeIf { resources.getBoolean(R.bool.config_gamepad_select) },
-            SecondaryDialConfig.Stick(9, 2f, GLRetroView.MOTION_SOURCE_ANALOG_LEFT, KeyEvent.KEYCODE_BUTTON_THUMBL).takeIf { resources.getBoolean(R.bool.config_gamepad_analog_left) }
+            SecondaryDialConfig.SingleButton(10, 1, BUTTON_SELECT).takeIf { resources.getBoolean(R.bool.config_gamepad_select) },
         )
     )
 
@@ -99,9 +87,7 @@ class GamePadConfig(
         ),
         secondaryDials = listOfNotNull(
             SecondaryDialConfig.SingleButton(2, 1, BUTTON_R1).takeIf { resources.getBoolean(R.bool.config_gamepad_r1) },
-            SecondaryDialConfig.SingleButton(3, 1, BUTTON_R2).takeIf { resources.getBoolean(R.bool.config_gamepad_r2) },
-            SecondaryDialConfig.Stick(8, 2f, GLRetroView.MOTION_SOURCE_ANALOG_RIGHT, KeyEvent.KEYCODE_BUTTON_THUMBR).takeIf { resources.getBoolean(R.bool.config_gamepad_analog_right) },
-            SecondaryDialConfig.SingleButton(10, 1, BUTTON_START).takeIf { resources.getBoolean(R.bool.config_gamepad_start) },
+            SecondaryDialConfig.SingleButton(8, 1, BUTTON_START).takeIf { resources.getBoolean(R.bool.config_gamepad_start) },
         )
     )
 }
