@@ -215,19 +215,13 @@ class GameActivity : AppCompatActivity() {
     private fun restoreEmulatorState() {
         retroView?.frameSpeed = sharedPreferences.getInt(getString(R.string.pref_frame_speed), 1)
         retroView?.audioEnabled = sharedPreferences.getBoolean(getString(R.string.pref_audio_enabled), true)
-
-        val targetDisk = sharedPreferences.getInt(getString(R.string.pref_current_disk), 0)
-        if (retroView?.getCurrentDisk() != targetDisk)
-            retroView?.changeDisk(targetDisk)
-
         retroViewUtils.loadStateFrom(privateData.tempState)
     }
 
     private fun preserveEmulatorState() {
-        if (retroView != null) with (sharedPreferences.edit()) {
+        with (sharedPreferences.edit()) {
             putInt(getString(R.string.pref_frame_speed), retroView!!.frameSpeed)
             putBoolean(getString(R.string.pref_audio_enabled), retroView!!.audioEnabled)
-            putInt(getString(R.string.pref_current_disk), retroView!!.getCurrentDisk())
             apply()
         }
     }

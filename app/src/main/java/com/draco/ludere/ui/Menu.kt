@@ -21,9 +21,7 @@ class Menu(
         activity.getString(R.string.menu_save_state),
         activity.getString(R.string.menu_load_state),
         activity.getString(R.string.menu_mute),
-        activity.getString(R.string.menu_fast_forward),
-        activity.getString(R.string.menu_next_disk).takeIf { retroView.getAvailableDisks() > 0 },
-        activity.getString(R.string.menu_previous_disk).takeIf { retroView.getAvailableDisks() > 0 }
+        activity.getString(R.string.menu_fast_forward)
     ).toTypedArray()
 
     private val retroViewUtils = RetroViewUtils(retroView)
@@ -36,8 +34,6 @@ class Menu(
                 activity.getString(R.string.menu_load_state) -> retroViewUtils.loadStateFrom(privateData.state)
                 activity.getString(R.string.menu_mute) -> retroViewUtils.toggleMute()
                 activity.getString(R.string.menu_fast_forward) -> retroViewUtils.toggleFastForward()
-                activity.getString(R.string.menu_next_disk) -> retroViewUtils.nextDisk()
-                activity.getString(R.string.menu_previous_disk) -> retroViewUtils.previousDisk()
             }
         }
     }
