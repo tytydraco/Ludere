@@ -7,8 +7,8 @@ os.chdir(cwdabspath)
 
 rootdir = os.path.abspath('..')
 
-if not os.path.isdir(f'{rootdir}/system'):
-    os.mkdir(f'{rootdir}/system')
+if not os.path.isdir(f'{rootdir}/app/src/main/res/raw'):
+    os.mkdir(f'{rootdir}/app/src/main/res/raw')
 
 shutil.copy(f'{rootdir}/app/src/main/res/values/config.xml', f'{cwdabspath}/config.tmp.txt')
 
