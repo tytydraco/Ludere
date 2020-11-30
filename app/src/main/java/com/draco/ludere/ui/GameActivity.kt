@@ -17,7 +17,6 @@ import com.draco.ludere.R
 import com.draco.ludere.utils.Storage
 import com.draco.ludere.gamepad.GamePad
 import com.draco.ludere.gamepad.GamePadConfig
-import com.draco.ludere.utils.Input
 import com.draco.ludere.utils.RetroViewUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.swordfish.libretrodroid.GLRetroView
@@ -37,7 +36,6 @@ class GameActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var storage: Storage
     private lateinit var retroViewUtils: RetroViewUtils
-    private lateinit var input: Input
 
     /* Emulator objects */
     private var retroView: GLRetroView? = null
@@ -47,11 +45,41 @@ class GameActivity : AppCompatActivity() {
     /* Alert dialogs*/
     private lateinit var panicDialog: AlertDialog
 
+    /* Keep track of all keys currently pressed down */
+    private val pressedKeys = mutableSetOf<Int>()
+
     /* Latch that gets decremented when the GLRetroView renders a frame */
     private val retroViewReadyLatch = CountDownLatch(1)
 
     /* Store all observable subscriptions */
     private val compositeDisposable = CompositeDisposable()
+
+    /* List of valid keycodes that can be piped */
+    private val validKeyCodes = listOf(
+        KeyEvent.KEYCODE_BUTTON_A,
+        KeyEvent.KEYCODE_BUTTON_B,
+        KeyEvent.KEYCODE_BUTTON_X,
+        KeyEvent.KEYCODE_BUTTON_Y,
+        KeyEvent.KEYCODE_DPAD_UP,
+        KeyEvent.KEYCODE_DPAD_LEFT,
+        KeyEvent.KEYCODE_DPAD_DOWN,
+        KeyEvent.KEYCODE_DPAD_RIGHT,
+        KeyEvent.KEYCODE_BUTTON_L1,
+        KeyEvent.KEYCODE_BUTTON_L2,
+        KeyEvent.KEYCODE_BUTTON_R1,
+        KeyEvent.KEYCODE_BUTTON_R2,
+        KeyEvent.KEYCODE_BUTTON_THUMBL,
+        KeyEvent.KEYCODE_BUTTON_THUMBR,
+        KeyEvent.KEYCODE_BUTTON_START,
+        KeyEvent.KEYCODE_BUTTON_SELECT
+    )
+
+    private val keyComboMenu = setOf(
+        KeyEvent.KEYCODE_BUTTON_START,
+        KeyEvent.KEYCODE_BUTTON_SELECT,
+        KeyEvent.KEYCODE_BUTTON_L1,
+        KeyEvent.KEYCODE_BUTTON_R1
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,7 +94,6 @@ class GameActivity : AppCompatActivity() {
         /* Setup essential objects */
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         storage = Storage(this)
-        input = Input(this)
 
         /* Make sure we reapply immersive mode on rotate */
         window.decorView.setOnApplyWindowInsetsListener { view, windowInsets ->
@@ -297,18 +324,78 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        return input.handleKeyEvent(retroView, keyCode, event) || super.onKeyDown(keyCode, event)
+        if (retroView == null || keyCode !in validKeyCodes)
+            return super.onKeyDown(keyCode, event)
+
+        /* Keep track of the modifier button states */
+        pressedKeys.add(keyCode)
+
+        /* Controller numbers are [1, inf), we need [0, inf) */
+        val port = ((event.device?.controllerNumber ?: 1) - 1).coerceAtLeast(0)
+
+        /* Handle menu key combination */
+        if (pressedKeys == keyComboMenu)
+            Menu(this, retroView!!).show()
+
+        /* Pipe events to the GLRetroView */
+        retroView!!.sendKeyEvent(
+            event.action,
+            keyCode,
+            port
+        )
+
+        return true
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
-        return input.handleKeyEvent(retroView, keyCode, event) || super.onKeyUp(keyCode, event)
+        if (retroView == null || keyCode !in validKeyCodes)
+            return super.onKeyDown(keyCode, event)
+
+        /* Keep track of the modifier button states */
+        pressedKeys.remove(keyCode)
+
+        /* Controller numbers are [1, inf), we need [0, inf) */
+        val port = ((event.device?.controllerNumber ?: 1) - 1).coerceAtLeast(0)
+
+        /* Pipe events to the GLRetroView */
+        retroView!!.sendKeyEvent(
+            event.action,
+            keyCode,
+            port
+        )
+
+        return true
     }
 
     override fun onGenericMotionEvent(event: MotionEvent): Boolean {
-        if (input.handleGenericMotionEvent(retroView, event))
-            return true
+        if (retroView == null)
+            return super.onGenericMotionEvent(event)
 
-        return super.onGenericMotionEvent(event)
+        /* Controller numbers are [1, inf), we need [0, inf) */
+        val port = ((event.device?.controllerNumber ?: 1) - 1).coerceAtLeast(0)
+
+        /* Handle analog input events */
+        retroView!!.apply {
+            sendMotionEvent(
+                GLRetroView.MOTION_SOURCE_DPAD,
+                event.getAxisValue(MotionEvent.AXIS_HAT_X),
+                event.getAxisValue(MotionEvent.AXIS_HAT_Y),
+                port
+            )
+            sendMotionEvent(
+                GLRetroView.MOTION_SOURCE_ANALOG_LEFT,
+                event.getAxisValue(MotionEvent.AXIS_X),
+                event.getAxisValue(MotionEvent.AXIS_Y),
+                port
+            )
+            sendMotionEvent(
+                GLRetroView.MOTION_SOURCE_ANALOG_RIGHT,
+                event.getAxisValue(MotionEvent.AXIS_Z),
+                event.getAxisValue(MotionEvent.AXIS_RZ),
+                port
+            )
+        }
+        return true
     }
 
     override fun onDestroy() {
