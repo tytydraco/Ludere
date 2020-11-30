@@ -34,6 +34,7 @@ class GameActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var storage: Storage
     private lateinit var retroViewUtils: RetroViewUtils
+    private lateinit var menu: Menu
 
     private var retroView: GLRetroView? = null
     private var leftGamePad: GamePad? = null
@@ -128,6 +129,7 @@ class GameActivity : AppCompatActivity() {
 
         retroView = GLRetroView(this, retroViewData)
         retroViewUtils = RetroViewUtils(retroView!!)
+        menu = Menu(this, retroView!!)
         lifecycle.addObserver(retroView!!)
 
         val params = FrameLayout.LayoutParams(
@@ -264,8 +266,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (retroView != null)
-            Menu(this, retroView!!).show()
+        menu.show()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
@@ -283,14 +284,14 @@ class GameActivity : AppCompatActivity() {
         )
 
         if (pressedKeys == keyComboMenu)
-            Menu(this, retroView!!).show()
+            menu.show()
 
         return true
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
         if (retroView == null || keyCode !in validKeyCodes)
-            return super.onKeyDown(keyCode, event)
+            return super.onKeyUp(keyCode, event)
 
         /* Controller numbers are [1, inf), we need [0, inf) */
         val port = ((event.device?.controllerNumber ?: 1) - 1).coerceAtLeast(0)
