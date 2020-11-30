@@ -157,10 +157,18 @@ class GameActivity : AppCompatActivity() {
             }
         compositeDisposable.add(renderDisposable)
 
-        /* Also start tracking any errors we come across */
+        /* Track any errors we come across */
         val errorDisposable = retroView!!
             .getGLRetroErrors()
-            .subscribe { runOnUiThread { panic() } }
+            .subscribe {
+                runOnUiThread {
+                    /* Invalidate GLRetroView */
+                    retroView = null
+
+                    /* Show the error to the user */
+                    panicDialog.show()
+                }
+            }
         compositeDisposable.add(errorDisposable)
     }
 
@@ -184,14 +192,6 @@ class GameActivity : AppCompatActivity() {
         /* Add to layout */
         leftGamePadContainer.addView(leftGamePad!!.pad)
         rightGamePadContainer.addView(rightGamePad!!.pad)
-    }
-
-    private fun panic() {
-        /* Invalidate GLRetroView */
-        retroView = null
-
-        /* Show the error to the user */
-        panicDialog.show()
     }
 
     private fun getCoreVariables(): Array<Variable> {
@@ -218,6 +218,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun preserveEmulatorState() {
+        retroViewUtils.saveStateTo(storage.tempState)
         with (sharedPreferences.edit()) {
             putInt(getString(R.string.pref_frame_speed), retroView!!.frameSpeed)
             putBoolean(getString(R.string.pref_audio_enabled), retroView!!.audioEnabled)
@@ -326,9 +327,6 @@ class GameActivity : AppCompatActivity() {
         if (retroViewReadyLatch.count == 0L) {
             /* Save emulator settings for next launch */
             preserveEmulatorState()
-
-            /* Save a temporary state */
-            retroViewUtils.saveStateTo(storage.tempState)
 
             /* Save SRAM to disk */
             retroViewUtils.saveSRAMTo(storage.sram)
