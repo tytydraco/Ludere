@@ -2,7 +2,6 @@ package com.draco.ludere.ui
 
 import android.app.Service
 import android.content.SharedPreferences
-import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.hardware.display.DisplayManager
 import android.hardware.input.InputManager
@@ -15,7 +14,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.draco.ludere.R
-import com.draco.ludere.assets.PrivateData
+import com.draco.ludere.utils.Storage
 import com.draco.ludere.gamepad.GamePad
 import com.draco.ludere.gamepad.GamePadConfig
 import com.draco.ludere.utils.Input
@@ -36,7 +35,7 @@ class GameActivity : AppCompatActivity() {
 
     /* Essential objects */
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var privateData: PrivateData
+    private lateinit var storage: Storage
     private lateinit var retroViewUtils: RetroViewUtils
     private lateinit var input: Input
 
@@ -66,7 +65,7 @@ class GameActivity : AppCompatActivity() {
 
         /* Setup essential objects */
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        privateData = PrivateData(this)
+        storage = Storage(this)
         input = Input(this)
 
         /* Make sure we reapply immersive mode on rotate */
@@ -118,12 +117,12 @@ class GameActivity : AppCompatActivity() {
         /* Setup configuration for the GLRetroView */
         val retroViewData = GLRetroViewData(this).apply {
             coreFilePath = "libcore.so"
-            gameFileBytes = privateData.romBytes
+            gameFileBytes = storage.romBytes
             shader = GLRetroView.SHADER_SHARP
             variables = getCoreVariables()
 
-            if (privateData.sram.exists()) {
-                privateData.sram.inputStream().use {
+            if (storage.sram.exists()) {
+                storage.sram.inputStream().use {
                     saveRAMState = it.readBytes()
                 }
             }
@@ -215,7 +214,7 @@ class GameActivity : AppCompatActivity() {
     private fun restoreEmulatorState() {
         retroView?.frameSpeed = sharedPreferences.getInt(getString(R.string.pref_frame_speed), 1)
         retroView?.audioEnabled = sharedPreferences.getBoolean(getString(R.string.pref_audio_enabled), true)
-        retroViewUtils.loadStateFrom(privateData.tempState)
+        retroViewUtils.loadStateFrom(storage.tempState)
     }
 
     private fun preserveEmulatorState() {
@@ -329,10 +328,10 @@ class GameActivity : AppCompatActivity() {
             preserveEmulatorState()
 
             /* Save a temporary state */
-            retroViewUtils.saveStateTo(privateData.tempState)
+            retroViewUtils.saveStateTo(storage.tempState)
 
             /* Save SRAM to disk */
-            retroViewUtils.saveSRAMTo(privateData.sram)
+            retroViewUtils.saveSRAMTo(storage.sram)
         }
 
         super.onPause()
