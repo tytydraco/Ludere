@@ -26,35 +26,24 @@ import io.reactivex.disposables.CompositeDisposable
 import java.util.concurrent.CountDownLatch
 
 class GameActivity : AppCompatActivity() {
-    /* UI components */
     private lateinit var progress: ProgressBar
     private lateinit var retroViewContainer: FrameLayout
     private lateinit var leftGamePadContainer: FrameLayout
     private lateinit var rightGamePadContainer: FrameLayout
 
-    /* Essential objects */
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var storage: Storage
     private lateinit var retroViewUtils: RetroViewUtils
 
-    /* Emulator objects */
     private var retroView: GLRetroView? = null
     private var leftGamePad: GamePad? = null
     private var rightGamePad: GamePad? = null
 
-    /* Alert dialogs*/
     private lateinit var panicDialog: AlertDialog
-
-    /* Keep track of all keys currently pressed down */
     private val pressedKeys = mutableSetOf<Int>()
-
-    /* Latch that gets decremented when the GLRetroView renders a frame */
     private val retroViewReadyLatch = CountDownLatch(1)
-
-    /* Store all observable subscriptions */
     private val compositeDisposable = CompositeDisposable()
 
-    /* List of valid keycodes that can be piped */
     private val validKeyCodes = listOf(
         KeyEvent.KEYCODE_BUTTON_A,
         KeyEvent.KEYCODE_BUTTON_B,
@@ -85,23 +74,18 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        /* Initialize UI components */
         progress = findViewById(R.id.progress)
         retroViewContainer = findViewById(R.id.retroview_container)
         leftGamePadContainer = findViewById(R.id.left_container)
         rightGamePadContainer = findViewById(R.id.right_container)
-
-        /* Setup essential objects */
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         storage = Storage(this)
 
-        /* Make sure we reapply immersive mode on rotate */
         window.decorView.setOnApplyWindowInsetsListener { view, windowInsets ->
             view.post { immersive() }
             return@setOnApplyWindowInsetsListener windowInsets
         }
 
-        /* Prepare skeleton of dialogs */
         panicDialog = MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.panic_title))
             .setMessage(getString(R.string.panic_message))
@@ -109,39 +93,26 @@ class GameActivity : AppCompatActivity() {
             .setPositiveButton(getString(R.string.button_exit)) { _, _ -> finishAffinity() }
             .create()
 
-        /*
-         * We have a progress spinner on the screen at this point until the GLRetroView
-         * renders a frame. Let's setup our ROM, core, and GLRetroView in a background thread.
-         */
         Thread {
-            /* Add the GLRetroView to the screen */
             runOnUiThread {
                 setupRetroView()
                 progress.visibility = View.GONE
             }
 
-            /*
-             * The GLRetroView will take a while to load up the ROM and core, so before we
-             * finish up, we should wait for the GLRetroView to become usable.
-             */
             retroViewReadyLatch.await()
-
-            /* Restore emulator instance from last launch */
             restoreEmulatorState()
 
-            /* Initialize the GamePads if they are enabled in the config */
             if (resources.getBoolean(R.bool.config_gamepad_visible)) {
                 runOnUiThread {
                     setupGamePads()
-                    leftGamePad!!.subscribe(retroView!!)
-                    rightGamePad!!.subscribe(retroView!!)
+                    leftGamePad!!.subscribe(compositeDisposable, retroView!!)
+                    rightGamePad!!.subscribe(compositeDisposable, retroView!!)
                 }
             }
         }.start()
     }
 
     private fun setupRetroView() {
-        /* Setup configuration for the GLRetroView */
         val retroViewData = GLRetroViewData(this).apply {
             coreFilePath = "libcore.so"
             gameFileBytes = storage.romBytes
@@ -155,26 +126,18 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
-        /* Create the GLRetroView */
         retroView = GLRetroView(this, retroViewData)
-
-        /* Register RetroViewUtils class */
         retroViewUtils = RetroViewUtils(retroView!!)
-
-        /* Hook the GLRetroView to the fragment lifecycle */
         lifecycle.addObserver(retroView!!)
 
-        /* Center the view in the parent container */
         val params = FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.WRAP_CONTENT,
             FrameLayout.LayoutParams.WRAP_CONTENT,
         )
         params.gravity = Gravity.CENTER
         retroView!!.layoutParams = params
-
         retroViewContainer.addView(retroView!!)
 
-        /* Start tracking the frame state of the GLRetroView */
         val renderDisposable = retroView!!
             .getGLRetroEvents()
             .takeUntil { retroViewReadyLatch.count == 0L }
@@ -184,15 +147,11 @@ class GameActivity : AppCompatActivity() {
             }
         compositeDisposable.add(renderDisposable)
 
-        /* Track any errors we come across */
         val errorDisposable = retroView!!
             .getGLRetroErrors()
             .subscribe {
                 runOnUiThread {
-                    /* Invalidate GLRetroView */
                     retroView = null
-
-                    /* Show the error to the user */
                     panicDialog.show()
                 }
             }
@@ -200,29 +159,23 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun setupGamePads() {
-        /* Initialize the GamePads */
         val gamePadConfig = GamePadConfig(this, resources)
         leftGamePad = GamePad(this, gamePadConfig.left)
         rightGamePad = GamePad(this, gamePadConfig.right)
 
-        /* Detect when controllers are added so we can disable or enable the GamePads */
         val inputManager = getSystemService(Service.INPUT_SERVICE) as InputManager
         inputManager.registerInputDeviceListener(object : InputManager.InputDeviceListener {
             override fun onInputDeviceAdded(deviceId: Int) { updateVisibility() }
             override fun onInputDeviceRemoved(deviceId: Int) { updateVisibility() }
             override fun onInputDeviceChanged(deviceId: Int) { updateVisibility() }
         }, null)
-
-        /* Perform this check right now */
         updateVisibility()
 
-        /* Add to layout */
         leftGamePadContainer.addView(leftGamePad!!.pad)
         rightGamePadContainer.addView(rightGamePad!!.pad)
     }
 
     private fun getCoreVariables(): Array<Variable> {
-        /* Parse the variables string into a Variable array */
         val variables = arrayListOf<Variable>()
         val rawVariablesString = getString(R.string.config_variables)
         val rawVariables = rawVariablesString.split(",")
@@ -254,29 +207,31 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun updateVisibility() {
-        /* Check if we should show or hide controls */
         val visibility = if (shouldShowGamePads())
             View.VISIBLE
         else
             View.GONE
 
-        /* Apply the new visibility state to the containers */
         leftGamePadContainer.visibility = visibility
         rightGamePadContainer.visibility = visibility
     }
 
     private fun shouldShowGamePads(): Boolean {
-        /* Do not show if the device lacks a touch screen */
         val hasTouchScreen = packageManager?.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)
         if (hasTouchScreen == null || hasTouchScreen == false)
             return false
 
-        /* Do not show if the current display is external (i.e. wireless cast) */
+        val currentDisplayId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            display!!.displayId
+        else {
+            val wm = getSystemService(WINDOW_SERVICE) as WindowManager
+            wm.defaultDisplay.displayId
+        }
+
         val dm = getSystemService(Service.DISPLAY_SERVICE) as DisplayManager
-        if (dm.getDisplay(getCurrentDisplayId()).flags and Display.FLAG_PRESENTATION == Display.FLAG_PRESENTATION)
+        if (dm.getDisplay(currentDisplayId).flags and Display.FLAG_PRESENTATION == Display.FLAG_PRESENTATION)
             return false
 
-        /* Do not show if the device has a controller connected */
         for (id in InputDevice.getDeviceIds()) {
             InputDevice.getDevice(id).apply {
                 if (sources and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD)
@@ -284,17 +239,7 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
-        /* Otherwise, show */
         return true
-    }
-
-    private fun getCurrentDisplayId(): Int {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-            display!!.displayId
-        else {
-            val wm = getSystemService(WINDOW_SERVICE) as WindowManager
-            wm.defaultDisplay.displayId
-        }
     }
 
     private fun immersive() {
@@ -327,22 +272,18 @@ class GameActivity : AppCompatActivity() {
         if (retroView == null || keyCode !in validKeyCodes)
             return super.onKeyDown(keyCode, event)
 
-        /* Keep track of the modifier button states */
-        pressedKeys.add(keyCode)
-
         /* Controller numbers are [1, inf), we need [0, inf) */
         val port = ((event.device?.controllerNumber ?: 1) - 1).coerceAtLeast(0)
 
-        /* Handle menu key combination */
-        if (pressedKeys == keyComboMenu)
-            Menu(this, retroView!!).show()
-
-        /* Pipe events to the GLRetroView */
+        pressedKeys.add(keyCode)
         retroView!!.sendKeyEvent(
             event.action,
             keyCode,
             port
         )
+
+        if (pressedKeys == keyComboMenu)
+            Menu(this, retroView!!).show()
 
         return true
     }
@@ -351,13 +292,10 @@ class GameActivity : AppCompatActivity() {
         if (retroView == null || keyCode !in validKeyCodes)
             return super.onKeyDown(keyCode, event)
 
-        /* Keep track of the modifier button states */
-        pressedKeys.remove(keyCode)
-
         /* Controller numbers are [1, inf), we need [0, inf) */
         val port = ((event.device?.controllerNumber ?: 1) - 1).coerceAtLeast(0)
 
-        /* Pipe events to the GLRetroView */
+        pressedKeys.remove(keyCode)
         retroView!!.sendKeyEvent(
             event.action,
             keyCode,
@@ -374,7 +312,6 @@ class GameActivity : AppCompatActivity() {
         /* Controller numbers are [1, inf), we need [0, inf) */
         val port = ((event.device?.controllerNumber ?: 1) - 1).coerceAtLeast(0)
 
-        /* Handle analog input events */
         retroView!!.apply {
             sendMotionEvent(
                 GLRetroView.MOTION_SOURCE_DPAD,
@@ -395,27 +332,21 @@ class GameActivity : AppCompatActivity() {
                 port
             )
         }
+
         return true
     }
 
     override fun onDestroy() {
-        leftGamePad?.unsubscribe()
-        rightGamePad?.unsubscribe()
-
-        /* Dismiss dialogs to avoid leaking the window */
-        if (panicDialog.isShowing) panicDialog.dismiss()
-
+        if (panicDialog.isShowing)
+            panicDialog.dismiss()
         compositeDisposable.dispose()
+
         super.onDestroy()
     }
 
     override fun onPause() {
-        /* This method is unkillable, save essential variables now */
         if (retroViewReadyLatch.count == 0L) {
-            /* Save emulator settings for next launch */
             preserveEmulatorState()
-
-            /* Save SRAM to disk */
             retroViewUtils.saveSRAMTo(storage.sram)
         }
 

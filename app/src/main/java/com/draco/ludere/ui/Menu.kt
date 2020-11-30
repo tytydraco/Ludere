@@ -12,8 +12,8 @@ class Menu(
     private val activity: Activity,
     private val retroView: GLRetroView
 ) {
+    private val retroViewUtils = RetroViewUtils(retroView)
     private val storage = Storage(activity)
-
     private val menuOptions = listOfNotNull(
         activity.getString(R.string.menu_reset),
         activity.getString(R.string.menu_save_state),
@@ -21,8 +21,6 @@ class Menu(
         activity.getString(R.string.menu_mute),
         activity.getString(R.string.menu_fast_forward)
     ).toTypedArray()
-
-    private val retroViewUtils = RetroViewUtils(retroView)
 
     private inner class MenuOnClickListener : DialogInterface.OnClickListener {
         override fun onClick(dialog: DialogInterface?, which: Int) {
@@ -37,11 +35,8 @@ class Menu(
     }
 
     fun show() {
-        /* Save SRAM and tempstate as a precaution; treat it as a pause */
         retroViewUtils.saveSRAMTo(storage.sram)
         retroViewUtils.saveStateTo(storage.tempState)
-
-        /* Show menu */
         MaterialAlertDialogBuilder(activity)
             .setItems(menuOptions, MenuOnClickListener())
             .show()
