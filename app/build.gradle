@@ -76,7 +76,7 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.1.1'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'org.apache.commons:commons-compress:1.20'
-    implementation 'com.github.swordfish90:radialgamepad:0.1.1'
+    implementation 'com.github.swordfish90:radialgamepad:0.1.2'
     implementation 'com.github.swordfish90:libretrodroid:master-SNAPSHOT'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
 }
