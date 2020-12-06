@@ -12,7 +12,6 @@ import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.preference.PreferenceManager
 import com.draco.ludere.R
 import com.draco.ludere.utils.Storage
 import com.draco.ludere.gamepad.GamePad
@@ -79,7 +78,7 @@ class GameActivity : AppCompatActivity() {
         retroViewContainer = findViewById(R.id.retroview_container)
         leftGamePadContainer = findViewById(R.id.left_container)
         rightGamePadContainer = findViewById(R.id.right_container)
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        sharedPreferences = getPreferences(MODE_PRIVATE)
         storage = Storage(this)
 
         window.decorView.setOnApplyWindowInsetsListener { view, windowInsets ->
