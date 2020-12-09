@@ -14,13 +14,13 @@ class Menu(
 ) {
     private val retroViewUtils = RetroViewUtils(retroView)
     private val storage = Storage(activity)
-    private val menuOptions = listOf(
+    private val menuOptions = arrayOf(
         activity.getString(R.string.menu_reset),
         activity.getString(R.string.menu_save_state),
         activity.getString(R.string.menu_load_state),
         activity.getString(R.string.menu_mute),
         activity.getString(R.string.menu_fast_forward)
-    ).toTypedArray()
+    )
 
     private inner class MenuOnClickListener : DialogInterface.OnClickListener {
         override fun onClick(dialog: DialogInterface?, which: Int) {
