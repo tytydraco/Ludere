@@ -14,7 +14,7 @@ class Menu(
 ) {
     private val retroViewUtils = RetroViewUtils(retroView)
     private val storage = Storage(activity)
-    private val menuOptions = listOfNotNull(
+    private val menuOptions = listOf(
         activity.getString(R.string.menu_reset),
         activity.getString(R.string.menu_save_state),
         activity.getString(R.string.menu_load_state),
