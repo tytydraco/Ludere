@@ -261,6 +261,8 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        retroViewUtils.saveSRAMTo(storage.sram)
+        retroViewUtils.saveStateTo(storage.tempState)
         menu.show()
     }
 

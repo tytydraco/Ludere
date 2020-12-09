@@ -35,8 +35,6 @@ class Menu(
     }
 
     fun show() {
-        retroViewUtils.saveSRAMTo(storage.sram)
-        retroViewUtils.saveStateTo(storage.tempState)
         MaterialAlertDialogBuilder(activity)
             .setItems(menuOptions, MenuOnClickListener())
             .show()
