@@ -7,8 +7,6 @@ on:
         description: 'Direct URL to config.xml'
       romURL:
         description: 'Direct URL to ROM'
-      systemURL:
-        description: 'Direct URL to system tarball (optional)'
 
 jobs:
   build:
@@ -27,7 +25,6 @@ jobs:
         run: |
           mkdir -p ./app/src/main/res/raw/
           curl -L# "${{ github.event.inputs.romURL }}" > ./app/src/main/res/raw/rom
-          [[ ! -z "${{ github.event.inputs.systemURL }}" ]] && curl -L# "${{ github.event.inputs.systemURL }}" > ./app/src/main/res/raw/system
       
       - name: Build Release APK
         run: |
