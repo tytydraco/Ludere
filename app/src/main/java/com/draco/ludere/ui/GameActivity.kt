@@ -13,14 +13,13 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.draco.ludere.R
-import com.draco.ludere.utils.Storage
 import com.draco.ludere.gamepad.GamePad
 import com.draco.ludere.gamepad.GamePadConfig
-import com.draco.ludere.utils.RetroViewUtils
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.libretrodroid.GLRetroViewData
 import com.swordfish.libretrodroid.Variable
 import io.reactivex.disposables.CompositeDisposable
+import java.io.File
 import java.util.concurrent.CountDownLatch
 
 class GameActivity : AppCompatActivity() {
@@ -30,7 +29,6 @@ class GameActivity : AppCompatActivity() {
 
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var storage: Storage
-    private lateinit var retroViewUtils: RetroViewUtils
     private lateinit var menuOnClickListener: MenuOnClickListener
 
     private var retroView: GLRetroView? = null
@@ -68,6 +66,34 @@ class GameActivity : AppCompatActivity() {
         KeyEvent.KEYCODE_BUTTON_R1
     )
 
+    private inner class Storage {
+        private val storagePath: String = (getExternalFilesDir(null) ?: filesDir).path
+        val romBytes = resources.openRawResource(R.raw.rom).use { it.readBytes() }
+        val sram = File("$storagePath/sram")
+        val state = File("$storagePath/state")
+        val tempState = File("$storagePath/tempstate")
+    }
+
+    private inner class MenuOnClickListener : DialogInterface.OnClickListener {
+        val menuOptions = arrayOf(
+            getString(R.string.menu_reset),
+            getString(R.string.menu_save_state),
+            getString(R.string.menu_load_state),
+            getString(R.string.menu_mute),
+            getString(R.string.menu_fast_forward)
+        )
+
+        override fun onClick(dialog: DialogInterface?, which: Int) {
+            if (retroView != null) when (menuOptions[which]) {
+                getString(R.string.menu_reset) -> retroView!!.reset()
+                getString(R.string.menu_save_state) -> saveStateTo(storage.state)
+                getString(R.string.menu_load_state) -> loadStateFrom(storage.state)
+                getString(R.string.menu_mute) -> retroView!!.audioEnabled = !retroView!!.audioEnabled
+                getString(R.string.menu_fast_forward) -> retroView!!.frameSpeed = if (retroView!!.frameSpeed == 1) 2 else 1
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
@@ -76,7 +102,7 @@ class GameActivity : AppCompatActivity() {
         leftGamePadContainer = findViewById(R.id.left_container)
         rightGamePadContainer = findViewById(R.id.right_container)
         sharedPreferences = getPreferences(MODE_PRIVATE)
-        storage = Storage(this)
+        storage = Storage()
         menuOnClickListener = MenuOnClickListener()
 
         window.decorView.setOnApplyWindowInsetsListener { view, windowInsets ->
@@ -124,7 +150,6 @@ class GameActivity : AppCompatActivity() {
         }
 
         retroView = GLRetroView(this, retroViewData)
-        retroViewUtils = RetroViewUtils(retroView!!)
         lifecycle.addObserver(retroView!!)
 
         val params = FrameLayout.LayoutParams(
@@ -191,11 +216,12 @@ class GameActivity : AppCompatActivity() {
     private fun restoreEmulatorState() {
         retroView?.frameSpeed = sharedPreferences.getInt(getString(R.string.pref_frame_speed), 1)
         retroView?.audioEnabled = sharedPreferences.getBoolean(getString(R.string.pref_audio_enabled), true)
-        retroViewUtils.loadStateFrom(storage.tempState)
+        loadStateFrom(storage.tempState)
     }
 
     private fun preserveEmulatorState() {
-        retroViewUtils.saveStateTo(storage.tempState)
+        saveSRAMTo(storage.sram)
+        saveStateTo(storage.tempState)
         with (sharedPreferences.edit()) {
             putInt(getString(R.string.pref_frame_speed), retroView!!.frameSpeed)
             putBoolean(getString(R.string.pref_audio_enabled), retroView!!.audioEnabled)
@@ -242,21 +268,17 @@ class GameActivity : AppCompatActivity() {
     private fun immersive() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             with (window.insetsController!!) {
-                hide(
-                    WindowInsets.Type.statusBars() or
-                    WindowInsets.Type.navigationBars()
-                )
+                hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
                 systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             }
         } else {
-            window.decorView.systemUiVisibility = (
+            window.decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
                 View.SYSTEM_UI_FLAG_FULLSCREEN
-            )
         }
     }
 
@@ -266,9 +288,34 @@ class GameActivity : AppCompatActivity() {
             .show()
     }
 
+    private fun saveSRAMTo(file: File) {
+        file.outputStream().use {
+            it.write(retroView!!.serializeSRAM())
+        }
+    }
+
+    private fun loadStateFrom(file: File) {
+        if (!file.exists())
+            return
+
+        val stateBytes = file.inputStream().use {
+            it.readBytes()
+        }
+
+        if (stateBytes.isEmpty())
+            return
+
+        retroView!!.unserializeState(stateBytes)
+    }
+
+    private fun saveStateTo(file: File) {
+        file.outputStream().use {
+            it.write(retroView!!.serializeState())
+        }
+    }
+
     override fun onBackPressed() {
-        retroViewUtils.saveSRAMTo(storage.sram)
-        retroViewUtils.saveStateTo(storage.tempState)
+        preserveEmulatorState()
         showMenu()
     }
 
@@ -349,31 +396,9 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        if (retroViewReadyLatch.count == 0L) {
+        if (retroViewReadyLatch.count == 0L)
             preserveEmulatorState()
-            retroViewUtils.saveSRAMTo(storage.sram)
-        }
 
         super.onPause()
-    }
-
-    private inner class MenuOnClickListener : DialogInterface.OnClickListener {
-        val menuOptions = arrayOf(
-            getString(R.string.menu_reset),
-            getString(R.string.menu_save_state),
-            getString(R.string.menu_load_state),
-            getString(R.string.menu_mute),
-            getString(R.string.menu_fast_forward)
-        )
-
-        override fun onClick(dialog: DialogInterface?, which: Int) {
-            when (menuOptions[which]) {
-                getString(R.string.menu_reset) -> retroView?.reset()
-                getString(R.string.menu_save_state) -> retroViewUtils.saveStateTo(storage.state)
-                getString(R.string.menu_load_state) -> retroViewUtils.loadStateFrom(storage.state)
-                getString(R.string.menu_mute) -> retroViewUtils.toggleMute()
-                getString(R.string.menu_fast_forward) -> retroViewUtils.toggleFastForward()
-            }
-        }
     }
 }
