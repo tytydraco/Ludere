@@ -1,6 +1,7 @@
 package com.draco.ludere.ui
 
 import android.app.Service
+import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.hardware.display.DisplayManager
@@ -16,7 +17,6 @@ import com.draco.ludere.utils.Storage
 import com.draco.ludere.gamepad.GamePad
 import com.draco.ludere.gamepad.GamePadConfig
 import com.draco.ludere.utils.RetroViewUtils
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.libretrodroid.GLRetroViewData
 import com.swordfish.libretrodroid.Variable
@@ -31,7 +31,7 @@ class GameActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var storage: Storage
     private lateinit var retroViewUtils: RetroViewUtils
-    private lateinit var menu: Menu
+    private lateinit var menuOnClickListener: MenuOnClickListener
 
     private var retroView: GLRetroView? = null
     private var leftGamePad: GamePad? = null
@@ -77,13 +77,14 @@ class GameActivity : AppCompatActivity() {
         rightGamePadContainer = findViewById(R.id.right_container)
         sharedPreferences = getPreferences(MODE_PRIVATE)
         storage = Storage(this)
+        menuOnClickListener = MenuOnClickListener()
 
         window.decorView.setOnApplyWindowInsetsListener { view, windowInsets ->
             view.post { immersive() }
             return@setOnApplyWindowInsetsListener windowInsets
         }
 
-        panicDialog = MaterialAlertDialogBuilder(this)
+        panicDialog = AlertDialog.Builder(this)
             .setTitle(getString(R.string.panic_title))
             .setMessage(getString(R.string.panic_message))
             .setCancelable(false)
@@ -124,7 +125,6 @@ class GameActivity : AppCompatActivity() {
 
         retroView = GLRetroView(this, retroViewData)
         retroViewUtils = RetroViewUtils(retroView!!)
-        menu = Menu(this, retroView!!)
         lifecycle.addObserver(retroView!!)
 
         val params = FrameLayout.LayoutParams(
@@ -260,10 +260,16 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
+    private fun showMenu() {
+        AlertDialog.Builder(this)
+            .setItems(menuOnClickListener.menuOptions, menuOnClickListener)
+            .show()
+    }
+
     override fun onBackPressed() {
         retroViewUtils.saveSRAMTo(storage.sram)
         retroViewUtils.saveStateTo(storage.tempState)
-        menu.show()
+        showMenu()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
@@ -281,7 +287,7 @@ class GameActivity : AppCompatActivity() {
         )
 
         if (pressedKeys == keyComboMenu)
-            menu.show()
+            showMenu()
 
         return true
     }
@@ -349,5 +355,25 @@ class GameActivity : AppCompatActivity() {
         }
 
         super.onPause()
+    }
+
+    private inner class MenuOnClickListener : DialogInterface.OnClickListener {
+        val menuOptions = arrayOf(
+            getString(R.string.menu_reset),
+            getString(R.string.menu_save_state),
+            getString(R.string.menu_load_state),
+            getString(R.string.menu_mute),
+            getString(R.string.menu_fast_forward)
+        )
+
+        override fun onClick(dialog: DialogInterface?, which: Int) {
+            when (menuOptions[which]) {
+                getString(R.string.menu_reset) -> retroView?.reset()
+                getString(R.string.menu_save_state) -> retroViewUtils.saveStateTo(storage.state)
+                getString(R.string.menu_load_state) -> retroViewUtils.loadStateFrom(storage.state)
+                getString(R.string.menu_mute) -> retroViewUtils.toggleMute()
+                getString(R.string.menu_fast_forward) -> retroViewUtils.toggleFastForward()
+            }
+        }
     }
 }
