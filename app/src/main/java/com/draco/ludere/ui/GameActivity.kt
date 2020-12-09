@@ -9,7 +9,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.FrameLayout
-import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.draco.ludere.R
@@ -25,7 +24,6 @@ import io.reactivex.disposables.CompositeDisposable
 import java.util.concurrent.CountDownLatch
 
 class GameActivity : AppCompatActivity() {
-    private lateinit var progress: ProgressBar
     private lateinit var retroViewContainer: FrameLayout
     private lateinit var leftGamePadContainer: FrameLayout
     private lateinit var rightGamePadContainer: FrameLayout
@@ -74,7 +72,6 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        progress = findViewById(R.id.progress)
         retroViewContainer = findViewById(R.id.retroview_container)
         leftGamePadContainer = findViewById(R.id.left_container)
         rightGamePadContainer = findViewById(R.id.right_container)
@@ -96,7 +93,6 @@ class GameActivity : AppCompatActivity() {
         Thread {
             runOnUiThread {
                 setupRetroView()
-                progress.visibility = View.GONE
             }
 
             retroViewReadyLatch.await()
