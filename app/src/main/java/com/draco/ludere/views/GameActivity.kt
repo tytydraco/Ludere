@@ -1,4 +1,4 @@
-package com.draco.ludere.ui
+package com.draco.ludere.views
 
 import android.app.Service
 import android.content.DialogInterface
@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.draco.ludere.R
 import com.draco.ludere.gamepad.GamePad
 import com.draco.ludere.gamepad.GamePadConfig
+import com.draco.ludere.models.KeyCodes
+import com.draco.ludere.models.Storage
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.libretrodroid.GLRetroViewData
 import com.swordfish.libretrodroid.Variable
@@ -28,9 +30,9 @@ class GameActivity : AppCompatActivity() {
     private lateinit var rightGamePadContainer: FrameLayout
 
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var storage: Storage
     private lateinit var menuOnClickListener: MenuOnClickListener
 
+    private lateinit var storage: Storage
     private var retroView: GLRetroView? = null
     private var leftGamePad: GamePad? = null
     private var rightGamePad: GamePad? = null
@@ -39,40 +41,6 @@ class GameActivity : AppCompatActivity() {
     private val pressedKeys = mutableSetOf<Int>()
     private val retroViewReadyLatch = CountDownLatch(1)
     private val compositeDisposable = CompositeDisposable()
-
-    private val validKeyCodes = listOf(
-        KeyEvent.KEYCODE_BUTTON_A,
-        KeyEvent.KEYCODE_BUTTON_B,
-        KeyEvent.KEYCODE_BUTTON_X,
-        KeyEvent.KEYCODE_BUTTON_Y,
-        KeyEvent.KEYCODE_DPAD_UP,
-        KeyEvent.KEYCODE_DPAD_LEFT,
-        KeyEvent.KEYCODE_DPAD_DOWN,
-        KeyEvent.KEYCODE_DPAD_RIGHT,
-        KeyEvent.KEYCODE_BUTTON_L1,
-        KeyEvent.KEYCODE_BUTTON_L2,
-        KeyEvent.KEYCODE_BUTTON_R1,
-        KeyEvent.KEYCODE_BUTTON_R2,
-        KeyEvent.KEYCODE_BUTTON_THUMBL,
-        KeyEvent.KEYCODE_BUTTON_THUMBR,
-        KeyEvent.KEYCODE_BUTTON_START,
-        KeyEvent.KEYCODE_BUTTON_SELECT
-    )
-
-    private val keyComboMenu = setOf(
-        KeyEvent.KEYCODE_BUTTON_START,
-        KeyEvent.KEYCODE_BUTTON_SELECT,
-        KeyEvent.KEYCODE_BUTTON_L1,
-        KeyEvent.KEYCODE_BUTTON_R1
-    )
-
-    private inner class Storage {
-        private val storagePath: String = (getExternalFilesDir(null) ?: filesDir).path
-        val romBytes = resources.openRawResource(R.raw.rom).use { it.readBytes() }
-        val sram = File("$storagePath/sram")
-        val state = File("$storagePath/state")
-        val tempState = File("$storagePath/tempstate")
-    }
 
     private inner class MenuOnClickListener : DialogInterface.OnClickListener {
         val menuOptions = arrayOf(
@@ -98,11 +66,18 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
+        storage = Storage().apply {
+            storagePath = (getExternalFilesDir(null) ?: filesDir).path
+            romBytes = resources.openRawResource(R.raw.rom).use { it.readBytes() }
+            sram = File("$storagePath/sram")
+            state = File("$storagePath/state")
+            tempState = File("$storagePath/tempstate")
+        }
+
         retroViewContainer = findViewById(R.id.retroview_container)
         leftGamePadContainer = findViewById(R.id.left_container)
         rightGamePadContainer = findViewById(R.id.right_container)
         sharedPreferences = getPreferences(MODE_PRIVATE)
-        storage = Storage()
         menuOnClickListener = MenuOnClickListener()
 
         window.decorView.setOnApplyWindowInsetsListener { view, windowInsets ->
@@ -320,7 +295,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        if (retroView == null || keyCode !in validKeyCodes)
+        if (retroView == null || keyCode !in KeyCodes.ValidKeyCodes)
             return super.onKeyDown(keyCode, event)
 
         /* Controller numbers are [1, inf), we need [0, inf) */
@@ -333,14 +308,14 @@ class GameActivity : AppCompatActivity() {
             port
         )
 
-        if (pressedKeys == keyComboMenu)
+        if (pressedKeys == KeyCodes.KeyComboMenu)
             showMenu()
 
         return true
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
-        if (retroView == null || keyCode !in validKeyCodes)
+        if (retroView == null || keyCode !in KeyCodes.ValidKeyCodes)
             return super.onKeyUp(keyCode, event)
 
         /* Controller numbers are [1, inf), we need [0, inf) */

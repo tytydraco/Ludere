@@ -9,7 +9,7 @@ def configValue = { id ->
 
 android {
     compileSdkVersion 30
-    buildToolsVersion '30.0.2'
+    buildToolsVersion '30.0.3'
 
     defaultConfig {
         applicationId "com.draco.ludere.${configValue('config_id')}"
@@ -73,5 +73,6 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.github.swordfish90:radialgamepad:0.1.2'
     implementation 'com.github.swordfish90:libretrodroid:0.5.1'
+
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
 }
