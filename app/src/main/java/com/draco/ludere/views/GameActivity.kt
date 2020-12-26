@@ -70,13 +70,13 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        storage = Storage().apply {
-            storagePath = (getExternalFilesDir(null) ?: filesDir).path
-            romBytes = resources.openRawResource(R.raw.rom).use { it.readBytes() }
-            sram = File("$storagePath/sram")
-            state = File("$storagePath/state")
-            tempState = File("$storagePath/tempstate")
-        }
+        val storagePath = (getExternalFilesDir(null) ?: filesDir).path
+        storage = Storage(
+            storagePath,
+            File("$storagePath/sram"),
+            File("$storagePath/state"),
+            File("$storagePath/tempstate")
+        )
 
         retroViewContainer = findViewById(R.id.retroview_container)
         leftGamePadContainer = findViewById(R.id.left_container)
@@ -118,7 +118,7 @@ class GameActivity : AppCompatActivity() {
     private fun setupRetroView() {
         val retroViewData = GLRetroViewData(this).apply {
             coreFilePath = "libcore.so"
-            gameFileBytes = storage.romBytes
+            gameFileBytes = resources.openRawResource(R.raw.rom).use { it.readBytes() }
             shader = GLRetroView.SHADER_SHARP
             variables = getCoreVariables()
 
