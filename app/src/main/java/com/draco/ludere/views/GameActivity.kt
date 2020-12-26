@@ -12,6 +12,7 @@ import android.view.*
 import android.widget.FrameLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.draco.ludere.R
 import com.draco.ludere.gamepad.GamePad
 import com.draco.ludere.gamepad.GamePadConfig
@@ -21,6 +22,7 @@ import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.libretrodroid.GLRetroViewData
 import com.swordfish.libretrodroid.Variable
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.*
 import java.io.File
 import java.util.concurrent.CountDownLatch
 
@@ -41,6 +43,8 @@ class GameActivity : AppCompatActivity() {
     private val pressedKeys = mutableSetOf<Int>()
     private val retroViewReadyLatch = CountDownLatch(1)
     private val compositeDisposable = CompositeDisposable()
+
+    private lateinit var initJob: Deferred<Unit>
 
     private inner class MenuOnClickListener : DialogInterface.OnClickListener {
         val menuOptions = arrayOf(
@@ -92,22 +96,23 @@ class GameActivity : AppCompatActivity() {
             .setPositiveButton(getString(R.string.button_exit)) { _, _ -> finishAffinity() }
             .create()
 
-        Thread {
-            runOnUiThread {
-                setupRetroView()
-            }
+        setupRetroView()
 
+        initJob = lifecycleScope.async(Dispatchers.IO) {
             retroViewReadyLatch.await()
+            ensureActive()
             restoreEmulatorState()
+        }
+
+        lifecycleScope.launch(Dispatchers.Main) {
+            initJob.await()
 
             if (resources.getBoolean(R.bool.config_gamepad_visible)) {
-                runOnUiThread {
-                    setupGamePads()
-                    leftGamePad!!.subscribe(compositeDisposable, retroView!!)
-                    rightGamePad!!.subscribe(compositeDisposable, retroView!!)
-                }
+                setupGamePads()
+                leftGamePad!!.subscribe(compositeDisposable, retroView!!)
+                rightGamePad!!.subscribe(compositeDisposable, retroView!!)
             }
-        }.start()
+        }
     }
 
     private fun setupRetroView() {
@@ -280,7 +285,7 @@ class GameActivity : AppCompatActivity() {
         if (stateBytes.isEmpty())
             return
 
-        retroView!!.unserializeState(stateBytes)
+        retroView?.unserializeState(stateBytes)
     }
 
     private fun saveStateTo(file: File) {
@@ -366,6 +371,9 @@ class GameActivity : AppCompatActivity() {
         if (panicDialog.isShowing)
             panicDialog.dismiss()
         compositeDisposable.dispose()
+
+        if (this::initJob.isInitialized)
+            initJob.cancel()
 
         super.onDestroy()
     }
