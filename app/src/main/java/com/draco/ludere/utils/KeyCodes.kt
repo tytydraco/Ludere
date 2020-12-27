@@ -1,4 +1,4 @@
-package com.draco.ludere.models
+package com.draco.ludere.utils
 
 import android.view.KeyEvent
 

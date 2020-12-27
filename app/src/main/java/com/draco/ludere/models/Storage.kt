@@ -1,10 +1,18 @@
 package com.draco.ludere.models
 
+import android.content.Context
 import java.io.File
 
-data class Storage(
-    var storagePath: String,
-    var sram: File,
-    var state: File,
-    var tempState: File
-)
+class Storage(context: Context) {
+    companion object {
+        @Volatile private var instance: Storage? = null
+        fun getInstance(context: Context): Storage = instance ?: synchronized(this) {
+            instance ?: Storage(context).also { instance = it }
+        }
+    }
+
+    val storagePath: String = (context.getExternalFilesDir(null) ?: context.filesDir).path
+    val sram = File("$storagePath/sram")
+    val state = File("$storagePath/state")
+    val tempState = File("$storagePath/tempstate")
+}
