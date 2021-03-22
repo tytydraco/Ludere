@@ -19,13 +19,13 @@
     <bool name="config_fullscreen">true</bool>
 
     <!-- Color of the GamePad icons -->
-    <color name="config_gamepad_icon_color">#88ffffff</color>
+    <color name="config_gamepad_icon_color">#ffffff</color>
 
     <!-- Color of the GamePad buttons -->
-    <color name="config_gamepad_button_color">#88424242</color>
+    <color name="config_gamepad_button_color">#887E57C2</color>
 
     <!-- Color of the GamePad buttons when pressed -->
-    <color name="config_gamepad_pressed_color">#88848484</color>
+    <color name="config_gamepad_pressed_color">#447E57C2</color>
 
     <!-- Should we vibrate on touch? -->
     <bool name="config_gamepad_haptic">true</bool>
