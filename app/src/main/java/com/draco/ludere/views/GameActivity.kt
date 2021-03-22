@@ -33,10 +33,6 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        val gamePadConfig = GamePadConfig(this, resources)
-        leftGamePad = GamePad(this, gamePadConfig.left)
-        rightGamePad = GamePad(this, gamePadConfig.right)
-
         retroViewContainer = findViewById(R.id.retroview_container)
         leftGamePadContainer = findViewById(R.id.left_container)
         rightGamePadContainer = findViewById(R.id.right_container)
@@ -71,6 +67,10 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun setupGamePads() {
+        val gamePadConfig = GamePadConfig(this, resources)
+        leftGamePad = GamePad(this, gamePadConfig.left)
+        rightGamePad = GamePad(this, gamePadConfig.right)
+
         leftGamePadContainer.addView(leftGamePad.pad)
         rightGamePadContainer.addView(rightGamePad.pad)
 

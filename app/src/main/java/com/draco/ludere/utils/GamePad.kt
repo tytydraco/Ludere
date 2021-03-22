@@ -12,7 +12,7 @@ class GamePad(
     context: Context,
     padConfig: RadialGamePadConfig,
 ) {
-    val pad: RadialGamePad = RadialGamePad(padConfig, 0f, context)
+    val pad = RadialGamePad(padConfig, 0f, context)
 
     private fun eventHandler(event: Event, retroView: GLRetroView) {
         when (event) {
