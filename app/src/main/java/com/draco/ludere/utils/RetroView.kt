@@ -12,12 +12,11 @@ import com.swordfish.libretrodroid.GLRetroViewData
 import com.swordfish.libretrodroid.Variable
 import io.reactivex.disposables.CompositeDisposable
 
-class RetroView(private val context: Context) {
+class RetroView(private val context: Context, compositeDisposable: CompositeDisposable) {
     private val storage = Storage.getInstance(context)
-    private val compositeDisposable = CompositeDisposable()
 
-    private val frameRendered = MutableLiveData(false)
-    fun getFrameRendered(): LiveData<Boolean> = frameRendered
+    private val _frameRendered = MutableLiveData(false)
+    val frameRendered: LiveData<Boolean> = _frameRendered
 
     private val retroViewData = GLRetroViewData(context).apply {
         coreFilePath = "libcore.so"
@@ -44,10 +43,11 @@ class RetroView(private val context: Context) {
 
         val renderDisposable = view
             .getGLRetroEvents()
-            .takeUntil { frameRendered.value == true }
+            .takeUntil { _frameRendered.value == true }
             .subscribe {
-                if (it == GLRetroView.GLRetroEvents.FrameRendered && frameRendered.value == false)
-                    frameRendered.postValue(true)
+                if (it == GLRetroView.GLRetroEvents.FrameRendered && _frameRendered.value == false) {
+                    _frameRendered.postValue(true)
+                }
             }
         compositeDisposable.add(renderDisposable)
     }
