@@ -76,6 +76,9 @@ You can watch the build in realtime if you'd like. It can take quite a while to 
 
 **You can find a video tutorial here: https://photos.app.goo.gl/V2RvJDsB2QBdMy3V9** (NOTE: slightly outdated)
 
+# Autogen Tool
+Ludere has a directory called `autogen` which contains a basic script to batch-generate Ludere packages. To use it, simply navigate to this folder. Place your ROMs in the `input` folder. In this same folder, put a `config.xml` file with your preferred configuration for these ROMs. Ignore the ID and NAME fields, as they will be overwritten. The script also supports nested folders, in which each can contain their own configuration file. Execute the script with `python generate.py`.
+
 # Keystore
 There is a keystore for signing Ludere packages that is public and free to use. Here are the details you should know when signing with it:
 
