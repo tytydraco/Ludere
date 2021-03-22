@@ -7,6 +7,7 @@ import android.view.*
 import android.widget.FrameLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.draco.ludere.R
 import com.draco.ludere.utils.GamePad
 import com.draco.ludere.utils.GamePadConfig
@@ -38,7 +39,8 @@ class GameActivity : AppCompatActivity() {
         rightGamePadContainer = findViewById(R.id.right_container)
 
         window.decorView.setOnApplyWindowInsetsListener { view, windowInsets ->
-            view.post { immersive() }
+            if (resources.getBoolean(R.bool.config_fullscreen))
+                view.post { immersive() }
             return@setOnApplyWindowInsetsListener windowInsets
         }
 
