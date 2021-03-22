@@ -18,12 +18,6 @@
     <!-- Fullscreen -->
     <bool name="config_fullscreen">true</bool>
 
-    <!-- Icon foreground color -->
-    <color name="config_foreground_color">#ffffff</color>
-
-    <!-- Icon background color -->
-    <color name="config_background_color">#000000</color>
-
     <!-- Color of the GamePad icons -->
     <color name="config_gamepad_icon_color">#88ffffff</color>
 
