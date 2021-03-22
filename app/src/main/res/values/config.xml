@@ -5,7 +5,7 @@
     <!-- The pretty name for the app -->
     <string name="config_name">Example Rom</string>
     <!-- LibRetro core to fetch for this ROM (excluding _libretro_android.so) -->
-    <string name="config_core">nestopia</string>
+    <string name="config_core">snes9x</string>
     <!-- Core variables (key=value separated by commas) -->
     <string name="config_variables"></string>
     <!-- Icon foreground color -->
@@ -23,10 +23,10 @@
     <!-- GamePad buttons to display -->
     <bool name="config_gamepad_a">true</bool>
     <bool name="config_gamepad_b">true</bool>
-    <bool name="config_gamepad_x">false</bool>
-    <bool name="config_gamepad_y">false</bool>
+    <bool name="config_gamepad_x">true</bool>
+    <bool name="config_gamepad_y">true</bool>
     <bool name="config_gamepad_start">true</bool>
     <bool name="config_gamepad_select">true</bool>
-    <bool name="config_gamepad_l1">false</bool>
-    <bool name="config_gamepad_r1">false</bool>
+    <bool name="config_gamepad_l1">true</bool>
+    <bool name="config_gamepad_r1">true</bool>
 </resources>

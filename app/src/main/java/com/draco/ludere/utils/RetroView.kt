@@ -19,8 +19,6 @@ class RetroView(private val context: Context) {
     private val frameRendered = MutableLiveData(false)
     fun getFrameRendered(): LiveData<Boolean> = frameRendered
 
-    var view: GLRetroView? = null
-
     private val retroViewData = GLRetroViewData(context).apply {
         coreFilePath = "libcore.so"
         gameFileBytes = context.resources.openRawResource(R.raw.rom).use { it.readBytes() }
@@ -34,17 +32,17 @@ class RetroView(private val context: Context) {
         }
     }
 
-    init {
-        view = GLRetroView(context, retroViewData)
+    val view = GLRetroView(context, retroViewData)
 
+    init {
         val params = FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.WRAP_CONTENT,
             FrameLayout.LayoutParams.WRAP_CONTENT,
         )
         params.gravity = Gravity.CENTER
-        view!!.layoutParams = params
+        view.layoutParams = params
 
-        val renderDisposable = view!!
+        val renderDisposable = view
             .getGLRetroEvents()
             .takeUntil { frameRendered.value == true }
             .subscribe {

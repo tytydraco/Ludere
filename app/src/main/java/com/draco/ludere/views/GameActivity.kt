@@ -1,6 +1,6 @@
 package com.draco.ludere.views
 
-import android.content.SharedPreferences
+import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
 import android.view.*
@@ -9,6 +9,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.draco.ludere.R
+import com.draco.ludere.utils.GamePad
+import com.draco.ludere.utils.RetroView
+import com.draco.ludere.utils.RetroViewUtils
 import com.draco.ludere.viewmodels.GameActivityViewModel
 import kotlinx.coroutines.*
 
@@ -19,7 +22,10 @@ class GameActivity : AppCompatActivity() {
     private lateinit var leftGamePadContainer: FrameLayout
     private lateinit var rightGamePadContainer: FrameLayout
 
-    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var retroView: RetroView
+    private lateinit var retroViewUtils: RetroViewUtils
+    private lateinit var leftGamePad: GamePad
+    private lateinit var rightGamePad: GamePad
 
     private lateinit var menuDialog: AlertDialog
 
@@ -27,36 +33,48 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        lifecycle.addObserver(viewModel.retroView.view!!)
+        leftGamePad = GamePad(this, viewModel.gamePadConfig.left)
+        rightGamePad = GamePad(this, viewModel.gamePadConfig.right)
 
         retroViewContainer = findViewById(R.id.retroview_container)
         leftGamePadContainer = findViewById(R.id.left_container)
         rightGamePadContainer = findViewById(R.id.right_container)
-        sharedPreferences = getPreferences(MODE_PRIVATE)
 
         window.decorView.setOnApplyWindowInsetsListener { view, windowInsets ->
             view.post { immersive() }
             return@setOnApplyWindowInsetsListener windowInsets
         }
 
+        val menuOnClickListener = MenuOnClickListener()
         menuDialog = AlertDialog.Builder(this)
-            .setItems(viewModel.menuOnClickListener.menuOptions, viewModel.menuOnClickListener)
+            .setItems(menuOnClickListener.menuOptions, menuOnClickListener)
             .create()
 
-        with (viewModel.retroView.view!!) {
-            lifecycle.addObserver(this)
-            retroViewContainer.addView(this)
-            leftGamePadContainer.addView(viewModel.leftGamePad.pad)
-            rightGamePadContainer.addView(viewModel.rightGamePad.pad)
-            viewModel.subscribeGamePads()
-        }
+        setupRetroView()
+        setupGamePads()
+    }
 
-        viewModel.retroView.getFrameRendered().observe(this) {
+    private fun setupRetroView() {
+        retroView = RetroView(this)
+        retroViewUtils = RetroViewUtils(this, retroView)
+
+        lifecycle.addObserver(retroView.view)
+        retroViewContainer.addView(retroView.view)
+
+        retroView.getFrameRendered().observe(this) {
             if (it != true)
                 return@observe
 
-            viewModel.restoreEmulatorState(sharedPreferences)
+            retroViewUtils.restoreEmulatorState()
         }
+    }
+
+    private fun setupGamePads() {
+        leftGamePadContainer.addView(leftGamePad.pad)
+        rightGamePadContainer.addView(rightGamePad.pad)
+
+        viewModel.subscribeGamePad(leftGamePad, retroView)
+        viewModel.subscribeGamePad(rightGamePad, retroView)
     }
 
     private fun immersive() {
@@ -77,7 +95,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        viewModel.preserveEmulatorState(sharedPreferences)
+        retroViewUtils.preserveEmulatorState()
         menuDialog.show()
     }
 
@@ -85,13 +103,34 @@ class GameActivity : AppCompatActivity() {
         if (menuDialog.isShowing)
             menuDialog.dismiss()
 
+        viewModel.dispose()
         super.onDestroy()
     }
 
     override fun onPause() {
-        if (viewModel.retroView.getFrameRendered().value == true)
-            viewModel.preserveEmulatorState(sharedPreferences)
+        if (retroView.getFrameRendered().value == true)
+            retroViewUtils.preserveEmulatorState()
 
         super.onPause()
+    }
+
+    inner class MenuOnClickListener : DialogInterface.OnClickListener {
+        val menuOptions = arrayOf(
+            getString(R.string.menu_reset),
+            getString(R.string.menu_save_state),
+            getString(R.string.menu_load_state),
+            getString(R.string.menu_mute),
+            getString(R.string.menu_fast_forward)
+        )
+
+        override fun onClick(dialog: DialogInterface?, which: Int) {
+            when (menuOptions[which]) {
+                getString(R.string.menu_reset) -> retroView.view.reset()
+                getString(R.string.menu_save_state) -> retroViewUtils.saveState()
+                getString(R.string.menu_load_state) -> retroViewUtils.loadState()
+                getString(R.string.menu_mute) -> retroView.view.audioEnabled = !retroView.view.audioEnabled
+                getString(R.string.menu_fast_forward) -> retroView.view.frameSpeed = if (retroView.view.frameSpeed == 1) 2 else 1
+            }
+        }
     }
 }
