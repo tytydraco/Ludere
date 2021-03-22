@@ -9,7 +9,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.draco.ludere.R
-import com.draco.ludere.utils.KeyCodes
 import com.draco.ludere.viewmodels.GameActivityViewModel
 import kotlinx.coroutines.*
 
@@ -22,7 +21,7 @@ class GameActivity : AppCompatActivity() {
 
     private lateinit var sharedPreferences: SharedPreferences
 
-    private lateinit var panicDialog: AlertDialog
+    private lateinit var menuDialog: AlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,63 +39,23 @@ class GameActivity : AppCompatActivity() {
             return@setOnApplyWindowInsetsListener windowInsets
         }
 
-        panicDialog = AlertDialog.Builder(this)
-            .setTitle(getString(R.string.panic_title))
-            .setMessage(getString(R.string.panic_message))
-            .setCancelable(false)
-            .setPositiveButton(getString(R.string.button_exit)) { _, _ -> finishAffinity() }
+        menuDialog = AlertDialog.Builder(this)
+            .setItems(viewModel.menuOnClickListener.menuOptions, viewModel.menuOnClickListener)
             .create()
 
-        viewModel.retroView.getInit().observe(this) {
-            if (it == true) {
-                with (viewModel.retroView.view!!) {
-                    if (parent != null)
-                        (parent as ViewGroup).removeView(this)
-                    lifecycle.addObserver(this)
-                    retroViewContainer.addView(this)
-                }
-            }
+        with (viewModel.retroView.view!!) {
+            lifecycle.addObserver(this)
+            retroViewContainer.addView(this)
+            leftGamePadContainer.addView(viewModel.leftGamePad.pad)
+            rightGamePadContainer.addView(viewModel.rightGamePad.pad)
+            viewModel.subscribeGamePads()
         }
 
-        viewModel.retroView.getReady().observe(this) {
-            if (it == true) {
-                viewModel.restoreEmulatorState(sharedPreferences)
+        viewModel.retroView.getFrameRendered().observe(this) {
+            if (it != true)
+                return@observe
 
-                if (resources.getBoolean(R.bool.config_gamepad_visible)) {
-                    with (viewModel.leftGamePad.pad) {
-                        if (parent != null)
-                            (parent as ViewGroup).removeView(this)
-                        leftGamePadContainer.addView(this)
-                    }
-
-                    with (viewModel.rightGamePad.pad) {
-                        if (parent != null)
-                            (parent as ViewGroup).removeView(this)
-                        rightGamePadContainer.addView(this)
-                    }
-
-                    viewModel.subscribeGamePads()
-                }
-            }
-        }
-
-        viewModel.retroView.getError().observe(this) {
-            if (it == true)
-                panicDialog.show()
-        }
-
-        viewModel.updateVisibility.observe(this) {
-            val visibility = if (viewModel.shouldShowGamePads())
-                View.VISIBLE
-            else
-                View.GONE
-
-            leftGamePadContainer.visibility = visibility
-            rightGamePadContainer.visibility = visibility
-        }
-
-        viewModel.showMenu.observe(this) {
-            showMenu()
+            viewModel.restoreEmulatorState(sharedPreferences)
         }
     }
 
@@ -117,50 +76,20 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    private fun showMenu() {
-        viewModel.preserveEmulatorState(sharedPreferences)
-        AlertDialog.Builder(this)
-            .setItems(viewModel.menuOnClickListener.menuOptions, viewModel.menuOnClickListener)
-            .show()
-    }
-
     override fun onBackPressed() {
-        showMenu()
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        if (viewModel.retroView.view == null || keyCode !in KeyCodes.ValidKeyCodes)
-            return super.onKeyDown(keyCode, event)
-
-        viewModel.handleKeyDown(keyCode, event)
-        return true
-    }
-
-    override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
-        if (viewModel.retroView.view == null || keyCode !in KeyCodes.ValidKeyCodes)
-            return super.onKeyUp(keyCode, event)
-
-        viewModel.handleKeyUp(keyCode, event)
-        return true
-    }
-
-    override fun onGenericMotionEvent(event: MotionEvent): Boolean {
-        if (viewModel.retroView.view == null)
-            return super.onGenericMotionEvent(event)
-
-        viewModel.handleGenericMotionEvent(event)
-        return true
+        viewModel.preserveEmulatorState(sharedPreferences)
+        menuDialog.show()
     }
 
     override fun onDestroy() {
-        if (panicDialog.isShowing)
-            panicDialog.dismiss()
+        if (menuDialog.isShowing)
+            menuDialog.dismiss()
 
         super.onDestroy()
     }
 
     override fun onPause() {
-        if (viewModel.retroView.getReady().value == true)
+        if (viewModel.retroView.getFrameRendered().value == true)
             viewModel.preserveEmulatorState(sharedPreferences)
 
         super.onPause()

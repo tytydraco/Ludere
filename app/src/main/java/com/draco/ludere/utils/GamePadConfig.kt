@@ -1,4 +1,4 @@
-package com.draco.ludere.gamepad
+package com.draco.ludere.utils
 
 import android.content.Context
 import android.content.res.Resources

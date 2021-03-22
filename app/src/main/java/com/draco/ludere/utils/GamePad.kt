@@ -1,6 +1,7 @@
-package com.draco.ludere.gamepad
+package com.draco.ludere.utils
 
 import android.content.Context
+import android.util.Log
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.radialgamepad.library.RadialGamePad
 import com.swordfish.radialgamepad.library.config.RadialGamePadConfig

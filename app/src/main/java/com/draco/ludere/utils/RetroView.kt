@@ -16,31 +16,25 @@ class RetroView(private val context: Context) {
     private val storage = Storage.getInstance(context)
     private val compositeDisposable = CompositeDisposable()
 
-    private val init = MutableLiveData(false)
-    fun getInit(): LiveData<Boolean> = init
-
-    private val ready = MutableLiveData(false)
-    fun getReady(): LiveData<Boolean> = ready
-
-    private val error = MutableLiveData(false)
-    fun getError(): LiveData<Boolean> = error
+    private val frameRendered = MutableLiveData(false)
+    fun getFrameRendered(): LiveData<Boolean> = frameRendered
 
     var view: GLRetroView? = null
 
-    init {
-        val retroViewData = GLRetroViewData(context).apply {
-            coreFilePath = "libcore.so"
-            gameFileBytes = context.resources.openRawResource(R.raw.rom).use { it.readBytes() }
-            shader = GLRetroView.SHADER_SHARP
-            variables = getCoreVariables()
+    private val retroViewData = GLRetroViewData(context).apply {
+        coreFilePath = "libcore.so"
+        gameFileBytes = context.resources.openRawResource(R.raw.rom).use { it.readBytes() }
+        shader = GLRetroView.SHADER_SHARP
+        variables = getCoreVariables()
 
-            if (storage.sram.exists()) {
-                storage.sram.inputStream().use {
-                    saveRAMState = it.readBytes()
-                }
+        if (storage.sram.exists()) {
+            storage.sram.inputStream().use {
+                saveRAMState = it.readBytes()
             }
         }
+    }
 
+    init {
         view = GLRetroView(context, retroViewData)
 
         val params = FrameLayout.LayoutParams(
@@ -50,25 +44,14 @@ class RetroView(private val context: Context) {
         params.gravity = Gravity.CENTER
         view!!.layoutParams = params
 
-        init.postValue(true)
-
         val renderDisposable = view!!
             .getGLRetroEvents()
-            .takeUntil { ready.value == true }
+            .takeUntil { frameRendered.value == true }
             .subscribe {
-                if (it == GLRetroView.GLRetroEvents.FrameRendered &&
-                        ready.value == false)
-                    ready.postValue(true)
+                if (it == GLRetroView.GLRetroEvents.FrameRendered && frameRendered.value == false)
+                    frameRendered.postValue(true)
             }
         compositeDisposable.add(renderDisposable)
-
-        val errorDisposable = view!!
-            .getGLRetroErrors()
-            .subscribe {
-                view = null
-                error.postValue(true)
-            }
-        compositeDisposable.add(errorDisposable)
     }
 
     private fun getCoreVariables(): Array<Variable> {
