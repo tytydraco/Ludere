@@ -48,6 +48,7 @@ class GameActivity : AppCompatActivity() {
             .create()
 
         setupRetroView()
+        setupGamePads()
     }
 
     private fun setupRetroView() {
@@ -62,7 +63,6 @@ class GameActivity : AppCompatActivity() {
                 return@observe
 
             retroViewUtils.restoreEmulatorState()
-            setupGamePads()
         }
     }
 
