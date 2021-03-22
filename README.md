@@ -41,7 +41,6 @@ Here's how Ludere is configured:
 - Save state support (single slot)
 - SRAM is saved when the application loses focus
 - All-in-one package, can be easily distributed once packaged
-- Android TV and external controller support
 
 # Libraries
 - [LibretroDroid](https://github.com/Swordfish90/LibretroDroid): Our LibRetro frontend that interacts with RetroArch cores
