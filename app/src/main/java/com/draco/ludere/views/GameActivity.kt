@@ -48,21 +48,21 @@ class GameActivity : AppCompatActivity() {
             .create()
 
         setupRetroView()
-        setupGamePads()
     }
 
     private fun setupRetroView() {
         retroView = RetroView(this, compositeDisposable)
         retroViewUtils = RetroViewUtils(this, retroView)
 
-        lifecycle.addObserver(retroView.view)
         retroViewContainer.addView(retroView.view)
+        lifecycle.addObserver(retroView.view)
 
         retroView.frameRendered.observe(this) {
             if (it != true)
                 return@observe
 
             retroViewUtils.restoreEmulatorState()
+            setupGamePads()
         }
     }
 
@@ -96,8 +96,10 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        retroViewUtils.preserveEmulatorState()
-        menuDialog.show()
+        if (retroView.frameRendered.value == true) {
+            retroViewUtils.preserveEmulatorState()
+            menuDialog.show()
+        }
     }
 
     override fun onDestroy() {
