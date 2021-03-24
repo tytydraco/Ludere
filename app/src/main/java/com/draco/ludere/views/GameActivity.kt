@@ -83,7 +83,7 @@ class GameActivity : AppCompatActivity() {
     private fun immersive() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             with (window.insetsController!!) {
-                hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
+                hide(WindowInsets.Type.systemBars())
                 systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             }
         } else {
