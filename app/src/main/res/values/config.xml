@@ -27,6 +27,9 @@
     <!-- Color of the GamePad buttons when pressed -->
     <color name="config_gamepad_pressed_color">#447E57C2</color>
 
+    <!-- Should the left DPAD be replaced with an analog stick? -->
+    <bool name="config_left_analog">false</bool>
+
     <!-- Should we vibrate on touch? -->
     <bool name="config_gamepad_haptic">true</bool>
 

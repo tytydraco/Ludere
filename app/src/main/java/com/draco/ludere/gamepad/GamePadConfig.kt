@@ -53,6 +53,9 @@ class GamePadConfig(
             id = KeyEvent.KEYCODE_BUTTON_Y,
             label = "Y"
         )
+
+        val LEFT_DPAD = PrimaryDialConfig.Cross(GLRetroView.MOTION_SOURCE_DPAD)
+        val LEFT_ANALOG = PrimaryDialConfig.Stick(GLRetroView.MOTION_SOURCE_DPAD)
     }
 
     private val radialGamePadTheme = RadialGamePadTheme(
@@ -66,7 +69,7 @@ class GamePadConfig(
         haptic = resources.getBoolean(R.bool.config_gamepad_haptic),
         theme = radialGamePadTheme,
         sockets = 12,
-        primaryDial = PrimaryDialConfig.Cross(GLRetroView.MOTION_SOURCE_DPAD),
+        primaryDial = if (resources.getBoolean(R.bool.config_left_analog)) LEFT_ANALOG else LEFT_DPAD,
         secondaryDials = listOfNotNull(
             SecondaryDialConfig.SingleButton(4, 1, BUTTON_L1).takeIf { resources.getBoolean(R.bool.config_gamepad_l1) },
             SecondaryDialConfig.SingleButton(10, 1, BUTTON_SELECT).takeIf { resources.getBoolean(R.bool.config_gamepad_select) },
