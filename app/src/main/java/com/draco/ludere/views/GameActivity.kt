@@ -1,6 +1,8 @@
 package com.draco.ludere.views
 
+import android.app.Service
 import android.content.DialogInterface
+import android.hardware.input.InputManager
 import android.os.Build
 import android.os.Bundle
 import android.view.*
@@ -10,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.draco.ludere.R
 import com.draco.ludere.gamepad.GamePad
 import com.draco.ludere.gamepad.GamePadConfig
+import com.draco.ludere.input.ControllerInput
 import com.draco.ludere.retroview.RetroView
 import com.draco.ludere.utils.RetroViewUtils
 import io.reactivex.disposables.CompositeDisposable
@@ -17,6 +20,7 @@ import kotlinx.coroutines.*
 
 class GameActivity : AppCompatActivity() {
     private val compositeDisposable = CompositeDisposable()
+    private val controllerInput = ControllerInput()
 
     private lateinit var retroViewContainer: FrameLayout
     private lateinit var leftGamePadContainer: FrameLayout
@@ -47,6 +51,14 @@ class GameActivity : AppCompatActivity() {
         menuDialog = AlertDialog.Builder(this)
             .setItems(menuOnClickListener.menuOptions, menuOnClickListener)
             .create()
+            .also { controllerInput.menuCallback = { showMenu() } }
+
+        val inputManager = getSystemService(Service.INPUT_SERVICE) as InputManager
+        inputManager.registerInputDeviceListener(object : InputManager.InputDeviceListener {
+            override fun onInputDeviceAdded(deviceId: Int) { updateGamePadVisibility() }
+            override fun onInputDeviceRemoved(deviceId: Int) { updateGamePadVisibility() }
+            override fun onInputDeviceChanged(deviceId: Int) { updateGamePadVisibility() }
+        }, null).also { updateGamePadVisibility() }
 
         setupRetroView()
         setupGamePads()
@@ -79,6 +91,12 @@ class GameActivity : AppCompatActivity() {
         rightGamePad.subscribe(compositeDisposable, retroView.view)
     }
 
+    private fun updateGamePadVisibility() {
+        val visibility = if (GamePad.shouldShowGamePads(this)) View.VISIBLE else View.GONE
+        leftGamePadContainer.visibility = visibility
+        rightGamePadContainer.visibility = visibility
+    }
+
     private fun immersive() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             with (window.insetsController!!) {
@@ -96,12 +114,14 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() {
+    private fun showMenu() {
         if (retroView.frameRendered.value == true) {
             retroViewUtils.preserveEmulatorState()
             menuDialog.show()
         }
     }
+
+    override fun onBackPressed() = showMenu()
 
     override fun onDestroy() {
         if (menuDialog.isShowing)
@@ -116,6 +136,19 @@ class GameActivity : AppCompatActivity() {
             retroViewUtils.preserveEmulatorState()
 
         super.onPause()
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        return controllerInput.processKeyEvent(keyCode, event, retroView)
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
+        return controllerInput.processKeyEvent(keyCode, event, retroView)
+    }
+
+    override fun onGenericMotionEvent(event: MotionEvent): Boolean {
+        controllerInput.processMotionEvent(event, retroView)
+        return true
     }
 
     inner class MenuOnClickListener : DialogInterface.OnClickListener {
