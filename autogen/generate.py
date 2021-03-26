@@ -37,7 +37,10 @@ for subdir in [x[0] for x in os.walk('input')]:
         tree.write('../app/src/main/res/values/config.xml')
         
         os.chdir('..')
-        os.system('gradlew assembleRelease')
+        if os.name == 'nt':
+            os.system('gradlew assembleRelease')
+        else:
+            os.system('./gradlew assembleRelease')
         os.chdir('autogen')
         
         shutil.copy('../app/build/outputs/apk/release/app-release.apk', f'output/{romcore}_{romid}.apk')
