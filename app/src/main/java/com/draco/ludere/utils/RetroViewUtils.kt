@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import com.draco.ludere.R
 import com.draco.ludere.repositories.Storage
+import com.draco.ludere.retroview.RetroView
 
 class RetroViewUtils(
     private val activity: Activity,

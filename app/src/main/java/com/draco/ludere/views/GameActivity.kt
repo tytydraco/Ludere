@@ -7,11 +7,10 @@ import android.view.*
 import android.widget.FrameLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.draco.ludere.R
-import com.draco.ludere.utils.GamePad
-import com.draco.ludere.utils.GamePadConfig
-import com.draco.ludere.utils.RetroView
+import com.draco.ludere.gamepad.GamePad
+import com.draco.ludere.gamepad.GamePadConfig
+import com.draco.ludere.retroview.RetroView
 import com.draco.ludere.utils.RetroViewUtils
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.*
