@@ -1,4 +1,4 @@
-package com.draco.ludere.models
+package com.draco.ludere.repositories
 
 import android.content.Context
 import java.io.File

@@ -3,7 +3,7 @@ package com.draco.ludere.utils
 import android.app.Activity
 import android.content.Context
 import com.draco.ludere.R
-import com.draco.ludere.models.Storage
+import com.draco.ludere.repositories.Storage
 
 class RetroViewUtils(
     private val activity: Activity,
