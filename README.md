@@ -57,7 +57,7 @@ It is usually best to build a release build to reduce the total file size and im
 
 This uses the official Ludere keystore to sign the APK. This is available in the root directory of the project. Feel free to use this key for your personal projects.
 
-The output APK is located here: `app/build/outputs/apk/release/app-release.apk`
+The output APK is located here: `app/build/outputs/apk/release/app-universal-release.apk`
 
 # Building Online
 I know a lot of users are not experienced in building Android Studio projects but would still like to package their own Ludere packages. I've created a GitHub action to help those people.
