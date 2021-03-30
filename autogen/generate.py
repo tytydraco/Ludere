@@ -2,6 +2,7 @@ import xml.etree.ElementTree as ET
 import os, shutil, sys, re
 
 rootdir = os.path.abspath('..')
+abis = ['armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64', 'universal']
 
 if not os.path.isdir('../app/src/main/res/raw'):
     os.mkdir('../app/src/main/res/raw')
@@ -43,4 +44,5 @@ for subdir in [x[0] for x in os.walk('input')]:
             os.system('./gradlew assembleRelease')
         os.chdir('autogen')
         
-        shutil.copy('../app/build/outputs/apk/release/app-release.apk', f'output/{romcore}_{romid}.apk')
+        for abi in abis:
+            shutil.copy(f'../app/build/outputs/apk/release/app-{abi}-release.apk', f'output/{abi}/{romcore}_{romid}.apk')
