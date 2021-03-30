@@ -45,4 +45,4 @@ for subdir in [x[0] for x in os.walk('input')]:
         os.chdir('autogen')
         
         for abi in abis:
-            shutil.copy(f'../app/build/outputs/apk/release/app-{abi}-release.apk', f'output/{abi}/{romcore}_{romid}.apk')
+            shutil.copy(f'../app/release/app-{abi}-release.apk', f'output/{abi}/{romcore}_{romid}.apk')
