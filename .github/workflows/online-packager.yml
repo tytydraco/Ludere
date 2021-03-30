@@ -51,6 +51,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./app/build/outputs/apk/release/app-release.apk
+          asset_path: ./app/build/outputs/apk/release/app-universal-release.apk
           asset_name: ludere.apk
           asset_content_type: application/apk
