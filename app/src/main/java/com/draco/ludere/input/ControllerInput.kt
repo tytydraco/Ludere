@@ -21,7 +21,9 @@ class ControllerInput {
          */
         val EXCLUDED_KEYS = setOf(
             KeyEvent.KEYCODE_VOLUME_DOWN,
-            KeyEvent.KEYCODE_VOLUME_UP
+            KeyEvent.KEYCODE_VOLUME_UP,
+            KeyEvent.KEYCODE_BACK,
+            KeyEvent.KEYCODE_POWER
         )
     }
     /**
