@@ -139,16 +139,15 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        return controllerInput.processKeyEvent(keyCode, event, retroView)
+        return controllerInput.processKeyEvent(keyCode, event, retroView) ?: super.onKeyDown(keyCode, event)
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
-        return controllerInput.processKeyEvent(keyCode, event, retroView)
+        return controllerInput.processKeyEvent(keyCode, event, retroView) ?: super.onKeyUp(keyCode, event)
     }
 
     override fun onGenericMotionEvent(event: MotionEvent): Boolean {
-        controllerInput.processMotionEvent(event, retroView)
-        return true
+        return controllerInput.processMotionEvent(event, retroView) ?: super.onGenericMotionEvent(event)
     }
 
     inner class MenuOnClickListener : DialogInterface.OnClickListener {

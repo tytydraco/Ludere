@@ -50,10 +50,10 @@ class ControllerInput {
             menuCallback()
     }
 
-    fun processKeyEvent(keyCode: Int, event: KeyEvent, retroView: RetroView): Boolean {
+    fun processKeyEvent(keyCode: Int, event: KeyEvent, retroView: RetroView): Boolean? {
         /* Block these keys! */
         if (EXCLUDED_KEYS.contains(keyCode))
-            return false
+            return null
 
         /* We're not ready yet! */
         if (retroView.frameRendered.value == false)
@@ -73,10 +73,10 @@ class ControllerInput {
         return true
     }
 
-    fun processMotionEvent(event: MotionEvent, retroView: RetroView) {
+    fun processMotionEvent(event: MotionEvent, retroView: RetroView): Boolean? {
         /* We're not ready yet! */
         if (retroView.frameRendered.value == false)
-            return
+            return null
 
         val port = getPort(event)
         retroView.view.apply {
@@ -99,5 +99,6 @@ class ControllerInput {
                 port
             )
         }
+        return true
     }
 }
