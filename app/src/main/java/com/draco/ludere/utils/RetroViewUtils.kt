@@ -16,12 +16,12 @@ class RetroViewUtils(
     fun restoreEmulatorState() {
         retroView.view.frameSpeed = sharedPreferences.getInt(activity.getString(R.string.pref_frame_speed), 1)
         retroView.view.audioEnabled = sharedPreferences.getBoolean(activity.getString(R.string.pref_audio_enabled), true)
-        loadState()
+        loadTempState()
     }
 
     fun preserveEmulatorState() {
         saveSRAM()
-        saveState()
+        saveTempState()
 
         with (sharedPreferences.edit()) {
             putInt(activity.getString(R.string.pref_frame_speed), retroView.view.frameSpeed)
@@ -50,8 +50,28 @@ class RetroViewUtils(
         retroView.view.unserializeState(stateBytes)
     }
 
+    fun loadTempState() {
+        if (!storage.tempState.exists())
+            return
+
+        val stateBytes = storage.tempState.inputStream().use {
+            it.readBytes()
+        }
+
+        if (stateBytes.isEmpty())
+            return
+
+        retroView.view.unserializeState(stateBytes)
+    }
+
     fun saveState() {
         storage.state.outputStream().use {
+            it.write(retroView.view.serializeState())
+        }
+    }
+
+    fun saveTempState() {
+        storage.tempState.outputStream().use {
             it.write(retroView.view.serializeState())
         }
     }
