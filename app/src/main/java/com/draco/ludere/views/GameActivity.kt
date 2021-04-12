@@ -1,5 +1,6 @@
 package com.draco.ludere.views
 
+import android.app.Activity
 import android.app.Service
 import android.content.DialogInterface
 import android.hardware.input.InputManager
