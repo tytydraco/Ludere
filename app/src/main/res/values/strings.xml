@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="menu_exit">Exit</string>
+    <string name="pref_frame_speed">frame_speed</string>
+    <string name="pref_audio_enabled">audio_enabled</string>
+
     <string name="menu_reset">Reset</string>
     <string name="menu_save_state">Save State</string>
     <string name="menu_load_state">Load State</string>
     <string name="menu_mute">Mute</string>
     <string name="menu_fast_forward">Fast Forward</string>
-    <string name="menu_next_disk">Next Disk</string>
-    <string name="menu_previous_disk">Previous Disk</string>
 
     <string name="button_exit">Exit</string>
 
     <string name="panic_title">Panic</string>
-    <string name="panic_message_load_core">The core failed to load. Ensure the core configuration is correct, or try clearing the application\'s data.</string>
-    <string name="panic_message_load_game">The ROM failed to load. Ensure the ROM configuration is correct, or try clearing the application\'s data.</string>
-    <string name="panic_message_gles">This version of OpenGLES is unsupported.</string>
+    <string name="panic_message">An internal crash occurred. Check your configuration.</string>
 </resources>

@@ -1,33 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- The relative file path to the rom under the system directory -->
-    <string name="config_rom_path">rom</string>
     <!-- A unique identifier for the app (no spaces or special characters allowed) -->
     <string name="config_id">examplerom</string>
+
     <!-- The pretty name for the app -->
     <string name="config_name">Example Rom</string>
+
     <!-- LibRetro core to fetch for this ROM (excluding _libretro_android.so) -->
-    <string name="config_core">nestopia</string>
+    <string name="config_core">snes9x</string>
+
     <!-- Core variables (key=value separated by commas) -->
     <string name="config_variables"></string>
-    <!-- Can be landscape, portrait, or auto -->
-    <string name="config_orientation">landscape</string>
-    <!-- Icon foreground color -->
-    <color name="config_foreground_color">#fffb00</color>
-    <!-- Icon background color -->
-    <color name="config_background_color">#000000</color>
+
+    <!-- Window background color -->
+    <color name="config_window_background_color">#000000</color>
+
+    <!-- Fullscreen -->
+    <bool name="config_fullscreen">true</bool>
+
     <!-- Color of the GamePad icons -->
-    <color name="config_gamepad_icon_color">#88ffffff</color>
+    <color name="config_gamepad_icon_color">#000000</color>
+
     <!-- Color of the GamePad buttons -->
-    <color name="config_gamepad_button_color">#88424242</color>
+    <color name="config_gamepad_button_color">#88ffffff</color>
+
     <!-- Color of the GamePad buttons when pressed -->
-    <color name="config_gamepad_pressed_color">#88263238</color>
-    <!-- Should be load from where we left off on restart? -->
-    <bool name="config_preserve_state">false</bool>
-    <!-- Should we show a virtual GamePad? -->
-    <bool name="config_gamepad_visible">true</bool>
+    <color name="config_gamepad_pressed_color">#66ffffff</color>
+
+    <!-- Should the left DPAD be replaced with an analog stick? -->
+    <bool name="config_left_analog">false</bool>
+
     <!-- Should we vibrate on touch? -->
     <bool name="config_gamepad_haptic">true</bool>
+
     <!-- GamePad buttons to display -->
     <bool name="config_gamepad_a">true</bool>
     <bool name="config_gamepad_b">true</bool>
@@ -36,9 +41,5 @@
     <bool name="config_gamepad_start">true</bool>
     <bool name="config_gamepad_select">true</bool>
     <bool name="config_gamepad_l1">false</bool>
-    <bool name="config_gamepad_l2">false</bool>
     <bool name="config_gamepad_r1">false</bool>
-    <bool name="config_gamepad_r2">false</bool>
-    <bool name="config_gamepad_analog_left">false</bool>
-    <bool name="config_gamepad_analog_right">false</bool>
 </resources>

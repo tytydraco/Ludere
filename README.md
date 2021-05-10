@@ -41,17 +41,15 @@ Here's how Ludere is configured:
 - Save state support (single slot)
 - SRAM is saved when the application loses focus
 - All-in-one package, can be easily distributed once packaged
-- Android TV and external controller support
 
 # Libraries
 - [LibretroDroid](https://github.com/Swordfish90/LibretroDroid): Our LibRetro frontend that interacts with RetroArch cores
 - [RadialGamePad](https://github.com/Swordfish90/RadialGamePad): Intuitive touchscreen controls
-- [RetroArch](http://buildbot.libretro.com/nightly/): LibRetro emulator cores for Android
+- [LibRetro](http://buildbot.libretro.com/nightly/): Emulator cores for Android
 
 # Configuration
 - Edit `app/src/main/res/values/config.xml` and change your configuration
-- Create a new directory called `system` in the root directory
-- Place your ROM and any other core assets in `system/`, and make sure the file name matches the configuration file's `config_rom_name`
+- Copy your ROM to `app/src/main/res/raw/rom` (where `rom` is the ROM file)
 
 # Building Offline
 It is usually best to build a release build to reduce the total file size and improve performance.
@@ -59,7 +57,7 @@ It is usually best to build a release build to reduce the total file size and im
 
 This uses the official Ludere keystore to sign the APK. This is available in the root directory of the project. Feel free to use this key for your personal projects.
 
-The output APK is located here: `app/build/outputs/apk/release/app-release.apk`
+The output APK is located here: `app/build/outputs/apk/release/app-universal-release.apk`
 
 # Building Online
 I know a lot of users are not experienced in building Android Studio projects but would still like to package their own Ludere packages. I've created a GitHub action to help those people.
@@ -77,6 +75,9 @@ I know a lot of users are not experienced in building Android Studio projects bu
 You can watch the build in realtime if you'd like. It can take quite a while to build, around 8 minutes. When it finishes, your fork will have a new release with the APK attached. You can find the releases tab from the home page of your fork. And that's it! You can install that APK on any device you'd like.
 
 **You can find a video tutorial here: https://photos.app.goo.gl/V2RvJDsB2QBdMy3V9** (NOTE: slightly outdated)
+
+# Autogen Tool
+Ludere has a directory called `autogen` which contains a basic script to batch-generate Ludere packages. To use it, simply navigate to this folder. Place your ROMs in the `input` folder. In this same folder, put a `config.xml` file with your preferred configuration for these ROMs. Ignore the ID and NAME fields, as they will be overwritten. The script also supports nested folders, in which each can contain their own configuration file. Execute the script with `python generate.py`.
 
 # Keystore
 There is a keystore for signing Ludere packages that is public and free to use. Here are the details you should know when signing with it:

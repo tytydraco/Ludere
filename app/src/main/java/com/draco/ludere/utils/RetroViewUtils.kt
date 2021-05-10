@@ -1,79 +1,78 @@
 package com.draco.ludere.utils
 
-import com.swordfish.libretrodroid.GLRetroView
+import android.app.Activity
+import android.content.Context
+import com.draco.ludere.R
+import com.draco.ludere.repositories.Storage
+import com.draco.ludere.retroview.RetroView
 
-class RetroViewUtils {
-    companion object {
-        fun reset(retroView: GLRetroView, privateData: PrivateData) {
-            saveSRAM(retroView, privateData)
-            retroView.reset()
+class RetroViewUtils(
+    private val activity: Activity,
+    private val retroView: RetroView
+) {
+    private val storage = Storage.getInstance(activity)
+    private val sharedPreferences = activity.getPreferences(Context.MODE_PRIVATE)
+
+    fun restoreEmulatorState() {
+        retroView.view.frameSpeed = sharedPreferences.getInt(activity.getString(R.string.pref_frame_speed), 1)
+        retroView.view.audioEnabled = sharedPreferences.getBoolean(activity.getString(R.string.pref_audio_enabled), true)
+        loadTempState()
+    }
+
+    fun preserveEmulatorState() {
+        saveSRAM()
+        saveTempState()
+
+        with (sharedPreferences.edit()) {
+            putInt(activity.getString(R.string.pref_frame_speed), retroView.view.frameSpeed)
+            putBoolean(activity.getString(R.string.pref_audio_enabled), retroView.view.audioEnabled)
+            apply()
+        }
+    }
+
+    fun saveSRAM() {
+        storage.sram.outputStream().use {
+            it.write(retroView.view.serializeSRAM())
+        }
+    }
+
+    fun loadState() {
+        if (!storage.state.exists())
+            return
+
+        val stateBytes = storage.state.inputStream().use {
+            it.readBytes()
         }
 
-        fun saveSRAM(retroView: GLRetroView, privateData: PrivateData) {
-            privateData.save.outputStream().use {
-                it.write(retroView.serializeSRAM())
-            }
+        if (stateBytes.isEmpty())
+            return
+
+        retroView.view.unserializeState(stateBytes)
+    }
+
+    fun loadTempState() {
+        if (!storage.tempState.exists())
+            return
+
+        val stateBytes = storage.tempState.inputStream().use {
+            it.readBytes()
         }
 
-        fun saveState(retroView: GLRetroView, privateData: PrivateData) {
-            privateData.state.outputStream().use {
-                it.write(retroView.serializeState())
-            }
+        if (stateBytes.isEmpty())
+            return
+
+        retroView.view.unserializeState(stateBytes)
+    }
+
+    fun saveState() {
+        storage.state.outputStream().use {
+            it.write(retroView.view.serializeState())
         }
+    }
 
-        fun loadState(retroView: GLRetroView, privateData: PrivateData) {
-            if (!privateData.state.exists())
-                return
-
-            val bytes = privateData.state.inputStream().use {
-                it.readBytes()
-            }
-            if (bytes.isNotEmpty())
-                retroView.unserializeState(bytes)
-        }
-
-        fun saveTempState(retroView: GLRetroView, privateData: PrivateData) {
-            /* Save a temporary state since Android killed the activity */
-            val savedInstanceStateBytes = retroView.serializeState()
-            privateData.tempState.outputStream().use {
-                it.write(savedInstanceStateBytes)
-            }
-        }
-
-        fun restoreTempState(retroView: GLRetroView, privateData: PrivateData) {
-            /* Don't bother restoring a temporary state if it doesn't exist */
-            if (!privateData.tempState.exists())
-                return
-
-            /* Fetch the state bytes */
-            val stateBytes = privateData.tempState.inputStream().use {
-                it.readBytes()
-            }
-
-            /* Restore the temporary state */
-            var remainingTries = 10
-            while (!retroView.unserializeState(stateBytes) && remainingTries-- > 0)
-                Thread.sleep(50)
-        }
-
-        fun toggleMute(retroView: GLRetroView) {
-            retroView.audioEnabled = !retroView.audioEnabled
-        }
-
-        fun toggleFastForward(retroView: GLRetroView) {
-            retroView.fastForwardEnabled = !retroView.fastForwardEnabled
-        }
-
-        fun nextDisk(retroView: GLRetroView) {
-            val currentDisk = retroView.getCurrentDisk()
-            if (currentDisk < retroView.getAvailableDisks())
-                retroView.changeDisk(currentDisk + 1)
-        }
-
-        fun previousDisk(retroView: GLRetroView) {
-            val currentDisk = retroView.getCurrentDisk()
-            if (currentDisk > 0)
-                retroView.changeDisk(currentDisk - 1)
+    fun saveTempState() {
+        storage.tempState.outputStream().use {
+            it.write(retroView.view.serializeState())
         }
     }
 }

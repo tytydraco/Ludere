@@ -7,31 +7,30 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:id="@+id/retroview_container">
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminate="true"
-            android:id="@+id/progress" />
-    </FrameLayout>
-    <RelativeLayout
+        android:id="@+id/retroview_container" />
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:gravity="bottom"
         android:id="@+id/containers">
         <FrameLayout
-            android:layout_width="@dimen/config_gamepad_size"
-            android:layout_height="match_parent"
-            android:layout_marginVertical="@dimen/gamepad_padding_vertical"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:layout_marginBottom="@dimen/gamepad_padding_vertical"
             android:id="@+id/left_container" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.5" />
         <FrameLayout
-            android:layout_width="@dimen/config_gamepad_size"
-            android:layout_height="match_parent"
-            android:layout_marginVertical="@dimen/gamepad_padding_vertical"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:layout_marginBottom="@dimen/gamepad_padding_vertical"
             android:id="@+id/right_container" />
-    </RelativeLayout>
+    </LinearLayout>
 </RelativeLayout>
