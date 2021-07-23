@@ -12,7 +12,7 @@ import com.swordfish.libretrodroid.GLRetroViewData
 import com.swordfish.libretrodroid.Variable
 import io.reactivex.disposables.CompositeDisposable
 
-class RetroView(private val context: Context, compositeDisposable: CompositeDisposable) {
+class RetroView(private val context: Context, private val compositeDisposable: CompositeDisposable) {
     private val storage = Storage.getInstance(context)
 
     private val _frameRendered = MutableLiveData(false)
@@ -40,7 +40,9 @@ class RetroView(private val context: Context, compositeDisposable: CompositeDisp
         )
         params.gravity = Gravity.CENTER
         view.layoutParams = params
+    }
 
+    fun registerFrameRenderedListener() {
         val renderDisposable = view
             .getGLRetroEvents()
             .takeUntil { _frameRendered.value == true }

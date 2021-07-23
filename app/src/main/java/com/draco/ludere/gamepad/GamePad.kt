@@ -56,6 +56,9 @@ class GamePad(
         }
     }
 
+    /**
+     * Send inputs to the RetroView
+     */
     private fun eventHandler(event: Event, retroView: GLRetroView) {
         when (event) {
             is Event.Button -> retroView.sendKeyEvent(event.action, event.id)
@@ -67,6 +70,9 @@ class GamePad(
         }
     }
 
+    /**
+     * Register input events to the RetroView
+     */
     fun subscribe(compositeDisposable: CompositeDisposable, retroView: GLRetroView) {
         val inputDisposable = pad.events().subscribe {
             eventHandler(it, retroView)

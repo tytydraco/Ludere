@@ -6,22 +6,19 @@ import com.draco.ludere.R
 import com.draco.ludere.repositories.Storage
 import com.draco.ludere.retroview.RetroView
 
-class RetroViewUtils(
-    private val activity: Activity,
-    private val retroView: RetroView
-) {
+class RetroViewUtils(private val activity: Activity) {
     private val storage = Storage.getInstance(activity)
     private val sharedPreferences = activity.getPreferences(Context.MODE_PRIVATE)
 
-    fun restoreEmulatorState() {
+    fun restoreEmulatorState(retroView: RetroView) {
         retroView.view.frameSpeed = sharedPreferences.getInt(activity.getString(R.string.pref_frame_speed), 1)
         retroView.view.audioEnabled = sharedPreferences.getBoolean(activity.getString(R.string.pref_audio_enabled), true)
-        loadTempState()
+        loadTempState(retroView)
     }
 
-    fun preserveEmulatorState() {
-        saveSRAM()
-        saveTempState()
+    fun preserveEmulatorState(retroView: RetroView) {
+        saveSRAM(retroView)
+        saveTempState(retroView)
 
         with (sharedPreferences.edit()) {
             putInt(activity.getString(R.string.pref_frame_speed), retroView.view.frameSpeed)
@@ -30,13 +27,13 @@ class RetroViewUtils(
         }
     }
 
-    fun saveSRAM() {
+    fun saveSRAM(retroView: RetroView) {
         storage.sram.outputStream().use {
             it.write(retroView.view.serializeSRAM())
         }
     }
 
-    fun loadState() {
+    fun loadState(retroView: RetroView) {
         if (!storage.state.exists())
             return
 
@@ -50,7 +47,7 @@ class RetroViewUtils(
         retroView.view.unserializeState(stateBytes)
     }
 
-    fun loadTempState() {
+    fun loadTempState(retroView: RetroView) {
         if (!storage.tempState.exists())
             return
 
@@ -64,13 +61,13 @@ class RetroViewUtils(
         retroView.view.unserializeState(stateBytes)
     }
 
-    fun saveState() {
+    fun saveState(retroView: RetroView) {
         storage.state.outputStream().use {
             it.write(retroView.view.serializeState())
         }
     }
 
-    fun saveTempState() {
+    fun saveTempState(retroView: RetroView) {
         storage.tempState.outputStream().use {
             it.write(retroView.view.serializeState())
         }
