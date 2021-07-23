@@ -1,16 +1,15 @@
 package com.draco.ludere.views
 
-import android.app.Activity
 import android.app.Service
 import android.content.DialogInterface
 import android.hardware.input.InputManager
 import android.os.Build
 import android.os.Bundle
 import android.view.*
-import android.widget.FrameLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.draco.ludere.R
+import com.draco.ludere.databinding.ActivityGameBinding
 import com.draco.ludere.gamepad.GamePad
 import com.draco.ludere.gamepad.GamePadConfig
 import com.draco.ludere.input.ControllerInput
@@ -20,12 +19,10 @@ import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.*
 
 class GameActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityGameBinding
+
     private val compositeDisposable = CompositeDisposable()
     private val controllerInput = ControllerInput()
-
-    private lateinit var retroViewContainer: FrameLayout
-    private lateinit var leftGamePadContainer: FrameLayout
-    private lateinit var rightGamePadContainer: FrameLayout
 
     private lateinit var retroView: RetroView
     private lateinit var retroViewUtils: RetroViewUtils
@@ -36,11 +33,8 @@ class GameActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_game)
-
-        retroViewContainer = findViewById(R.id.retroview_container)
-        leftGamePadContainer = findViewById(R.id.left_container)
-        rightGamePadContainer = findViewById(R.id.right_container)
+        binding = ActivityGameBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         window.decorView.setOnApplyWindowInsetsListener { view, windowInsets ->
             if (resources.getBoolean(R.bool.config_fullscreen))
@@ -69,7 +63,7 @@ class GameActivity : AppCompatActivity() {
         retroView = RetroView(this, compositeDisposable)
         retroViewUtils = RetroViewUtils(this, retroView)
 
-        retroViewContainer.addView(retroView.view)
+        binding.retroviewContainer.addView(retroView.view)
         lifecycle.addObserver(retroView.view)
 
         retroView.frameRendered.observe(this) {
@@ -85,8 +79,8 @@ class GameActivity : AppCompatActivity() {
         leftGamePad = GamePad(this, gamePadConfig.left)
         rightGamePad = GamePad(this, gamePadConfig.right)
 
-        leftGamePadContainer.addView(leftGamePad.pad)
-        rightGamePadContainer.addView(rightGamePad.pad)
+        binding.leftContainer.addView(leftGamePad.pad)
+        binding.rightContainer.addView(rightGamePad.pad)
 
         leftGamePad.subscribe(compositeDisposable, retroView.view)
         rightGamePad.subscribe(compositeDisposable, retroView.view)
@@ -94,8 +88,8 @@ class GameActivity : AppCompatActivity() {
 
     private fun updateGamePadVisibility() {
         val visibility = if (GamePad.shouldShowGamePads(this)) View.VISIBLE else View.GONE
-        leftGamePadContainer.visibility = visibility
-        rightGamePadContainer.visibility = visibility
+        binding.leftContainer.visibility = visibility
+        binding.rightContainer.visibility = visibility
     }
 
     private fun immersive() {
