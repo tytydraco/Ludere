@@ -1,5 +1,6 @@
 package com.draco.ludere.viewmodels
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.DialogInterface
@@ -145,10 +146,10 @@ class GameActivityViewModel(application: Application) : AndroidViewModel(applica
     /**
      * Hide the on-screen GamePads
      */
-    fun updateGamePadVisibility(leftContainer: FrameLayout, rightContainer: FrameLayout) {
+    fun updateGamePadVisibility(activity: Activity, leftContainer: FrameLayout, rightContainer: FrameLayout) {
         val context = getApplication<Application>().applicationContext
 
-        val visibility = if (GamePad.shouldShowGamePads(context))
+        val visibility = if (GamePad.shouldShowGamePads(activity))
             View.VISIBLE
         else
             View.GONE

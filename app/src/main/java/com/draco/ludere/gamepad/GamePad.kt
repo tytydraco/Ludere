@@ -1,5 +1,6 @@
 package com.draco.ludere.gamepad
 
+import android.app.Activity
 import android.app.Service
 import android.content.Context
 import android.content.pm.PackageManager
@@ -25,22 +26,22 @@ class GamePad(
         /**
          * Should the user see the on-screen controls?
          */
-        fun shouldShowGamePads(context: Context): Boolean {
+        fun shouldShowGamePads(activity: Activity): Boolean {
             /* Devices without a touchscreen don't need a GamePad */
-            val hasTouchScreen = context.packageManager?.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)
+            val hasTouchScreen = activity.packageManager?.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)
             if (hasTouchScreen == null || hasTouchScreen == false)
                 return false
 
             /* Fetch the current display that the game is running on */
             val currentDisplayId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-                context.display!!.displayId
+                activity.display!!.displayId
             else {
-                val wm = context.getSystemService(AppCompatActivity.WINDOW_SERVICE) as WindowManager
+                val wm = activity.getSystemService(AppCompatActivity.WINDOW_SERVICE) as WindowManager
                 wm.defaultDisplay.displayId
             }
 
             /* Are we presenting this screen on a TV or display? */
-            val dm = context.getSystemService(Service.DISPLAY_SERVICE) as DisplayManager
+            val dm = activity.getSystemService(Service.DISPLAY_SERVICE) as DisplayManager
             if (dm.getDisplay(currentDisplayId).flags and Display.FLAG_PRESENTATION == Display.FLAG_PRESENTATION)
                 return false
 

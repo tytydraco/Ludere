@@ -13,6 +13,7 @@ import com.swordfish.libretrodroid.Variable
 import io.reactivex.disposables.CompositeDisposable
 
 class RetroView(private val context: Context, private val compositeDisposable: CompositeDisposable) {
+    private val resources = context.resources
     private val storage = Storage.getInstance(context)
 
     private val _frameRendered = MutableLiveData(false)
@@ -20,7 +21,22 @@ class RetroView(private val context: Context, private val compositeDisposable: C
 
     private val retroViewData = GLRetroViewData(context).apply {
         coreFilePath = "libcore.so"
-        gameFileBytes = context.resources.openRawResource(R.raw.rom).use { it.readBytes() }
+
+        val romInputStream = context.resources.openRawResource(R.raw.rom)
+        if (resources.getBoolean(R.bool.config_load_bytes)) {
+            gameFileBytes = romInputStream.use {it.readBytes() }
+        } else {
+            if (!storage.rom.exists()) {
+                storage.rom.outputStream().use {
+                    romInputStream.copyTo(it)
+                }
+            }
+
+            gameFilePath = storage.rom.absolutePath
+        }
+
+
+
         shader = GLRetroView.SHADER_SHARP
         variables = getCoreVariables()
 

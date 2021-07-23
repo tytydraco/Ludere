@@ -26,7 +26,7 @@ class GameActivity : AppCompatActivity() {
         }
 
         registerInputListener()
-        viewModel.updateGamePadVisibility(binding.leftContainer, binding.rightContainer)
+        viewModel.updateGamePadVisibility(this, binding.leftContainer, binding.rightContainer)
         viewModel.prepareMenu(this)
         viewModel.setupRetroView(this, binding.retroviewContainer)
         viewModel.setupGamePads(binding.leftContainer, binding.rightContainer)
@@ -39,13 +39,13 @@ class GameActivity : AppCompatActivity() {
         val inputManager = getSystemService(Service.INPUT_SERVICE) as InputManager
         inputManager.registerInputDeviceListener(object : InputManager.InputDeviceListener {
             override fun onInputDeviceAdded(deviceId: Int) {
-                viewModel.updateGamePadVisibility(binding.leftContainer, binding.rightContainer)
+                viewModel.updateGamePadVisibility(this@GameActivity, binding.leftContainer, binding.rightContainer)
             }
             override fun onInputDeviceRemoved(deviceId: Int) {
-                viewModel.updateGamePadVisibility(binding.leftContainer, binding.rightContainer)
+                viewModel.updateGamePadVisibility(this@GameActivity, binding.leftContainer, binding.rightContainer)
             }
             override fun onInputDeviceChanged(deviceId: Int) {
-                viewModel.updateGamePadVisibility(binding.leftContainer, binding.rightContainer)
+                viewModel.updateGamePadVisibility(this@GameActivity, binding.leftContainer, binding.rightContainer)
             }
         }, null)
     }

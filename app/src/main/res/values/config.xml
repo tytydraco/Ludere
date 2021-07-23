@@ -36,6 +36,9 @@
     <!-- Fast forward speed multiplier -->
     <integer name="config_fast_forward_multiplier">2</integer>
 
+    <!-- Load ROM directly from memory; larger games should have this disabled -->
+    <bool name="config_load_bytes">false</bool>
+
     <!-- GamePad buttons to display -->
     <bool name="config_gamepad_a">true</bool>
     <bool name="config_gamepad_b">true</bool>
