@@ -56,23 +56,26 @@ android {
 }
 
 task prepareCore {
-    delete "${rootProject.projectDir}/app/src/main/jniLibs"
-    for (abi in ['x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a']) {
-        file("${rootProject.projectDir}/app/src/main/jniLibs/$abi").mkdirs()
-        download {
-            src "https://buildbot.libretro.com/nightly/android/latest/$abi/${configValue('config_core')}_libretro_android.so.zip"
-            dest "${rootProject.projectDir}/app/src/main/jniLibs/$abi"
-        }
-        copy {
-            from zipTree("${rootProject.projectDir}/app/src/main/jniLibs/$abi/${configValue('config_core')}_libretro_android.so.zip")
-            into "${rootProject.projectDir}/app/src/main/jniLibs/$abi"
-            rename "${configValue('config_core')}_libretro_android.so", "libcore.so"
-        }
-        delete {
-            delete "${rootProject.projectDir}/app/src/main/jniLibs/$abi/${configValue('config_core')}_libretro_android.so.zip"
+    doLast {
+        delete "${rootProject.projectDir}/app/src/main/jniLibs"
+        for (abi in ['x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a']) {
+            file("${rootProject.projectDir}/app/src/main/jniLibs/$abi").mkdirs()
+            download {
+                src "https://buildbot.libretro.com/nightly/android/latest/$abi/${configValue('config_core')}_libretro_android.so.zip"
+                dest "${rootProject.projectDir}/app/src/main/jniLibs/$abi"
+            }
+            copy {
+                from zipTree("${rootProject.projectDir}/app/src/main/jniLibs/$abi/${configValue('config_core')}_libretro_android.so.zip")
+                into "${rootProject.projectDir}/app/src/main/jniLibs/$abi"
+                rename "${configValue('config_core')}_libretro_android.so", "libcore.so"
+            }
+            delete {
+                delete "${rootProject.projectDir}/app/src/main/jniLibs/$abi/${configValue('config_core')}_libretro_android.so.zip"
+            }
         }
     }
 }
+preBuild.dependsOn prepareCore
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
