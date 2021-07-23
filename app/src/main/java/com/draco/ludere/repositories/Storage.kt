@@ -3,6 +3,9 @@ package com.draco.ludere.repositories
 import android.content.Context
 import java.io.File
 
+/**
+ * Singleton for globally accessible ROM metadata
+ */
 class Storage(context: Context) {
     companion object {
         @Volatile private var instance: Storage? = null

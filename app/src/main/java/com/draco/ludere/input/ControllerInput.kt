@@ -99,6 +99,7 @@ class ControllerInput {
                 port
             )
         }
+
         return true
     }
 }

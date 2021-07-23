@@ -26,6 +26,7 @@ class RetroView(private val context: Context, private val compositeDisposable: C
     private val retroViewData = GLRetroViewData(context).apply {
         coreFilePath = "libcore.so"
 
+        /* Prepare the ROM bytes */
         val romInputStream = context.resources.openRawResource(R.raw.rom)
         if (resources.getBoolean(R.bool.config_load_bytes)) {
             if (romBytes == null)
@@ -51,6 +52,9 @@ class RetroView(private val context: Context, private val compositeDisposable: C
         }
     }
 
+    /**
+     * GLRetroView instance itself
+     */
     val view = GLRetroView(context, retroViewData)
 
     init {
@@ -62,6 +66,9 @@ class RetroView(private val context: Context, private val compositeDisposable: C
         view.layoutParams = params
     }
 
+    /**
+     * Register listener for when first frame is rendered
+     */
     fun registerFrameRenderedListener() {
         val renderDisposable = view
             .getGLRetroEvents()
@@ -74,6 +81,9 @@ class RetroView(private val context: Context, private val compositeDisposable: C
         compositeDisposable.add(renderDisposable)
     }
 
+    /**
+     * Parse core variables from config
+     */
     private fun getCoreVariables(): Array<Variable> {
         val variables = arrayListOf<Variable>()
         val rawVariablesString = context.getString(R.string.config_variables)
