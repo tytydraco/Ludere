@@ -9,6 +9,7 @@ import com.draco.ludere.retroview.RetroView
 class RetroViewUtils(private val activity: Activity) {
     private val storage = Storage.getInstance(activity)
     private val sharedPreferences = activity.getPreferences(Context.MODE_PRIVATE)
+    private val fastForwardSpeed = activity.resources.getInteger(R.integer.config_fast_forward_multiplier)
 
     fun restoreEmulatorState(retroView: RetroView) {
         retroView.view.frameSpeed = sharedPreferences.getInt(activity.getString(R.string.pref_frame_speed), 1)
@@ -71,5 +72,9 @@ class RetroViewUtils(private val activity: Activity) {
         storage.tempState.outputStream().use {
             it.write(retroView.view.serializeState())
         }
+    }
+
+    fun fastForward(retroView: RetroView) {
+        retroView.view.frameSpeed = if (retroView.view.frameSpeed == 1) fastForwardSpeed else 1
     }
 }

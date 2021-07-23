@@ -221,7 +221,7 @@ class GameActivityViewModel(application: Application) : AndroidViewModel(applica
                     it.view.audioEnabled = !it.view.audioEnabled
                 }
                 context.getString(R.string.menu_fast_forward) -> retroView?.let {
-                    it.view.frameSpeed = if (it.view.frameSpeed == 1) 2 else 1
+                    retroViewUtils?.fastForward(it)
                 }
             }
         }

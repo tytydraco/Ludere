@@ -33,6 +33,9 @@
     <!-- Should we vibrate on touch? -->
     <bool name="config_gamepad_haptic">true</bool>
 
+    <!-- Fast forward speed multiplier -->
+    <integer name="config_fast_forward_multiplier">2</integer>
+
     <!-- GamePad buttons to display -->
     <bool name="config_gamepad_a">true</bool>
     <bool name="config_gamepad_b">true</bool>
