@@ -13,6 +13,10 @@ import com.swordfish.libretrodroid.Variable
 import io.reactivex.disposables.CompositeDisposable
 
 class RetroView(private val context: Context, private val compositeDisposable: CompositeDisposable) {
+    companion object {
+        var romBytes: ByteArray? = null
+    }
+
     private val resources = context.resources
     private val storage = Storage.getInstance(context)
 
@@ -24,7 +28,9 @@ class RetroView(private val context: Context, private val compositeDisposable: C
 
         val romInputStream = context.resources.openRawResource(R.raw.rom)
         if (resources.getBoolean(R.bool.config_load_bytes)) {
-            gameFileBytes = romInputStream.use {it.readBytes() }
+            if (romBytes == null)
+                romBytes = romInputStream.use {it.readBytes() }
+            gameFileBytes = romBytes
         } else {
             if (!storage.rom.exists()) {
                 storage.rom.outputStream().use {
@@ -34,8 +40,6 @@ class RetroView(private val context: Context, private val compositeDisposable: C
 
             gameFilePath = storage.rom.absolutePath
         }
-
-
 
         shader = GLRetroView.SHADER_SHARP
         variables = getCoreVariables()
