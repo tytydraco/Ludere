@@ -55,7 +55,7 @@ class GameActivity : AppCompatActivity() {
     override fun onDestroy() {
         viewModel.dismissMenu()
         viewModel.dispose()
-        viewModel.detachRetroView()
+        viewModel.detachRetroView(this)
         super.onDestroy()
     }
 

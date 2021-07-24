@@ -181,7 +181,8 @@ class GameActivityViewModel(application: Application) : AndroidViewModel(applica
     /**
      * Deallocate the old RetroView
      */
-    fun detachRetroView() {
+    fun detachRetroView(activity: ComponentActivity) {
+        retroView?.let { activity.lifecycle.removeObserver(it.view) }
         retroView = null
     }
 
