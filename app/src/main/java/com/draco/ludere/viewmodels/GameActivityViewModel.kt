@@ -147,8 +147,6 @@ class GameActivityViewModel(application: Application) : AndroidViewModel(applica
      * Hide the on-screen GamePads
      */
     fun updateGamePadVisibility(activity: Activity, leftContainer: FrameLayout, rightContainer: FrameLayout) {
-        val context = getApplication<Application>().applicationContext
-
         val visibility = if (GamePad.shouldShowGamePads(activity))
             View.VISIBLE
         else
