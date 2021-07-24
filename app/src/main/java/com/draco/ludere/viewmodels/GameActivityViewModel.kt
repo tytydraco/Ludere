@@ -104,8 +104,7 @@ class GameActivityViewModel(application: Application) : AndroidViewModel(applica
      */
     fun setupRetroView(activity: ComponentActivity, container: FrameLayout) {
         retroView = RetroView(activity, compositeDisposable)
-        if (retroViewUtils == null)
-            retroViewUtils = RetroViewUtils(activity)
+        retroViewUtils = RetroViewUtils(activity)
 
         retroView?.let { retroView ->
             container.addView(retroView.view)
