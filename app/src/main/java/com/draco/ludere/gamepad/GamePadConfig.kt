@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import com.draco.ludere.R
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.radialgamepad.library.config.*
+import com.swordfish.radialgamepad.library.haptics.HapticConfig
 
 class GamePadConfig(
     context: Context,
@@ -66,7 +67,7 @@ class GamePadConfig(
     )
 
     val left = RadialGamePadConfig(
-        haptic = resources.getBoolean(R.bool.config_gamepad_haptic),
+        haptic = if (resources.getBoolean(R.bool.config_gamepad_haptic)) HapticConfig.PRESS else HapticConfig.OFF,
         theme = radialGamePadTheme,
         sockets = 12,
         primaryDial = if (resources.getBoolean(R.bool.config_left_analog)) LEFT_ANALOG else LEFT_DPAD,
@@ -77,7 +78,7 @@ class GamePadConfig(
     )
 
     val right = RadialGamePadConfig(
-        haptic = resources.getBoolean(R.bool.config_gamepad_haptic),
+        haptic = if (resources.getBoolean(R.bool.config_gamepad_haptic)) HapticConfig.PRESS else HapticConfig.OFF,
         theme = radialGamePadTheme,
         sockets = 12,
         primaryDial = PrimaryDialConfig.PrimaryButtons(
