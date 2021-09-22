@@ -2,6 +2,7 @@ package com.draco.ludere.views
 
 import android.app.Service
 import android.hardware.input.InputManager
+import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -20,10 +21,11 @@ class GameActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         /* Use immersive mode when we change the window insets */
-        window.decorView.setOnApplyWindowInsetsListener { view, windowInsets ->
-            view.post { viewModel.immersive(window) }
-            return@setOnApplyWindowInsetsListener windowInsets
-        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH)
+            window.decorView.setOnApplyWindowInsetsListener { view, windowInsets ->
+                view.post { viewModel.immersive(window) }
+                return@setOnApplyWindowInsetsListener windowInsets
+            }
 
         registerInputListener()
         viewModel.updateGamePadVisibility(this, binding.leftContainer, binding.rightContainer)

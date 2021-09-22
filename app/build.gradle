@@ -96,8 +96,8 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
 
-    implementation 'com.github.swordfish90:radialgamepad:master-SNAPSHOT'
-    implementation 'com.github.swordfish90:libretrodroid:master-SNAPSHOT'
+    implementation 'com.github.swordfish90:radialgamepad:0.5.0'
+    implementation 'com.github.swordfish90:libretrodroid:0.6.0'
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
 }
