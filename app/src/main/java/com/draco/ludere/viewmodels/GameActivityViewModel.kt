@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.DialogInterface
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.view.*
 import android.widget.FrameLayout
@@ -183,6 +184,20 @@ class GameActivityViewModel(application: Application) : AndroidViewModel(applica
     fun detachRetroView(activity: ComponentActivity) {
         retroView?.let { activity.lifecycle.removeObserver(it.view) }
         retroView = null
+    }
+
+    /**
+     * Set the screen orientation based on the config
+     */
+    fun setConfigOrientation(activity: Activity) {
+        when (resources.getInteger(R.integer.config_orientation)) {
+            1 -> ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
+            2 -> ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE
+            3 -> ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+            else -> return
+        }.also {
+            activity.requestedOrientation = it
+        }
     }
 
     /**

@@ -18,6 +18,18 @@
     <!-- Fullscreen -->
     <bool name="config_fullscreen">true</bool>
 
+    <!-- Orientation modes
+        0: Default
+        1: Portrait only
+        2: Landscape only
+        3: Any orientation (including upside-down)
+
+        NOTE: Landscape <-> Portrait can be slow,
+              as it involves rebuilding the
+              emulator instance!
+    -->
+    <integer name="config_orientation">3</integer>
+
     <!-- Color of the GamePad icons -->
     <color name="config_gamepad_icon_color">#000000</color>
 
