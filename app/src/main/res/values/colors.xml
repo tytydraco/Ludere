@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="gamepad_icon_color">#ff000000</color>
+    <color name="gamepad_button_color">#88ffffff</color>
+    <color name="gamepad_pressed_color">#66ffffff</color>
+</resources>

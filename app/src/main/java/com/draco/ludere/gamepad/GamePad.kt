@@ -10,6 +10,7 @@ import android.view.Display
 import android.view.InputDevice
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import com.draco.ludere.R
 import com.swordfish.libretrodroid.GLRetroView
 import com.swordfish.radialgamepad.library.RadialGamePad
 import com.swordfish.radialgamepad.library.config.RadialGamePadConfig
@@ -27,6 +28,10 @@ class GamePad(
          * Should the user see the on-screen controls?
          */
         fun shouldShowGamePads(activity: Activity): Boolean {
+            /* Config says we shouldn't use virtual controls */
+            if (!activity.resources.getBoolean(R.bool.config_gamepad))
+                return false
+
             /* Devices without a touchscreen don't need a GamePad */
             val hasTouchScreen = activity.packageManager?.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)
             if (hasTouchScreen == null || hasTouchScreen == false)

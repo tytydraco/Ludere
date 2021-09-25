@@ -61,9 +61,9 @@ class GamePadConfig(
 
     private val radialGamePadTheme = RadialGamePadTheme(
         primaryDialBackground = Color.TRANSPARENT,
-        textColor = ContextCompat.getColor(context, R.color.config_gamepad_icon_color),
-        normalColor = ContextCompat.getColor(context, R.color.config_gamepad_button_color),
-        pressedColor = ContextCompat.getColor(context, R.color.config_gamepad_pressed_color)
+        textColor = ContextCompat.getColor(context, R.color.gamepad_icon_color),
+        normalColor = ContextCompat.getColor(context, R.color.gamepad_button_color),
+        pressedColor = ContextCompat.getColor(context, R.color.gamepad_pressed_color)
     )
 
     val left = RadialGamePadConfig(
