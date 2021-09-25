@@ -4,8 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       configURL:
+        required: true
         description: 'Direct URL to config.xml'
       romURL:
+        required: true
         description: 'Direct URL to ROM'
 
 jobs:
