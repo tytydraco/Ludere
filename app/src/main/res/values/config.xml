@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- A unique identifier for the app (no spaces or special characters allowed) -->
-    <string name="config_id">examplerom</string>
+    <string name="config_id">super_mario_advance_3</string>
 
     <!-- The pretty name for the app -->
-    <string name="config_name">Example Rom</string>
+    <string name="config_name">Yoshi\'s Island</string>
 
     <!-- LibRetro core to fetch for this ROM (excluding _libretro_android.so) -->
-    <string name="config_core">snes9x</string>
+    <string name="config_core">mgba</string>
 
     <!-- Load ROM directly from memory; larger games should have this disabled -->
     <bool name="config_load_bytes">true</bool>
@@ -31,7 +31,7 @@
               as it involves rebuilding the
               emulator instance!
     -->
-    <integer name="config_orientation">0</integer>
+    <integer name="config_orientation">2</integer>
 
     <!-- Should we display a virtual gamepad? -->
     <bool name="config_gamepad">true</bool>
@@ -46,8 +46,8 @@
     <bool name="config_gamepad_y">false</bool>
     <bool name="config_gamepad_start">true</bool>
     <bool name="config_gamepad_select">true</bool>
-    <bool name="config_gamepad_l1">false</bool>
-    <bool name="config_gamepad_r1">false</bool>
+    <bool name="config_gamepad_l1">true</bool>
+    <bool name="config_gamepad_r1">true</bool>
 
     <!-- Should the left DPAD be replaced with an analog stick? -->
     <bool name="config_left_analog">false</bool>

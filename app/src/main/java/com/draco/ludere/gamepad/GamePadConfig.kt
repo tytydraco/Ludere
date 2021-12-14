@@ -55,8 +55,8 @@ class GamePadConfig(
             label = "Y"
         )
 
-        val LEFT_DPAD = PrimaryDialConfig.Cross(GLRetroView.MOTION_SOURCE_DPAD)
-        val LEFT_ANALOG = PrimaryDialConfig.Stick(GLRetroView.MOTION_SOURCE_DPAD)
+        val LEFT_DPAD = PrimaryDialConfig.Cross(CrossConfig(0))
+        val LEFT_ANALOG = PrimaryDialConfig.Stick(0)
     }
 
     private val radialGamePadTheme = RadialGamePadTheme(
