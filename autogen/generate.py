@@ -19,7 +19,7 @@ for subdir in [x[0] for x in os.walk('input')]:
         if file == 'config.xml':
             continue
 
-        romname = os.path.splitext(file)[0].replace('\'', '')
+        romname = os.path.splitext(file)[0].replace('\'', '\\\'')
         romext = os.path.splitext(file)[1]
         romid = romname.lower()
         romid = re.sub(r'[^A-Za-z0-9]+', '', romid)
