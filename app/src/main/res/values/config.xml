@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- A unique identifier for the app (no spaces or special characters allowed) -->
-    <string name="config_id">super_mario_advance_3</string>
+    <string name="config_id">yoshis_island</string>
 
     <!-- The pretty name for the app -->
     <string name="config_name">Yoshi\'s Island</string>
