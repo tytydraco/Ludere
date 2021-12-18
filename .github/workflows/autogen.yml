@@ -8,7 +8,7 @@ on:
         description: 'Direct URL to autogen payload zip'
 
 jobs:
-  build:
+  autogen:
     runs-on: ubuntu-latest
 
     steps:
