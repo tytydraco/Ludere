@@ -63,9 +63,14 @@ android {
 
 task prepareCore {
     doLast {
-        delete "${rootProject.projectDir}/app/src/main/jniLibs"
         for (abi in ['x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a']) {
-            file("${rootProject.projectDir}/app/src/main/jniLibs/$abi").mkdirs()
+            var jniAbiFolder = file("${rootProject.projectDir}/app/src/main/jniLibs/$abi")
+
+            if (jniAbiFolder.exists() && jniAbiFolder.list().length > 0)
+                continue
+
+            jniAbiFolder.mkdirs()
+
             download {
                 src "https://buildbot.libretro.com/nightly/android/latest/$abi/${configValue('config_core')}_libretro_android.so.zip"
                 dest "${rootProject.projectDir}/app/src/main/jniLibs/$abi"
