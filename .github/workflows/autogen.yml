@@ -28,7 +28,9 @@ jobs:
           python3 generate.py
         
       - name: Compress outputs
-        run: zip -vr ./autogen/output/output.zip ./autogen/output/*
+        run: |
+          cd ./autogen/output
+          zip -vr output.zip *
           
       - name: Get date
         id: date
