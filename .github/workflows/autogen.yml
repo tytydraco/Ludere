@@ -1,0 +1,55 @@
+name: Online Packager
+
+on:
+  workflow_dispatch:
+    inputs:
+      payload:
+        required: true
+        description: 'Direct URL to autogen payload zip'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Fetch payload
+        run: curl -L# "${{ github.event.inputs.payload }}" > ./autogen/input/payload.zip
+       
+      - name: Unzip payload
+        run: |
+          unzip ./autogen/input/payload.zip -d ./autogen/input/
+          rm ./autogen/input/payload.zip
+      
+      - name: Run autogen
+        run: |
+          cd ./autogen
+          python3 generate.py
+        
+      - name: Compress outputs
+        run: zip -vr ./autogen/output/output.zip ./autogen/output/*
+          
+      - name: Get date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H-%M-%S')"
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ludere-autogen-${{ steps.date.outputs.date }}
+          release_name: Ludere Autogen ${{ steps.date.outputs.date }}
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./autogen/output/output.zip
+          asset_name: output.zip
+          asset_content_type: application/zip
