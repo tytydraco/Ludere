@@ -1,4 +1,4 @@
-name: Online Packager
+name: Autogen
 
 on:
   workflow_dispatch:
