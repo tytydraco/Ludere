@@ -59,6 +59,9 @@ This uses the official Ludere keystore to sign the APK. This is available in the
 
 The output APK is located here: `app/build/outputs/apk/release/app-universal-release.apk`
 
+# Autogen Tool
+Ludere has a directory called `autogen` which contains a basic script to batch-generate Ludere packages. To use it, simply navigate to this folder. Place your ROMs in the `input` folder. In this same folder, put a `config.xml` file with your preferred configuration for these ROMs. Ignore the ID and NAME fields, as they will be overwritten. The script also supports nested folders, in which each can contain their own configuration file. Execute the script with `python generate.py`.
+
 # Building Online
 I know a lot of users are not experienced in building Android Studio projects but would still like to package their own Ludere packages. I've created a GitHub action to help those people.
 
@@ -66,18 +69,11 @@ I know a lot of users are not experienced in building Android Studio projects bu
 
 1) Fork this repository by clicking the button in the top right corner of the repository. You may need to be on Desktop Mode for this to show up.
 
-2) Get a direct URL to your ROM of choice. Since GitHub Actions doesn't let us directly select a file to upload, you need to get a direct URL that the workflow can download. The easiest way to do this is by using Google Drive. Upload your ROM to Google Drive, then right click on it and click "Get link". Make sure it's set to "Anyone with the link" and copy it to your clipboard. The share link itself is not a direct download link, so head over to [this site](https://www.wonderplugin.com/online-tools/google-drive-direct-link-generator) to convert it into one. Keep the direct URL handy, we'll need it later.
+2) Get a direct URL to your autogen payload (everything that would be in the `input` folder). Since GitHub Actions doesn't let us directly select a file to upload, you need to get a direct URL that the workflow can download. The easiest way to do this is by using Google Drive. Upload your ROM to Google Drive, then right click on it and click "Get link". Make sure it's set to "Anyone with the link" and copy it to your clipboard. The share link itself is not a direct download link, so head over to [this site](https://www.wonderplugin.com/online-tools/google-drive-direct-link-generator) to convert it into one. Keep the direct URL handy, we'll need it later.
 
-3) Get a direct URL to your config. Head over to the [sample config.xml](https://raw.githubusercontent.com/tytydraco/Ludere/main/app/src/main/res/values/config.xml) and copy it's contents to your clipboard. Now open up [PasteBin](https://pastebin.com) and paste your sample config into the input field. Here is where you can tune your config accordingly. **NOTE: DO NOT CHANGE THE config_rom_file PARAMETER! The GitHub Action depends on this staying as "rom".** Once finished, click "Create new paste". Then, click the "raw" button near the top of the text field. The URL in your navigation bar is the direct URL to your config.
+4) Now we get to build the APK! Navigate to your forked Ludere repository we made in step 1. You should see a tab called "Actions" with a little play button icon next to it. Click on it. If you get a prompt asking you to enable Actions, just hit enable. Now, find the "Autogen" tab. If your browser is zoomed in, you might see a drop-down where you can switch the tab from "All workflows" to "Autogen". Now you should see a button that says "Run workflow" and it will prompt you for your **Payload URL**. Paste it here and click "Run workflow".
 
-4) Now we get to build the APK! Navigate to your forked Ludere repository we made in step 1. You should see a tab called "Actions" with a little play button icon next to it. Click on it. If you get a prompt asking you to enable Actions, just hit enable. Now, find the "Online Packager" tab. If your browser is zoomed in, you might see a drop-down where you can switch the tab from "All workflows" to "Online Packager". Now you should see a button that says "Run workflow" and it will prompt you for your **Config URL** and **ROM URL**. Paste them here and click "Run workflow".
-
-You can watch the build in realtime if you'd like. It can take quite a while to build, around 8 minutes. When it finishes, your fork will have a new release with the APK attached. You can find the releases tab from the home page of your fork. And that's it! You can install that APK on any device you'd like.
-
-**You can find a video tutorial here: https://photos.app.goo.gl/V2RvJDsB2QBdMy3V9** (NOTE: slightly outdated)
-
-# Autogen Tool
-Ludere has a directory called `autogen` which contains a basic script to batch-generate Ludere packages. To use it, simply navigate to this folder. Place your ROMs in the `input` folder. In this same folder, put a `config.xml` file with your preferred configuration for these ROMs. Ignore the ID and NAME fields, as they will be overwritten. The script also supports nested folders, in which each can contain their own configuration file. Execute the script with `python generate.py`.
+You can watch the build in realtime if you'd like. It can take quite a while to build, around 5 minutes per APK. When it finishes, your fork will have a new release with the APK attached. You can find the releases tab from the home page of your fork. And that's it! You can install that APK on any device you'd like.
 
 # Keystore
 There is a keystore for signing Ludere packages that is public and free to use. Here are the details you should know when signing with it:
