@@ -100,7 +100,7 @@ build_inputs() {
 			romid="${romname// /_}"
 
 			# Everything that is just letters and numbers
-			romid="${romname//[^A-Za-z0-9]/}"
+			romid="${romname//[^A-Za-z0-9_]/}"
 
 			# To lowercase
 			romid="${romid,,}"
