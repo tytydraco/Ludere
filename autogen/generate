@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+SCRIP_PATH="$(readlink -f "$0")"
+SCRIPT_ROOT="$(dirname "$SCRIPT_PATH")"
+PROJECT_ROOT="$SCRIPT_ROOT/.."
+
+RAW_DIR="$PROJECT_ROOT/app/src/main/res/raw"
+ROM="$RAW_DIR/rom"
+INPUT_DIR="$SCRIPT_ROOT/input"
+OUTPUT_DIR="$SCRIPT_ROOT/output"
+APK_OUTPUT_DIR="$PROJECT_ROOT/app/build/outputs/apk/release"
+ABB_OUTPUT_DIR="$PROJECT_ROOT/app/build/outputs/bundle/release"
+
+GRADLEW="$PROJECT_ROOT/gradlew"
+
+ABIS=(armeabi-v7a arm64-v8a x86 x86_64 universal)
+
+gradlew() {
+	bash "$GRADLEW" $@
+}
+
+# Create output ABI folders
+for abi in ${ABIS[@]} abb
+do
+	mkdir -p "$OUTPUT_DIR/$abi"
+done
+
+# Create raw directory if missing
+[[ ! -d "$RAW_DIR" ]] && mkdir -p "$RAW_DIR"
+
+for subdir in ./input/*
+do
+	# Skip invalid directories
+	[[ ! -f "$subdir/config.xml" ]] && continue
+
+	# Clean existing cores
+	gradlew clean
+
+	for rom in "$subdir"/*
+	do
+		# Skip config file; not a ROM
+		[[ "$rom" == "config.xml" ]] && continue
+	
+		# TODO: regex replacments for config.xml
+
+		# Copy rom to build directory
+		cp "$subdir/$rom" "$ROM"
+
+		cd "$PROJECT_ROOT"
+		gradlew assembleRelease
+		gradlew bundleRelease
+		cd "$SCRIPT_ROOT"
+
+		# Copy output apks
+		for abi in ${ABI[@]}
+		do
+			cp "$APK_OUTPUT_DIR/app-$abi-release.apk" "$OUTPUT_DIR/$abi/$core_$romid.apk"		
+		done
+
+		# Copy output abb
+		cp "$ABB_OUTPUT_DIR/app-release.aab" "$OUTPUT_DIR/abbb/$core_$romid.apk"
+	done
+
+done
