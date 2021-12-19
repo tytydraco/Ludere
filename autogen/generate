@@ -89,6 +89,7 @@ build_inputs() {
 		[[ ! -f "$subdir/config.xml" ]] && continue
 
 		# Clean existing cores
+		log "Cleaning working directory..."
 		gradlew clean
 
 		for rom in "$subdir"/*
@@ -113,8 +114,8 @@ build_inputs() {
 			# Escape special characters
 			romname="${romname//&/&amp;}"
 			romname="${romname//@/\\@}"
-			romname="${romname//\?/\\\?}"
-			romname="${romname//\t/\\\t}"
+			romname="${romname//\?/\\?}"
+			romname="${romname//	/\\t}"
 			romname="${romname//\'/\\\'}"
 			romname="${romname//\"/\\\"}"
 
@@ -137,15 +138,18 @@ build_inputs() {
 			# Skip build if already built
 			[[ -f "$OUTPUT_DIR/aab/$output_filename.aab" ]] && continue
 
-			log "FILENAME:\t$filename..."
-			log "ROMID:\t$romid"
-			log "ROMNAME:\t$romname"
-			log "CORE:\t$core"
-
 			# Copy rom to build directory
 			cp "$rom" "$ROM"
 
+			log "----- BUILDING -----"
+			log "FILENAME:\t$filename..."
+			log "ROMNAME:\t$romname"
+			log "ROMID:\t$romid"
+			log "CORE:\t$core"
+
 			compile
+
+			log "Copying outputs..."
 
 			# Copy output APKs
 			for abi in "${ABIS[@]}"
@@ -155,6 +159,8 @@ build_inputs() {
 
 			# Copy output aab
 			cp "$AAB_OUTPUT_DIR/app-release.aab" "$OUTPUT_DIR/aab/$output_filename.aab"
+		
+			log "Done!"
 		done
 	done
 }
