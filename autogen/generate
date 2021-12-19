@@ -20,6 +20,11 @@ ROM="$RAW_DIR/rom"
 # Supported ABIs
 ABIS=(armeabi-v7a arm64-v8a x86 x86_64 universal)
 
+# Log a message
+log() {
+	echo -e "\e[36m > $*\e[0m"
+}
+
 # Run gradle commands from proper directory
 gradlew() {
 	cd "$PROJECT_ROOT" || return
@@ -43,6 +48,8 @@ config_replace() {
 
 # Make sure necessary folders are here
 prepare_env() {
+	local abi
+
 	# Create raw directory if missing
 	[[ ! -d "$RAW_DIR" ]] && mkdir -p "$RAW_DIR"
 
@@ -60,6 +67,13 @@ compile() {
 }
 
 build_inputs() {
+	local subdir
+	local rom
+	local filename
+	local romname
+	local romid
+	local output_filename
+
 	for subdir in "$INPUT_DIR"/*
 	do
 		# Skip invalid directories
@@ -70,19 +84,19 @@ build_inputs() {
 
 		for rom in "$subdir"/*
 		do
-			# Skip config file; not a ROM
-			[[ "$rom" == "config.xml" ]] && continue
-		
 			filename=$(basename -- "$rom")
+
+			# Skip config file; not a ROM
+			[[ "$filename" == "config.xml" ]] && continue
 
 			# Remove extension
 			romname="${filename%.*}"
 
-			# To lowercase
-			romname="${romname,,}"
-
 			# Everything that is just letters and numbers
-			romid="${romname//[^a-z0-9]/}"
+			romid="${romname//[^A-Za-z0-9]/}"
+
+			# To lowercase
+			romid="${romid,,}"
 
 			# Replace ' with \'
 			romname="${romname//\'/\\\'}"
@@ -93,6 +107,17 @@ build_inputs() {
 			config_replace "config_name" "$romname"
 			core="$(config_val "config_core")"
 
+			# File name of output excluding extension
+			output_filename="${core}_${romid}"
+
+			# Skip build if already built
+			[[ -f "$OUTPUT_DIR/aab/$output_filename.aab" ]] && continue
+
+			log "Building $filename..."
+			log "$romid"
+			log "$romname"
+			log "$core"
+
 			# Copy rom to build directory
 			cp "$rom" "$ROM"
 
@@ -101,11 +126,11 @@ build_inputs() {
 			# Copy output APKs
 			for abi in "${ABIS[@]}"
 			do
-				cp "$APK_OUTPUT_DIR/app-$abi-release.apk" "$OUTPUT_DIR/$abi/${core}_${romid}.apk"		
+				cp "$APK_OUTPUT_DIR/app-$abi-release.apk" "$OUTPUT_DIR/$abi/$output_filename.apk"		
 			done
 
 			# Copy output aab
-			cp "$AAB_OUTPUT_DIR/app-release.aab" "$OUTPUT_DIR/aab/${core}_${romid}.apk"
+			cp "$AAB_OUTPUT_DIR/app-release.aab" "$OUTPUT_DIR/aab/$output_filename.aab"
 		done
 	done
 }
