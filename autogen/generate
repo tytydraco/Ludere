@@ -113,10 +113,10 @@ build_inputs() {
 			# Skip build if already built
 			[[ -f "$OUTPUT_DIR/aab/$output_filename.aab" ]] && continue
 
-			log "Building $filename..."
-			log "$romid"
-			log "$romname"
-			log "$core"
+			log "FILENAME:\t$filename..."
+			log "ROMID:\t$romid"
+			log "ROMNAME:\t$romname"
+			log "CORE:\t$core"
 
 			# Copy rom to build directory
 			cp "$rom" "$ROM"
