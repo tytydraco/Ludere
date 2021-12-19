@@ -8,9 +8,11 @@ if not os.path.isdir('../app/src/main/res/raw'):
     os.mkdir('../app/src/main/res/raw')
 
 for subdir in [x[0] for x in os.walk('input')]:
+    os.system('bash gradlew clean')
+    
     if not os.path.isfile(f'{subdir}/config.xml'):
-        print(f'{subdir} does not contain a config.xml file. Skipping...')
         continue
+
     for file in os.listdir(subdir):
         if not os.path.isfile(f'{subdir}/{file}'):
             continue
@@ -38,12 +40,8 @@ for subdir in [x[0] for x in os.walk('input')]:
         tree.write('../app/src/main/res/values/config.xml')
         
         os.chdir('..')
-        if os.name == 'nt':
-            os.system('gradlew assembleRelease')
-            os.system('gradlew bundleRelease')
-        else:
-            os.system('./gradlew assembleRelease')
-            os.system('./gradlew bundleRelease')
+        os.system('bash gradlew assembleRelease')
+        os.system('bash gradlew bundleRelease')
         os.chdir('autogen')
         
         for abi in abis:
