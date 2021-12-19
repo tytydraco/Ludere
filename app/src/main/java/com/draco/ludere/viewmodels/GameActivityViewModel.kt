@@ -79,6 +79,7 @@ class GameActivityViewModel(application: Application) : AndroidViewModel(applica
     /**
      * Hide the system bars
      */
+    @Suppress("DEPRECATION")
     fun immersive(window: Window) {
         /* Check if the config permits it */
         if (!resources.getBoolean(R.bool.config_fullscreen))
