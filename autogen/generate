@@ -25,6 +25,11 @@ log() {
 	echo -e "\e[36m > $*\e[0m"
 }
 
+# Log a non-fatal error
+err() {
+	echo -e "\e[31m > $*\e[0m"
+}
+
 # Run gradle commands from proper directory
 gradlew() {
 	cd "$PROJECT_ROOT" || return
@@ -110,6 +115,13 @@ build_inputs() {
 
 			# Replace & with &amp;
 			romname="${romname//&/&amp;}"
+
+			# Assert valid romid
+			if [[ "$romid" =~ ^[a-z] ]]
+			then
+				err "$romid must start with a letter! Skipping..."
+				continue
+			fi
 
 			# Update config with this info
 			cp "$subdir/config.xml" "$CONFIG"
