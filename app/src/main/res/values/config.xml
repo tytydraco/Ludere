@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- A unique identifier for the app (no spaces or special characters allowed) -->
-    <string name="config_id">kirbytheamazingmirrorusa</string>
+    <string name="config_id">legendofzeldaii</string>
 
     <!-- The pretty name for the app -->
-    <string name="config_name">Kirby &amp; the Amazing Mirror (USA)</string>
+    <string name="config_name">Legend of Zelda II</string>
 
     <!-- LibRetro core to fetch for this ROM (excluding _libretro_android.so) -->
     <string name="config_core">mgba</string>
