@@ -161,6 +161,7 @@ build_inputs() {
 			cp "$AAB_OUTPUT_DIR/app-release.aab" "$OUTPUT_DIR/aab/$output_filename.aab"
 		
 			log "Done!"
+			echo
 		done
 	done
 }
