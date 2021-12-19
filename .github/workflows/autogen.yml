@@ -23,9 +23,7 @@ jobs:
           rm ./autogen/input/payload.zip
       
       - name: Run autogen
-        run: |
-          cd ./autogen
-          python3 generate.py
+        run: ./autogen/generate
         
       - name: Compress outputs
         run: zip -vr ./autogen/output/output.zip ./autogen/output/*
