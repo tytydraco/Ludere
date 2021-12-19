@@ -110,14 +110,16 @@ build_inputs() {
 			# To lowercase
 			romid="${romid,,}"
 
-			# Replace ' with \'
-			romname="${romname//\'/\\\'}"
-
-			# Replace & with &amp;
+			# Escape special characters
 			romname="${romname//&/&amp;}"
+			romname="${romname//@/\\@}"
+			romname="${romname//\?/\\\?}"
+			romname="${romname//\t/\\\t}"
+			romname="${romname//\'/\\\'}"
+			romname="${romname//\"/\\\"}"
 
 			# Assert valid romid
-			if [[ "$romid" =~ ^[a-z] ]]
+			if [[ ! "$romid" =~ ^[a-z] ]]
 			then
 				err "$romid must start with a letter! Skipping..."
 				continue
