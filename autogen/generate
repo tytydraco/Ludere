@@ -43,6 +43,10 @@ config_replace() {
 	local name="$1"
 	local value="$2"
 
+	# Fix some sed expansions
+	value="${value//&/\\&}"
+	value="${value//|/\\|}"
+
 	sed -i "s|name=\"$name\">.*</|name=\"$name\">$value</|" "$CONFIG"
 }
 
@@ -84,7 +88,7 @@ build_inputs() {
 
 		for rom in "$subdir"/*
 		do
-			filename=$(basename -- "$rom")
+			filename="$(basename -- "$rom")"
 
 			# Skip config file; not a ROM
 			[[ "$filename" == "config.xml" ]] && continue
