@@ -105,6 +105,9 @@ build_inputs() {
 			# Replace ' with \'
 			romname="${romname//\'/\\\'}"
 
+			# Replace & with &amp;
+			romname="${romname//&/&amp;}"
+
 			# Update config with this info
 			cp "$subdir/config.xml" "$CONFIG"
 			config_replace "config_id" "$romid"
