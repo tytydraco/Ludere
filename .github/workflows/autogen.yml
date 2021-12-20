@@ -28,7 +28,7 @@ jobs:
         run: ./autogen/generate
         
       - name: Compress outputs
-        run: zip -vr ./autogen/output/output.zip ./autogen/output/*
+        run: zip -vr9 ./autogen/output/output.zip ./autogen/output/*
           
       - name: Get date
         id: date
