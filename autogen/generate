@@ -48,10 +48,7 @@ config_replace() {
 	local name="$1"
 	local value="$2"
 
-	# Fix sed separator conflicts
-	value="${value//|/\\|}"
-
-	sed -i "s|name=\"$name\">.*</|name=\"$name\">$value</|" "$CONFIG"
+	xmlstarlet ed -L -u "/resources/string[@name='$name']" -v "$value" "$CONFIG"
 }
 
 # Make sure necessary folders are here
@@ -89,6 +86,7 @@ build_inputs() {
 
 		# Clean existing cores
 		log "Cleaning working directory..."
+		cp "$subdir/config.xml" "$CONFIG"
 		gradlew clean
 
 		for rom in "$subdir"/*
@@ -98,24 +96,16 @@ build_inputs() {
 			# Skip config file; not a ROM
 			[[ "$filename" == "config.xml" ]] && continue
 
-			# Remove extension
+			# Escape issue characters
 			romname="${filename%.*}"
-
-			# Replace spaces with underscores
-			romid="${romname// /_}"
-
-			# Everything that is just letters and numbers
-			romid="${romname//[^A-Za-z0-9_]/}"
-
-			# To lowercase
-			romid="${romid,,}"
-
-			# Escape special characters
-			romname="${romname//&/&amp;}"
-			romname="${romname//@/\\@}"
-			romname="${romname//\?/\\?}"
-			romname="${romname//	/\\t}"
+			romname="$(xmlstarlet esc "$romname")"
 			romname="${romname//\"/\\\"}"
+			romname="${romname//\'/\\\'}"
+
+			# Alphanumeric id
+			romid="${romname// /_}"
+			romid="${romname//[^A-Za-z0-9_]/}"
+			romid="${romid,,}"			
 
 			# Assert valid romid
 			if [[ ! "$romid" =~ ^[a-z] ]]
@@ -125,9 +115,8 @@ build_inputs() {
 			fi
 
 			# Update config with this info
-			cp "$subdir/config.xml" "$CONFIG"
 			config_replace "config_id" "$romid"
-			config_replace "config_name" "\"$romname\""
+			config_replace "config_name" "$romname"
 			core="$(config_val "config_core")"
 
 			# File name of output excluding extension
