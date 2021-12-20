@@ -24,6 +24,11 @@ jobs:
           unzip ./autogen/input/payload.zip -d ./autogen/input/
           rm ./autogen/input/payload.zip
       
+      - name: Install dependencies
+        run: |
+          sudo apt update -y
+          sudo apt install -y xmlstarlet
+      
       - name: Run autogen
         run: ./autogen/generate
         
