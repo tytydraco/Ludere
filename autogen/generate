@@ -116,7 +116,6 @@ build_inputs() {
 			romname="${romname//@/\\@}"
 			romname="${romname//\?/\\?}"
 			romname="${romname//	/\\t}"
-			romname="${romname//\'/\\\'}"
 			romname="${romname//\"/\\\"}"
 
 			# Assert valid romid
@@ -129,7 +128,7 @@ build_inputs() {
 			# Update config with this info
 			cp "$subdir/config.xml" "$CONFIG"
 			config_replace "config_id" "$romid"
-			config_replace "config_name" "$romname"
+			config_replace "config_name" "\"$romname\""
 			core="$(config_val "config_core")"
 
 			# File name of output excluding extension
