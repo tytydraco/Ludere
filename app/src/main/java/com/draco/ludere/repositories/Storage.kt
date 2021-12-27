@@ -15,7 +15,8 @@ class Storage(context: Context) {
     }
 
     val storagePath: String = (context.getExternalFilesDir(null) ?: context.filesDir).path
-    val rom = File("$storagePath/rom")
+    val cachePath: String = (context.externalCacheDir ?: context.cacheDir).path
+    val rom = File("$cachePath/rom")
     val sram = File("$storagePath/sram")
     val state = File("$storagePath/state")
     val tempState = File("$storagePath/tempstate")
